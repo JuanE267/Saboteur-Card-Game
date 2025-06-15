@@ -14,13 +14,8 @@ public class Main {
         tablero.inicarTablero();
 
         // Crear una carta túnel simple que conecta ARRIBA y ABAJO
-        CartaTunel nuevaCarta = new CartaTunel(10, TipoCarta.TUNEL, "", false, false);
-        Map<Direccion, Boolean> caminos = new HashMap<>();
-        caminos.put(Direccion.ARRIBA, true);
-        caminos.put(Direccion.ABAJO, true);
-        caminos.put(Direccion.IZQUIERDA, false);
-        caminos.put(Direccion.DERECHA, false);
-        nuevaCarta.setCaminos(caminos);
+        CartaTunel nuevaCarta = new CartaTunel(10, TipoCarta.TUNEL, "", false);
+        nuevaCarta.setCaminos(true,true,false,false);
 
         // Colocarla justo debajo del inicio
         int x = tablero.getxInicio() + 1;

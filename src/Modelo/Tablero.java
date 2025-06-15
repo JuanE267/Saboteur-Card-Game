@@ -27,13 +27,13 @@ public class Tablero {
     public void inicarTablero() {
 
         // Creo las cartas iniciales
-        CartaTunel inicio = new CartaTunel(1, TipoCarta.TUNEL, "", true, false);
+        CartaTunel inicio = new CartaTunel(0, TipoCarta.TUNEL, "", true);
         Map<Direccion, Boolean> caminosInicio = new HashMap<>();
         caminosInicio.put(Direccion.ARRIBA, true);
         caminosInicio.put(Direccion.ABAJO, true);
         caminosInicio.put(Direccion.IZQUIERDA, true);
         caminosInicio.put(Direccion.DERECHA, true);
-        inicio.setCaminos(caminosInicio);
+        inicio.setCaminos(true, true, true, true);
 
         CartaDestino oro = new CartaDestino(1, TipoCarta.DESTINO, "", true);
         CartaDestino primerCarbon = new CartaDestino(2, TipoCarta.DESTINO, "", false);

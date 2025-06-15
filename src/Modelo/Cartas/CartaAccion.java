@@ -12,14 +12,14 @@ import java.util.Scanner;
 
 public class CartaAccion extends Carta {
 
-    private TipoAccion tipo;
+    private List<TipoAccion> tipo;
 
-    public TipoAccion getTipoAccion() {
+    public List<TipoAccion> getTipoAccion() {
         return tipo;
     }
 
-    public void setTipo(TipoAccion tipo) {
-        this.tipo = tipo;
+    public void setTipo(List<TipoAccion> tipos) {
+        this.tipo = tipos;
     }
 
     public CartaAccion(int id, TipoCarta tipo, String img) {
@@ -28,28 +28,30 @@ public class CartaAccion extends Carta {
 
     // Acción para romper/reparar herramienta a un jugador
     public void jugarCarta(Jugador afectado) {
-        switch (this.tipo){
+        for(TipoAccion tipoAccion : tipo){
+        switch (tipoAccion){
             case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
-                romperHerramienta(afectado);
+                romperHerramienta(afectado, tipoAccion);
             }
             case REPARARLINTERNA, REPARARVAGONETA, REPARARPICO -> {
-                repararHerramienta(afectado);
+                repararHerramienta(afectado, tipoAccion);
             }
         }
+    }
     }
 
     // Acción para ver un destino del tablero
     public void jugarCarta(int x, int y, Tablero tablero) {
-        if (tipo == TipoAccion.MAPA) {
+        if (tipo.getFirst() == TipoAccion.MAPA) {
             verDestino(x, y, tablero);
         }
     }
 
-    private void romperHerramienta(Jugador afectado){
+    private void romperHerramienta(Jugador afectado, TipoAccion tipoAccion){
 
         Herramienta herramienta = null;
 
-        switch (this.tipo){
+        switch (tipoAccion){
             case ROMPERPICO -> herramienta = Herramienta.PICO;
             case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
             case ROMPERLINTERNA -> herramienta = Herramienta.LINTERNA;
@@ -67,10 +69,10 @@ public class CartaAccion extends Carta {
         }
     }
 
-    private void repararHerramienta(Jugador afectado){
+    private void repararHerramienta(Jugador afectado, TipoAccion tipoAccion){
         Herramienta herramienta = null;
 
-        switch (this.tipo){
+        switch (tipoAccion){
             case REPARARPICO -> herramienta = Herramienta.PICO;
             case REPARARVAGONETA -> herramienta = Herramienta.VAGONETA;
             case REPARARLINTERNA -> herramienta = Herramienta.LINTERNA;
@@ -91,7 +93,7 @@ public class CartaAccion extends Carta {
     public void verDestino( int x, int y, Tablero tablero){
         Carta destino = tablero.getCuadricula()[x][y];
 
-        if((this.getTipoAccion() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO){
+        if((this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO){
             if(((CartaDestino)destino).getEsOro()){
                 System.out.println("Es oroooooo");
             }else{

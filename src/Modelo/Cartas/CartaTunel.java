@@ -6,17 +6,15 @@ import Modelo.Enums.TipoCarta;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CartaTunel extends Carta{
+public class CartaTunel extends Carta {
 
     private Map<Direccion, Boolean> caminos = new HashMap<>();
     private boolean estaDerrumbada;
     private boolean esInicio;
-    private boolean esFinal;
 
-    public CartaTunel(int id, TipoCarta tipo, String img, boolean esInicio, boolean esFinal) {
+    public CartaTunel(int id, TipoCarta tipo, String img, boolean esInicio) {
         super(id, tipo, img);
         this.esInicio = esInicio;
-        this.esFinal = esFinal;
     }
 
     public Map<Direccion, Boolean> getCaminos() {
@@ -24,14 +22,14 @@ public class CartaTunel extends Carta{
     }
 
     // controla si es posible conectar la carta con los demas tuneles
-    public Boolean puedeConectar(CartaTunel vecino, Direccion dir){
+    public Boolean puedeConectar(CartaTunel vecino, Direccion dir) {
 
         // si no hay carta en la posicion vecina retorno true
         if (vecino == null)
             return (this.esInicio);
 
 
-        switch (dir){
+        switch (dir) {
 
             case ABAJO -> {
 
@@ -58,8 +56,12 @@ public class CartaTunel extends Carta{
     }
 
 
-    public void setCaminos(Map<Direccion, Boolean> caminos) {
-        this.caminos = caminos;
+    public void setCaminos(boolean arriba, boolean abajo,
+                           boolean izquierda, boolean derecha) {
+        this.caminos.put(Direccion.ARRIBA, arriba);
+        this.caminos.put(Direccion.ABAJO, abajo);
+        this.caminos.put(Direccion.IZQUIERDA, izquierda);
+        this.caminos.put(Direccion.DERECHA, derecha);
     }
 
 }

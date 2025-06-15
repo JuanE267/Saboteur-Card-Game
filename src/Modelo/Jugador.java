@@ -29,7 +29,11 @@ public class Jugador {
         Carta carta = elegirCarta();
         System.out.println("Elija la posicion de la carta");
         Scanner sc = new Scanner(System.in);
-        tablero.colocarCarta((CartaTunel) carta, sc.nextInt(), sc.nextInt());
+        if (puedeConstruir()) {
+            tablero.colocarCarta((CartaTunel) carta, sc.nextInt(), sc.nextInt());
+        }else{
+            System.out.println("tiene herramientas rotas, no puede construir");
+        }
     }
 
     // jugar reparar o romper
@@ -45,7 +49,7 @@ public class Jugador {
         Scanner sc = new Scanner(System.in);
         int x = sc.nextInt();
         int y = sc.nextInt();
-        ((CartaAccion) carta).jugarCarta(x,y,tablero);
+        ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 
     public Carta elegirCarta() {
@@ -53,6 +57,10 @@ public class Jugador {
         Scanner sc = new Scanner(System.in);
         int posCarta = sc.nextInt();
         return manoCartas.get(posCarta);
+    }
+
+    public Boolean puedeConstruir() {
+        return (herramientasRotas.isEmpty());
     }
 
     public String getNombre() {
