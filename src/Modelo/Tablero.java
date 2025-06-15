@@ -187,24 +187,4 @@ public class Tablero {
         return cuadricula[x][y];
     }
 
-    public void imprimirTablero() {
-        System.out.println("Tablero:");
-        for (int i = 0; i < alto; i++) {
-            for (int j = 0; j < ancho; j++) {
-                Carta carta = cuadricula[i][j];
-                if (i == xInicio && j == yInicio) {
-                    System.out.print(" I "); // Carta de inicio
-                } else if (carta instanceof CartaDestino) {
-                    System.out.print(" D "); // Destino (oro o carbón)
-                } else if (carta instanceof CartaTunel) {
-                    System.out.print(" C "); // Carta túnel común
-                } else {
-                    System.out.print(" . "); // Vacío
-                }
-            }
-            System.out.println();
-        }
-    }
-
-
 }

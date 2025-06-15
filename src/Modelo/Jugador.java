@@ -14,52 +14,42 @@ import java.util.Scanner;
 public class Jugador {
 
     private String nombre;
+    private int edad;
     private Rol rol;
     private List<Carta> manoCartas;
     private List<Herramienta> herramientasRotas = new ArrayList<>();
-    private Tablero tablero;
 
-    public Jugador(String nombre, Tablero tablero) {
+    public Jugador(String nombre, int edad) {
         this.nombre = nombre;
-        this.tablero = tablero;
+        this.edad = edad;
     }
 
     // jugar tunel
-    public void JugarCarta(Tablero tablero) {
-        Carta carta = elegirCarta();
-        System.out.println("Elija la posicion de la carta");
-        Scanner sc = new Scanner(System.in);
+    public boolean JugarCarta(Tablero tablero,int x, int y, int posCarta) {
+        Carta carta = elegirCarta(posCarta);
         if (puedeConstruir()) {
-            tablero.colocarCarta((CartaTunel) carta, sc.nextInt(), sc.nextInt());
-        }else{
-            System.out.println("tiene herramientas rotas, no puede construir");
+            return tablero.colocarCarta((CartaTunel) carta, x, y);
         }
+        return false;
     }
 
     // jugar reparar o romper
-    public void jugarCarta(Jugador afectado) {
-        Carta carta = elegirCarta();
+    public void jugarCarta(Jugador afectado, int posCarta) {
+        Carta carta = elegirCarta(posCarta);
         ((CartaAccion) carta).jugarCarta(afectado);
     }
 
     // jugar mapa
-    public void jugarCarta(Tablero tablero) {
-        Carta carta = elegirCarta();
-        System.out.println("Ingrese la pos de la carta de destino");
-        Scanner sc = new Scanner(System.in);
-        int x = sc.nextInt();
-        int y = sc.nextInt();
+    public void jugarCarta(Tablero tablero, int x, int y, int posCarta) {
+        Carta carta = elegirCarta(posCarta);
         ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 
-    public Carta elegirCarta() {
-        System.out.println("Elige una carta de tu mazo");
-        Scanner sc = new Scanner(System.in);
-        int posCarta = sc.nextInt();
+    private Carta elegirCarta(int posCarta) {
         return manoCartas.get(posCarta);
     }
 
-    public Boolean puedeConstruir() {
+    private Boolean puedeConstruir() {
         return (herramientasRotas.isEmpty());
     }
 
@@ -91,7 +81,17 @@ public class Jugador {
         this.herramientasRotas = herramientasRotas;
     }
 
+    public int getEdad() {
+        return edad;
+    }
 
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 
 
