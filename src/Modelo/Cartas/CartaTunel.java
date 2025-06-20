@@ -64,4 +64,8 @@ public class CartaTunel extends Carta {
         this.caminos.put(Direccion.DERECHA, derecha);
     }
 
+    public boolean getEsInicio(){
+        return esInicio;
+    }
+
 }

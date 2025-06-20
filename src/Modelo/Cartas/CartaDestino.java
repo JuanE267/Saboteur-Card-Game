@@ -7,11 +7,13 @@ public class CartaDestino extends Carta {
     private boolean esOro;
     private int oroX;
     private int oroY;
+    private String dorso;
 
 
-    public CartaDestino(int id, TipoCarta tipo, String img, boolean esOro) {
+    public CartaDestino(int id, TipoCarta tipo, String img, String dorso, boolean esOro) {
         super(id, tipo, img);
         this.esOro = esOro;
+        this.dorso = dorso;
     }
 
     public boolean getEsOro() {
@@ -32,5 +34,9 @@ public class CartaDestino extends Carta {
 
     public void setOroY(int oroY) {
         this.oroY = oroY;
+    }
+
+    public String getDorso() {
+        return dorso;
     }
 }
