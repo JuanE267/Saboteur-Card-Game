@@ -5,10 +5,12 @@ import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Direccion;
+import Modelo.Enums.Rol;
 import Modelo.Enums.TipoCarta;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class Tablero {
     public void inicarTablero() {
 
         // Creo las cartas iniciales
-        CartaTunel inicio = new CartaTunel(0, TipoCarta.TUNEL, "", true);
+        CartaTunel inicio = new CartaTunel(0, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/INICIO.png", true);
         Map<Direccion, Boolean> caminosInicio = new HashMap<>();
         caminosInicio.put(Direccion.ARRIBA, true);
         caminosInicio.put(Direccion.ABAJO, true);
@@ -72,9 +74,10 @@ public class Tablero {
             destinos.remove(indiceDestinos);
             posicionesDestino.remove(indicePos);
         }
-
+        	
     }
-
+    
+  
     public boolean colocarCarta(CartaTunel carta, int x, int y) {
 
         // compruebo que este dentro de los limites del tablero
@@ -109,7 +112,6 @@ public class Tablero {
     }
 
     public boolean hayCaminoHastaOro() {
-
 
         // llevo una lista de las posiciones del tablero que ya visite
         boolean[][] visitado = new boolean[alto][ancho];

@@ -25,8 +25,7 @@ public class Jugador {
     }
 
     // jugar tunel
-    public boolean JugarCarta(Tablero tablero,int x, int y, int posCarta) {
-        Carta carta = elegirCarta(posCarta);
+    public boolean jugarCarta(Tablero tablero,int x, int y, Carta carta) {
         if (puedeConstruir()) {
             return tablero.colocarCarta((CartaTunel) carta, x, y);
         }
@@ -34,18 +33,16 @@ public class Jugador {
     }
 
     // jugar reparar o romper
-    public void jugarCarta(Jugador afectado, int posCarta) {
-        Carta carta = elegirCarta(posCarta);
+    public void jugarCarta(Jugador afectado, Carta carta) {
         ((CartaAccion) carta).jugarCarta(afectado);
     }
 
     // jugar mapa
-    public void jugarCarta(Tablero tablero, int x, int y, int posCarta) {
-        Carta carta = elegirCarta(posCarta);
+    public void jugarCartaMapa(Tablero tablero, int x, int y, Carta carta) {
         ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 
-    private Carta elegirCarta(int posCarta) {
+    public Carta elegirCarta(int posCarta) {
         return manoCartas.get(posCarta);
     }
 
@@ -65,7 +62,7 @@ public class Jugador {
         this.rol = rol;
     }
 
-    public List<Carta> getManoCartas() {
+    public List<Carta>  getManoCartas() {
         return manoCartas;
     }
 

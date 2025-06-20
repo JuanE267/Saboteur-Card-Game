@@ -1,6 +1,10 @@
 package Modelo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import Modelo.Enums.Rol;
 
 public class Juego {
 
@@ -11,6 +15,139 @@ public class Juego {
     public Tablero getTablero() {
         return tablero;
     }
+    
+    public void asignarRoles() {
+
+        // genero los roles dependiendo la cantidad de jugadores
+        // asigno los  roles a cada uno
+        switch (jugadores.size()) {
+            case 3 -> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+               }
+            case 4-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 5-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 6 -> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 7-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 8-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 9-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+            case 10-> {
+                List<Rol> roles = new ArrayList<>();
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.MINERO);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                roles.add(Rol.SABOTEADOR);
+                Collections.shuffle(roles);
+
+                for (Jugador j : jugadores){
+                    j.setRol(roles.removeFirst());
+                }
+            }
+    }
+}
+
 
     public void setTablero(Tablero tablero) {
         this.tablero = tablero;

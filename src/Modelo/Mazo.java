@@ -32,7 +32,7 @@ public class Mazo {
         int i;
         for (i = 0; i < 4; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO.png", false);
             carta.setCaminos(true, true, false, false);
             agregarCartaAlMazo(carta);
         }
@@ -40,7 +40,7 @@ public class Mazo {
         // tunel cruz
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO IZQUIERDA DERECHA.png", false);
             carta.setCaminos(true, true, true, true);
             agregarCartaAlMazo(carta);
         }
@@ -48,7 +48,7 @@ public class Mazo {
         // tunel vertical y derecha
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO DERECHA.png", false);
             carta.setCaminos(true, true, false, true);
             agregarCartaAlMazo(carta);
         }
@@ -56,7 +56,7 @@ public class Mazo {
         // tunel izquierda y abajo
         for (i = 0; i < 5; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/IZQUIERDA ABAJO.png", false);
             carta.setCaminos(false, true, true, false);
             agregarCartaAlMazo(carta);
         }
@@ -64,7 +64,7 @@ public class Mazo {
         // tunel abajo, izquierda y derecha
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO IZQUIEDA DERECHA.png", false);
             carta.setCaminos(false, true, true, true);
             agregarCartaAlMazo(carta);
         }
@@ -73,7 +73,7 @@ public class Mazo {
         // tunel derecha y abajo
         for (i = 0; i < 7; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO DERECHA.png", false);
             carta.setCaminos(false, true, false, true);
             agregarCartaAlMazo(carta);
         }
@@ -81,20 +81,20 @@ public class Mazo {
         // tunel horizontal
         for (i = 0; i < 5; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/IZQUIERDA DERECHA.png", false);
             carta.setCaminos(false, false, true, true);
             agregarCartaAlMazo(carta);
         }
 
         // tunel abajo
         cantCartas++;
-        CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+        CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO.png", false);
         carta.setCaminos(false, true, false, false);
         agregarCartaAlMazo(carta);
 
         //tunel derecha
         cantCartas++;
-        carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "", false);
+        carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/DERECHA.png", false);
         carta.setCaminos(false, false, true, false);
         agregarCartaAlMazo(carta);
 
@@ -103,7 +103,7 @@ public class Mazo {
         // romper linterna
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERLINTERNA);
             cartaAccion.setTipo(tipos);
@@ -113,7 +113,7 @@ public class Mazo {
         // romper pico
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER PICO.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERPICO);
             cartaAccion.setTipo(tipos);
@@ -123,7 +123,7 @@ public class Mazo {
         //romper vagoneta
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERVAGONETA);
             agregarCartaAlMazo(cartaAccion);
@@ -133,7 +133,7 @@ public class Mazo {
         // derrumbar
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/DERRUMBE.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.DERRUMBAR);
             agregarCartaAlMazo(cartaAccion);
@@ -143,7 +143,7 @@ public class Mazo {
         // reparar pico
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARPICO);
             agregarCartaAlMazo(cartaAccion);
@@ -153,7 +153,7 @@ public class Mazo {
         // reparar linterna
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
             agregarCartaAlMazo(cartaAccion);
@@ -163,7 +163,7 @@ public class Mazo {
         // reparar vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             agregarCartaAlMazo(cartaAccion);
@@ -173,7 +173,7 @@ public class Mazo {
         // reparar pico y linterna
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
             tipos.add(TipoAccion.REPARARPICO);
@@ -184,7 +184,7 @@ public class Mazo {
         // reparar pico y vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARPICO);
@@ -195,7 +195,7 @@ public class Mazo {
         // reparar linterna y vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR LINTERNA VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARLINTERNA);
@@ -206,7 +206,7 @@ public class Mazo {
         // mapa
         for (int j = 0; j < 6; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/MAPA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.MAPA);
             agregarCartaAlMazo(cartaAccion);
@@ -249,137 +249,7 @@ public class Mazo {
         }
     }
 
-    public void asignarRoles(List<Jugador> jugadores) {
-
-            // genero los roles dependiendo la cantidad de jugadores
-            // asigno los  roles a cada uno
-            switch (jugadores.size()) {
-                case 3 -> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                   }
-                case 4-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 5-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 6 -> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 7-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 8-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 9-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-                case 10-> {
-                    List<Rol> roles = new ArrayList<>();
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.MINERO);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    roles.add(Rol.SABOTEADOR);
-                    Collections.shuffle(roles);
-
-                    for (Jugador j : jugadores){
-                        j.setRol(roles.removeFirst());
-                    }
-                }
-        }
-    }
+    
 
     public void agregarCartaAlMazo(Carta carta) {
         this.cartas.add(carta);
