@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Mazo {
 
-    private List<Carta> cartas;
+    private List<Carta> cartas = new ArrayList<>();
 
     public Mazo() {
         inicializarCartas();
@@ -32,7 +32,7 @@ public class Mazo {
         int i;
         for (i = 0; i < 4; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ARRIBA ABAJO.png", false);
             carta.setCaminos(true, true, false, false);
             agregarCartaAlMazo(carta);
         }
@@ -40,7 +40,7 @@ public class Mazo {
         // tunel cruz
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO IZQUIERDA DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ARRIBA ABAJO IZQUIERDA DERECHA.png", false);
             carta.setCaminos(true, true, true, true);
             agregarCartaAlMazo(carta);
         }
@@ -48,7 +48,7 @@ public class Mazo {
         // tunel vertical y derecha
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ARRIBA ABAJO DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ARRIBA ABAJO DERECHA.png", false);
             carta.setCaminos(true, true, false, true);
             agregarCartaAlMazo(carta);
         }
@@ -56,7 +56,7 @@ public class Mazo {
         // tunel izquierda y abajo
         for (i = 0; i < 5; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/IZQUIERDA ABAJO.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/IZQUIERDA ABAJO.png", false);
             carta.setCaminos(false, true, true, false);
             agregarCartaAlMazo(carta);
         }
@@ -64,7 +64,7 @@ public class Mazo {
         // tunel abajo, izquierda y derecha
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO IZQUIEDA DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ABAJO IZQUIEDA DERECHA.png", false);
             carta.setCaminos(false, true, true, true);
             agregarCartaAlMazo(carta);
         }
@@ -73,7 +73,7 @@ public class Mazo {
         // tunel derecha y abajo
         for (i = 0; i < 7; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ABAJO DERECHA.png", false);
             carta.setCaminos(false, true, false, true);
             agregarCartaAlMazo(carta);
         }
@@ -81,20 +81,20 @@ public class Mazo {
         // tunel horizontal
         for (i = 0; i < 5; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/IZQUIERDA DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/IZQUIERDA DERECHA.png", false);
             carta.setCaminos(false, false, true, true);
             agregarCartaAlMazo(carta);
         }
 
         // tunel abajo
         cantCartas++;
-        CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/ABAJO.png", false);
+        CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/ABAJO.png", false);
         carta.setCaminos(false, true, false, false);
         agregarCartaAlMazo(carta);
 
         //tunel derecha
         cantCartas++;
-        carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "src/ImagenCartas/SABOTEUR/tuneles/DERECHA.png", false);
+        carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "resources/tuneles/DERECHA.png", false);
         carta.setCaminos(false, false, true, false);
         agregarCartaAlMazo(carta);
 
@@ -103,7 +103,7 @@ public class Mazo {
         // romper linterna
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER LINTERNA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ROMPER LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERLINTERNA);
             cartaAccion.setTipo(tipos);
@@ -113,7 +113,7 @@ public class Mazo {
         // romper pico
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER PICO.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ROMPER PICO.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERPICO);
             cartaAccion.setTipo(tipos);
@@ -123,7 +123,7 @@ public class Mazo {
         //romper vagoneta
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ROMPER VAGONETA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ROMPER VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERVAGONETA);
             agregarCartaAlMazo(cartaAccion);
@@ -133,7 +133,7 @@ public class Mazo {
         // derrumbar
         for (int j = 0; j < 3; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/DERRUMBE.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/DERRUMBE.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.DERRUMBAR);
             agregarCartaAlMazo(cartaAccion);
@@ -143,7 +143,7 @@ public class Mazo {
         // reparar pico
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR PICO.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARPICO);
             agregarCartaAlMazo(cartaAccion);
@@ -153,7 +153,7 @@ public class Mazo {
         // reparar linterna
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR LINTERNA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
             agregarCartaAlMazo(cartaAccion);
@@ -163,7 +163,7 @@ public class Mazo {
         // reparar vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR VAGONETA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             agregarCartaAlMazo(cartaAccion);
@@ -173,7 +173,7 @@ public class Mazo {
         // reparar pico y linterna
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO LINTERNA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR PICO LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
             tipos.add(TipoAccion.REPARARPICO);
@@ -184,7 +184,7 @@ public class Mazo {
         // reparar pico y vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR PICO VAGONETA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR PICO VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARPICO);
@@ -195,7 +195,7 @@ public class Mazo {
         // reparar linterna y vagoneta
         for (int j = 0; j < 2; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/ARREGLAR LINTERNA VAGONETA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/ARREGLAR LINTERNA VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARLINTERNA);
@@ -206,7 +206,7 @@ public class Mazo {
         // mapa
         for (int j = 0; j < 6; j++) {
             cantCartas++;
-            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "src/ImagenCartas/SABOTEUR/ACCION/MAPA.png");
+            CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "resources/ACCION/MAPA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.MAPA);
             agregarCartaAlMazo(cartaAccion);
@@ -224,7 +224,7 @@ public class Mazo {
         //por cada jugador genero una mano y se la doy
         for (Jugador j : jugadores) {
             switch (jugadores.size()) {
-                case 3, 4, 5 -> {
+                case 1,3, 4, 5 -> {
                     List<Carta> mano = new ArrayList<>();
                     for (int i = 0; i < 6; i++) {
                         mano.add(tomarCarta());

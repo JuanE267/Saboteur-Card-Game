@@ -6,6 +6,9 @@ import Modelo.Cartas.CartaTunel;
 import Modelo.Juego;
 import Modelo.Jugador;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ControladorJuego {
 
     private Juego juego;
@@ -14,16 +17,25 @@ public class ControladorJuego {
     public ControladorJuego(Juego juego) {
 
         this.juego = juego;
-        
-        Jugador mayorEdad = juego.getJugadores().removeFirst();
+
+        //HARDCODEEEEEE
+        List<Jugador> jugadore = new ArrayList<>();
+        jugadore.add(new Jugador("juan",1));
+        juego.setJugadores(jugadore);
+        // el jugador en empezar es el de mayor edad
+        Jugador mayorEdad = juego.getJugadores().getFirst();
         for (Jugador j : juego.getJugadores()) {
             if (j.getEdad() > mayorEdad.getEdad()) {
                 mayorEdad = j;
             }
         }
-        this.turno = mayorEdad.getEdad(); 
+        this.turno = jugadore.indexOf(mayorEdad);
+
+        // asigno los roles y reparto las cartas
         this.juego.asignarRoles();
+        this.juego.getMazo().repartirCartas(jugadore);
     }
+
 
     public Jugador getJugadorActual() {
         return juego.getJugadores().get(this.turno);

@@ -19,5 +19,9 @@ public abstract class Carta {
         return tipo;
     }
 
+    public String getImg(){
+      return img;
+    }
+
 
 }

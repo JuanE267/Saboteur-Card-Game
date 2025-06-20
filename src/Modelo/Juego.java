@@ -11,6 +11,12 @@ public class Juego {
     private List<Jugador> jugadores;
     private Mazo mazo;
     private Tablero tablero;
+    private List<Rol> roles;
+
+    public Juego(){
+        this.tablero = new Tablero();
+        this.mazo = new Mazo();
+    }
 
     public Tablero getTablero() {
         return tablero;
@@ -21,8 +27,8 @@ public class Juego {
         // genero los roles dependiendo la cantidad de jugadores
         // asigno los  roles a cada uno
         switch (jugadores.size()) {
-            case 3 -> {
-                List<Rol> roles = new ArrayList<>();
+            case 1,3 -> {
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -34,7 +40,7 @@ public class Juego {
                 }
                }
             case 4-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -47,7 +53,7 @@ public class Juego {
                 }
             }
             case 5-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -61,7 +67,7 @@ public class Juego {
                 }
             }
             case 6 -> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -76,7 +82,7 @@ public class Juego {
                 }
             }
             case 7-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -92,7 +98,7 @@ public class Juego {
                 }
             }
             case 8-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -109,7 +115,7 @@ public class Juego {
                 }
             }
             case 9-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -127,7 +133,7 @@ public class Juego {
                 }
             }
             case 10-> {
-                List<Rol> roles = new ArrayList<>();
+                roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -168,4 +174,5 @@ public class Juego {
     public void setJugadores(List<Jugador> jugadores) {
         this.jugadores = jugadores;
     }
+
 }
