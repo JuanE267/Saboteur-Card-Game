@@ -6,6 +6,8 @@ import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.net.URL;
 
-public class PanelHerramientas extends JPanel {
+public class PanelHerramientas extends JPanel implements Observer {
 
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
@@ -126,10 +128,10 @@ public class PanelHerramientas extends JPanel {
         switch (tipos.getFirst()){
             case REPARARPICO, REPARARLINTERNA, REPARARVAGONETA -> {
                 controlador.jugarHerramienta(posCarta, controlador.getJugadorActual());
+
                 panelJugador.resetCartaSeleccionada();
                 panelJugador.revalidate();
                 panelJugador.repaint();
-                panelJugador.dibujarManoDeCartas();
                 controlador.verificarSiTerminoLaRonda();
                 controlador.pasarTurno();
             }
@@ -155,4 +157,9 @@ public class PanelHerramientas extends JPanel {
         JOptionPane.showMessageDialog(this,"No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarHerramientas();
+
+    }
 }

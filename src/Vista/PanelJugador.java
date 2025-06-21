@@ -4,6 +4,8 @@ import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Jugador;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelJugador extends JPanel {
+public class PanelJugador extends JPanel  implements Observer {
     private Jugador jugador;
     private ControladorJuego controlador;
     private final int TAM_CARTA = 75;
@@ -85,4 +87,8 @@ public class PanelJugador extends JPanel {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarManoDeCartas();
+    }
 }

@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import Modelo.Enums.Rol;
+import Observer.Observable;
 
-public class Juego {
+public class Juego extends Observable {
 
     private List<Jugador> jugadores;
     private Mazo mazo;

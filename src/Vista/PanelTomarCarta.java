@@ -2,6 +2,8 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,7 +11,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PanelTomarCarta extends JPanel {
+public class PanelTomarCarta extends JPanel  implements Observer {
 
 
     private PanelJugador panelJugador;
@@ -72,4 +74,8 @@ public class PanelTomarCarta extends JPanel {
         JOptionPane.showMessageDialog(this,"No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarPanel();
+    }
 }

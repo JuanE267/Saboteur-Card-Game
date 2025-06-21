@@ -5,6 +5,8 @@ import Modelo.Enums.Herramienta;
 import Modelo.Juego;
 import Modelo.Jugador;
 import Modelo.Tablero;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -15,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.List;
 
-public class PanelTablaJugadores extends JPanel {
+public class PanelTablaJugadores extends JPanel  implements Observer {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
@@ -150,9 +152,7 @@ public class PanelTablaJugadores extends JPanel {
         panelJugador.resetCartaSeleccionada();
         panelJugador.revalidate();
         panelJugador.repaint();
-        panelJugador.dibujarManoDeCartas();
         controlador.verificarSiTerminoLaRonda();
-        dibujarListaJugadores();
         controlador.pasarTurno();
     }
 
@@ -172,4 +172,8 @@ public class PanelTablaJugadores extends JPanel {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarListaJugadores();
+    }
 }

@@ -13,8 +13,8 @@ public class Ventana extends JFrame {
     private PanelJugador panelJugador;
     PanelTablaJugadores panelTablaJugadores;
     PanelTomarCarta panelTomarCarta;
-    PanelPuntosYAcciones puntosYAcciones;
-    PanelHerramientas herramientas;
+    PanelPuntosYAcciones panelPuntosYAcciones;
+    PanelHerramientas panelHerramientas;
     JPanel contenedorJugador;
     JLabel turnoActual;
 
@@ -55,9 +55,9 @@ public class Ventana extends JFrame {
         panelTomarCarta = new PanelTomarCarta(panelJugador, controlador);
 
 
-        puntosYAcciones = new PanelPuntosYAcciones(panelJugador, controlador);
+        panelPuntosYAcciones = new PanelPuntosYAcciones(panelJugador, controlador);
 
-        herramientas = new PanelHerramientas(panelJugador, controlador);
+        panelHerramientas = new PanelHerramientas(panelJugador, controlador);
 
         contenedorJugador.add(puntosYAcciones);
         contenedorJugador.add(panelJugador);
@@ -79,6 +79,12 @@ public class Ventana extends JFrame {
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
 
+        controlador.getJuego().agregarObserver(panelJugador);
+        controlador.getJuego().agregarObserver(panelTablero);
+        controlador.getJuego().agregarObserver(panelTablaJugadores);
+        controlador.getJuego().agregarObserver(panelTomarCarta);
+        controlador.getJuego().agregarObserver(panelPuntosYAcciones);
+        controlador.getJuego().agregarObserver(panelHerramientas);
 
         setVisible(true);
     }
@@ -86,7 +92,7 @@ public class Ventana extends JFrame {
     public void actualizarTurno() {
         Jugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
-        herramientas.dibujarHerramientas();
+        panelHerramientas.dibujarHerramientas();
     }
 
 }

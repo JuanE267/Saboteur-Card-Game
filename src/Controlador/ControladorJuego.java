@@ -36,6 +36,7 @@ public class ControladorJuego {
         if (this.turno == juego.getJugadores().size() - 1) this.turno = 0;
         else this.turno++;
         ventana.actualizarTurno();
+        juego.notificarObservers();
     }
 
     public void verificarSiTerminoLaRonda() {
@@ -84,6 +85,7 @@ public class ControladorJuego {
             juego.reiniciarRonda(juego.getRondaActual());
             //reinicio la vista
             ventana.reiniciarVista();
+            juego.notificarObservers();
             juego.pasarRonda();
         }else {
 
@@ -137,6 +139,7 @@ public class ControladorJuego {
             }
 
         }
+        juego.notificarObservers();
         return pudoSerJugado;
     }
 
@@ -157,10 +160,12 @@ public class ControladorJuego {
                 actual.getManoCartas().add(nuevaCarta);
             }
         }
+        juego.notificarObservers();
     }
 
     public void descartarCarta(Carta carta) {
         getJugadorActual().descartarCarta(carta);
+        juego.notificarObservers();
     }
 
     public void tomarCartaDeMazo() {
@@ -170,6 +175,7 @@ public class ControladorJuego {
         } else {
             System.out.println("ya tienes el maximo (8) de cartas");
         }
+        juego.notificarObservers();
     }
 
     public Boolean esTurnoDe(Jugador jugador){

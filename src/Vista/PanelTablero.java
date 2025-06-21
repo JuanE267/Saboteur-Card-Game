@@ -7,6 +7,8 @@ import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.TipoAccion;
 import Modelo.Tablero;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelTablero extends JPanel {
+public class PanelTablero extends JPanel  implements Observer {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
@@ -34,7 +36,6 @@ public class PanelTablero extends JPanel {
         setBorder(new EmptyBorder(0, 200, 0, 400));
 
         dibujarTablero();
-
 
     }
 
@@ -70,7 +71,7 @@ public class PanelTablero extends JPanel {
                         if (destino instanceof CartaDestino) {
                             javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                                 ((CartaDestino) destino).girar();
-                                dibujarTablero();
+                                actualizar();
                                 controlador.pasarTurno();
 
                             });
@@ -89,8 +90,6 @@ public class PanelTablero extends JPanel {
         panelJugador.resetCartaSeleccionada();
         panelJugador.revalidate();
         panelJugador.repaint();
-        panelJugador.dibujarManoDeCartas();
-        dibujarTablero();
 
         // despues de actualizar todo en el jugador, paso el turno
         if (pudoSerJugado) {
@@ -159,4 +158,8 @@ public class PanelTablero extends JPanel {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarTablero();
+    }
 }

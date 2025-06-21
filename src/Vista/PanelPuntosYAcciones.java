@@ -2,12 +2,14 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
+import Observer.Observable;
+import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class PanelPuntosYAcciones extends JPanel {
+public class PanelPuntosYAcciones extends JPanel  implements Observer {
 
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
@@ -82,7 +84,6 @@ public class PanelPuntosYAcciones extends JPanel {
                 panelJugador.resetCartaSeleccionada();
                 panelJugador.revalidate();
                 panelJugador.repaint();
-                panelJugador.dibujarManoDeCartas();
                 controlador.verificarSiTerminoLaRonda();
                 controlador.pasarTurno();
             }else{
@@ -95,4 +96,8 @@ public class PanelPuntosYAcciones extends JPanel {
         JOptionPane.showMessageDialog(this,"No es tu turno!");
     }
 
+    @Override
+    public void actualizar() {
+        dibujarPanel();
+    }
 }
