@@ -13,10 +13,12 @@ public class Juego {
     private Tablero tablero;
     private List<Rol> roles;
     private int turnoInicial;
+    private int ronda;
 
     public Juego(){
         this.tablero = new Tablero();
         this.mazo = new Mazo();
+        ronda = 1;
 
         //HARDCODEEEEEE
         List<Jugador> jugadores = new ArrayList<>();
@@ -223,5 +225,13 @@ public class Juego {
         asignarRoles();
         mazo.repartirCartas(jugadores);
 
+    }
+
+    public int getRondaActual() {
+        return ronda;
+    }
+
+    public void pasarRonda() {
+        ronda += 1;
     }
 }

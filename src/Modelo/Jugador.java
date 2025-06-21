@@ -26,7 +26,7 @@ public class Jugador {
     }
 
     // jugar tunel
-    public boolean jugarCarta(Tablero tablero,int x, int y, Carta carta) {
+    public boolean jugarCarta(Tablero tablero, int x, int y, Carta carta) {
         if (puedeConstruir()) {
             return tablero.colocarCarta((CartaTunel) carta, x, y);
         }
@@ -49,7 +49,7 @@ public class Jugador {
     }
 
     // descartar carta\
-    public Boolean descartarCarta(Carta carta){
+    public Boolean descartarCarta(Carta carta) {
         return manoCartas.remove(carta);
     }
 
@@ -69,7 +69,7 @@ public class Jugador {
         this.rol = rol;
     }
 
-    public List<Carta>  getManoCartas() {
+    public List<Carta> getManoCartas() {
         return manoCartas;
     }
 
@@ -85,7 +85,7 @@ public class Jugador {
         this.herramientasRotas = herramientasRotas;
     }
 
-    public void reiniciarEstado(){
+    public void reiniciarEstado() {
         manoCartas.clear();
         herramientasRotas.clear();
     }
@@ -108,6 +108,10 @@ public class Jugador {
 
     public void setPuntaje(int puntaje) {
         this.puntaje = puntaje;
+    }
+
+    public void sumarPuntos(int puntos) {
+        puntaje += puntos;
     }
 }
 

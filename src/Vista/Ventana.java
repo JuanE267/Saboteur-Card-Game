@@ -31,9 +31,15 @@ public class Ventana extends JFrame {
     }
 
     public void reiniciarVista() {
-
         removeAll();
-        inicializarVentana();
+        if (controlador.getGanador() != null) {
+            JOptionPane.showMessageDialog(this, "El ganador es: " + controlador.getGanador().getNombre() +
+                                                                        "\n con un puntaje de: " + controlador.getGanador().getPuntaje());
+            System.exit(0);
+        } else {
+            inicializarVentana();
+        }
+
     }
 
     public void inicializarVentana() {

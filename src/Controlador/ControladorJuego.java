@@ -4,6 +4,7 @@ import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
+import Modelo.Enums.Rol;
 import Modelo.Juego;
 import Modelo.Jugador;
 import Modelo.Tablero;
@@ -17,8 +18,8 @@ public class ControladorJuego {
 
     private Juego juego;
     private Ventana ventana;
+    private Jugador ganador;
     private int turno;
-    private int ronda = 1;
 
     public ControladorJuego(Juego juego, Ventana ventana) {
         this.juego = juego;
@@ -51,9 +52,26 @@ public class ControladorJuego {
 
         if(ganaronLosMineros){
             mensajeGanador = "GANARON LOS MINEROS";
+
+            for(Jugador j : juego.getJugadores()){
+                if(j.getRol() == Rol.MINERO){
+                    j.sumarPuntos(4);
+                }else{
+                    j.sumarPuntos(3);
+                }
+            }
         }else{
             mensajeGanador = "GANARON LOS SABOTEADORES";
+
+            for(Jugador j : juego.getJugadores()){
+                if(j.getRol() == Rol.SABOTEADOR){
+                    j.sumarPuntos(4);
+                }else{
+                    j.sumarPuntos(3);
+                }
+            }
         }
+
 
         System.out.println(mensajeGanador);
         System.out.println("Se revelan los roles..");
@@ -61,14 +79,21 @@ public class ControladorJuego {
             System.out.println(j.getNombre() +" -> "+ j.getRol());
         }
 
-        if(ronda <= 3) {
+        if(juego.getRondaActual() <= 3) {
             // reinicio el estado logico
-            juego.reiniciarRonda(ronda);
+            juego.reiniciarRonda(juego.getRondaActual());
             //reinicio la vista
             ventana.reiniciarVista();
-            ronda++;
+            juego.pasarRonda();
         }else {
-            System.out.println("termino el juego");
+
+            Jugador mayorPuntaje = juego.getJugadores().getFirst();
+            for(Jugador j : juego.getJugadores()){
+                    if(j.getPuntaje() > mayorPuntaje.getPuntaje()){
+                        mayorPuntaje = j;
+                    }
+            }
+            ganador = mayorPuntaje;
         }
     }
 
@@ -157,5 +182,9 @@ public class ControladorJuego {
 
     public Tablero getTablero() {
         return juego.getTablero();
+    }
+
+    public Jugador getGanador(){
+        return ganador;
     }
 }
