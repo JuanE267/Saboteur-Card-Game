@@ -38,108 +38,109 @@ public class PanelTablaJugadores extends JPanel  implements Observer {
     private void dibujarListaJugadores() {
 
         removeAll();
-        for (Jugador j : juego.getJugadores()) {
+        for (Jugador j : controlador.getJugadores()) {
+            if(j != panelJugador.getJugador()) {
+                JPanel jugadorTabla = new JPanel();
+                jugadorTabla.setLayout(new GridLayout(2, 1));
+                jugadorTabla.setBackground(Color.WHITE);
 
-            JPanel jugadorTabla = new JPanel();
-            jugadorTabla.setLayout(new GridLayout(2,1));
-            jugadorTabla.setBackground(Color.WHITE);
+                // nombre
+                JLabel nombre = new JLabel(j.getNombre());
+                nombre.setFont(new Font("Arial", Font.BOLD, 20));
+                nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            // nombre
-            JLabel nombre = new JLabel(j.getNombre());
-            nombre.setFont(new Font("Arial", Font.BOLD, 20));
-            nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+                // listado de herramientas
+                JPanel herramientas = new JPanel();
+                herramientas.setLayout(new FlowLayout());
 
-            // listado de herramientas
-            JPanel herramientas = new JPanel();
-            herramientas.setLayout(new FlowLayout());
+                // label para cada herr
+                HerramientaTabla pico = new HerramientaTabla(j);
+                HerramientaTabla vagoneta = new HerramientaTabla(j);
+                HerramientaTabla linterna = new HerramientaTabla(j);
 
-            // label para cada herr
-            HerramientaTabla pico = new HerramientaTabla(j);
-            HerramientaTabla vagoneta = new HerramientaTabla(j);
-            HerramientaTabla  linterna = new HerramientaTabla(j);
+                pico.setSize(new Dimension(100, 100));
+                vagoneta.setSize(new Dimension(100, 100));
+                linterna.setSize(new Dimension(100, 100));
 
-            pico.setSize(new Dimension(100, 100));
-            vagoneta.setSize(new Dimension(100, 100));
-            linterna.setSize(new Dimension(100, 100));
+                String picoSano = "herramientas/PICO SANO.png";
+                String vagonetaSana = "herramientas/VAGONETA SANA.png";
+                String linternaSana = "herramientas/LINTERNA SANA.png";
 
-            String picoSano = "herramientas/PICO SANO.png";
-            String vagonetaSana = "herramientas/VAGONETA SANA.png";
-            String linternaSana = "herramientas/LINTERNA SANA.png";
+                String picoRoto = "herramientas/PICO ROTO.png";
+                String vagonetaRota = "herramientas/VAGONETA ROTA.png";
+                String linternaRota = "herramientas/LINTERNA ROTA.png";
 
-            String picoRoto = "herramientas/PICO ROTO.png";
-            String vagonetaRota = "herramientas/VAGONETA ROTA.png";
-            String linternaRota = "herramientas/LINTERNA ROTA.png";
+                List<Herramienta> herramientasRotas = j.getHerramientasRotas();
 
-            List<Herramienta> herramientasRotas = j.getHerramientasRotas();
+                URL urlPico = getClass().getClassLoader().getResource(picoSano);
+                URL urlVagoneta = getClass().getClassLoader().getResource(vagonetaSana);
+                URL urlLinterna = getClass().getClassLoader().getResource(linternaSana);
 
-            URL urlPico = getClass().getClassLoader().getResource(picoSano);
-            URL urlVagoneta = getClass().getClassLoader().getResource(vagonetaSana);
-            URL urlLinterna = getClass().getClassLoader().getResource(linternaSana);
+                for (Herramienta herr : herramientasRotas) {
+                    if (herr == Herramienta.PICO) {
+                        urlPico = getClass().getClassLoader().getResource(picoRoto);
+                    }
 
-            for (Herramienta herr : herramientasRotas) {
-                if (herr == Herramienta.PICO) {
-                    urlPico = getClass().getClassLoader().getResource(picoRoto);
+                    if (herr == Herramienta.VAGONETA) {
+                        urlVagoneta = getClass().getClassLoader().getResource(vagonetaRota);
+                    }
+
+                    if (herr == Herramienta.LINTERNA) {
+                        urlLinterna = getClass().getClassLoader().getResource(linternaRota);
+                    }
                 }
 
-                if (herr == Herramienta.VAGONETA) {
-                    urlVagoneta = getClass().getClassLoader().getResource(vagonetaRota);
-                }
+                pico.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            herramientaEsPresionada(pico);
+                        } else {
+                            mensajeNoEsTuTurno();
+                        }
+                    }
+                });
 
-                if (herr == Herramienta.LINTERNA) {
-                    urlLinterna = getClass().getClassLoader().getResource(linternaRota);
-                }
+                vagoneta.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            herramientaEsPresionada(vagoneta);
+                        } else {
+                            mensajeNoEsTuTurno();
+                        }
+                    }
+                });
+
+                linterna.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            herramientaEsPresionada(linterna);
+                        } else {
+                            mensajeNoEsTuTurno();
+                        }
+                    }
+                });
+
+                setImagen(pico, urlPico);
+                setImagen(vagoneta, urlVagoneta);
+                setImagen(linterna, urlLinterna);
+
+                herramientas.add(pico);
+                herramientas.add(vagoneta);
+                herramientas.add(linterna);
+
+                //----
+                jugadorTabla.add(nombre);
+                jugadorTabla.add(herramientas);
+                add(jugadorTabla);
             }
-
-            pico.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        herramientaEsPresionada(pico);
-                    } else {
-                        mensajeNoEsTuTurno();
-                    }
-                }
-            });
-
-            vagoneta.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        herramientaEsPresionada(vagoneta);
-                    } else {
-                        mensajeNoEsTuTurno();
-                    }
-                }
-            });
-
-            linterna.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        herramientaEsPresionada(linterna);
-                    } else {
-                        mensajeNoEsTuTurno();
-                    }
-                }
-            });
-
-            setImagen(pico, urlPico);
-            setImagen(vagoneta, urlVagoneta);
-            setImagen(linterna, urlLinterna);
-
-            herramientas.add(pico);
-            herramientas.add(vagoneta);
-            herramientas.add(linterna);
-
-            //----
-            jugadorTabla.add(nombre);
-            jugadorTabla.add(herramientas);
-            add(jugadorTabla);
         }
 
     }

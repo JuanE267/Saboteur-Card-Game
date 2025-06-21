@@ -160,6 +160,5 @@ public class PanelHerramientas extends JPanel implements Observer {
     @Override
     public void actualizar() {
         dibujarHerramientas();
-
     }
 }

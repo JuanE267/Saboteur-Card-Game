@@ -11,7 +11,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PanelTomarCarta extends JPanel  implements Observer {
+public class PanelTomarCarta extends JPanel implements Observer {
 
 
     private PanelJugador panelJugador;
@@ -26,17 +26,16 @@ public class PanelTomarCarta extends JPanel  implements Observer {
     }
 
     public void dibujarPanel() {
-
         removeAll();
 
         JButton tomarCarta = new JButton();
 
         String rutaImagen = "";
         if (controlador.getJuego().getMazo().getPrimerCarta() instanceof CartaTunel) {
-                rutaImagen = "dorsos/dorso tunel.png";
+            rutaImagen = "dorsos/dorso tunel.png";
 
         } else {
-                rutaImagen = "dorsos/dorso accion.png";
+            rutaImagen = "dorsos/dorso accion.png";
         }
 
         URL url = getClass().getClassLoader().getResource(rutaImagen);
@@ -56,22 +55,22 @@ public class PanelTomarCarta extends JPanel  implements Observer {
     }
 
     private void comportamientoTomarCarta(JButton tomarCarta) {
-        tomarCarta.addActionListener(e ->{
-            if(controlador.esTurnoDe(panelJugador.getJugador())) {
-            controlador.tomarCartaDeMazo();
-            panelJugador.revalidate();
-            panelJugador.repaint();
-            panelJugador.dibujarManoDeCartas();
-            dibujarPanel();
-            controlador.pasarTurno();}
-            else{
+        tomarCarta.addActionListener(e -> {
+            if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                controlador.tomarCartaDeMazo();
+                panelJugador.revalidate();
+                panelJugador.repaint();
+                panelJugador.dibujarManoDeCartas();
+                dibujarPanel();
+                controlador.pasarTurno();
+            } else {
                 mensajeNoEsTuTurno();
             }
         });
     }
 
-    public void mensajeNoEsTuTurno(){
-        JOptionPane.showMessageDialog(this,"No es tu turno!");
+    public void mensajeNoEsTuTurno() {
+        JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
     @Override

@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Modelo.Cartas.Carta;
+import Modelo.Cartas.CartaAccion;
+import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Rol;
+import Modelo.Enums.TipoAccion;
 import Observer.Observable;
 
 public class Juego extends Observable {
@@ -15,6 +19,7 @@ public class Juego extends Observable {
     private List<Rol> roles;
     private int turnoInicial;
     private int ronda;
+    private int turno;
 
     public Juego(){
         this.tablero = new Tablero();
@@ -31,6 +36,8 @@ public class Juego extends Observable {
 
 
         asignoPrimerTurno(1);
+        this.turno = turnoInicial;
+
         // asigno los roles y reparto las cartas
         asignarRoles();
         mazo.repartirCartas(jugadores);
@@ -193,6 +200,85 @@ public class Juego extends Observable {
     }
 }
 
+    public void pasarTurno(){
+        if (this.turno == jugadores.size() - 1) this.turno = 0;
+        else this.turno++;
+        notificarObservers();
+    }
+
+    public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo){
+
+        Carta carta = getJugadorActual().elegirCarta(posCarta);
+        Jugador actual = getJugadorActual();
+        Boolean pudoSerJugado = false;
+
+        // dependiendo el tipo de la carta juego de cierta manera
+        if (carta instanceof CartaTunel) {
+            pudoSerJugado = actual.jugarCarta(tablero, x, y, carta);
+
+            // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
+            if (pudoSerJugado) {
+                actual.getManoCartas().remove(posCarta);
+                // tomo una nueva si el mazo no esta vacio
+                if (!mazo.noHayCartas()) {
+                    Carta nuevaCarta = mazo.tomarCarta();
+                    actual.getManoCartas().add(nuevaCarta);
+                }
+            }
+
+        } else if (carta instanceof CartaAccion) {
+            if (((CartaAccion) carta).getTipoAccion().size() == 1) {
+                pudoSerJugado = actual.jugarCartaMapaDerrumbe(tablero, x, y, carta);
+
+                if (pudoSerJugado) {
+
+                    // despues de jugar elimino la carta de la mano
+                    actual.getManoCartas().remove(posCarta);
+
+                    // tomo una nueva si el mazo no esta vacio
+                    if (!mazo.noHayCartas()) {
+                        Carta nuevaCarta = mazo.tomarCarta();
+                        actual.getManoCartas().add(nuevaCarta);
+                    }
+                }
+
+            }
+
+        }
+        notificarObservers();
+        return pudoSerJugado;
+    }
+
+    public void jugarHerramienta(int posCarta, Jugador objetivo) {
+
+        Carta carta = getJugadorActual().elegirCarta(posCarta);
+        Jugador actual = getJugadorActual();
+
+        if (carta instanceof CartaAccion) {
+
+                actual.jugarCarta(objetivo, carta);
+            // despues de jugar elimino la carta de la mano
+            actual.getManoCartas().remove(posCarta);
+
+            // tomo una nueva si el mazo no esta vacio
+            if (!mazo.noHayCartas()) {
+                Carta nuevaCarta = mazo.tomarCarta();
+                actual.getManoCartas().add(nuevaCarta);
+            }
+        }
+        notificarObservers();
+    }
+
+    public void tomarCartaDeMazo() {
+        if (getJugadorActual().getManoCartas().size() < 8) {
+            Carta nuevaCarta = mazo.tomarCarta();
+            getJugadorActual().getManoCartas().add(nuevaCarta);
+        } else {
+            System.out.println("ya tienes el maximo (8) de cartas");
+        }
+        notificarObservers();
+    }
+
     public int getTurnoInicial() {
         return turnoInicial;
     }
@@ -203,6 +289,10 @@ public class Juego extends Observable {
 
     public List<Jugador> getJugadores() {
         return jugadores;
+    }
+
+    public Jugador getJugadorActual() {
+        return jugadores.get(this.turno);
     }
 
     public void setJugadores(List<Jugador> jugadores) {
@@ -234,5 +324,13 @@ public class Juego extends Observable {
 
     public void pasarRonda() {
         ronda += 1;
+    }
+
+    public boolean hayCaminoHastaOro() {
+        return tablero.hayCaminoHastaOro();
+    }
+
+    public boolean noHayCartas() {
+        return mazo.noHayCartas();
     }
 }

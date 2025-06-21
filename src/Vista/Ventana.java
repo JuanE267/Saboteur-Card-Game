@@ -3,11 +3,12 @@ package Vista;
 import Controlador.ControladorJuego;
 import Modelo.Juego;
 import Modelo.Jugador;
+import Observer.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Ventana extends JFrame {
+public class Ventana extends JFrame implements Observer {
     private ControladorJuego controlador;
     private PanelTablero panelTablero;
     private PanelJugador panelJugador;
@@ -18,8 +19,8 @@ public class Ventana extends JFrame {
     JPanel contenedorJugador;
     JLabel turnoActual;
 
-    public Ventana(Juego juego) {
-        this.controlador = new ControladorJuego(juego, this);
+    public Ventana(ControladorJuego controlador) {
+        this.controlador = controlador;
         setTitle("Saboteur - Juan Espinosa");
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -27,22 +28,19 @@ public class Ventana extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
 
+        // label que muestra el turno actual
+        turnoActual = new JLabel();
+        turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
+        turnoActual.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+        turnoActual.setText("Es el Turno de: " + controlador.getJugadorActual().getNombre());
+        add(turnoActual, BorderLayout.NORTH);
+
         inicializarVentana();
     }
 
-    public void reiniciarVista() {
-        removeAll();
-        if (controlador.getGanador() != null) {
-            JOptionPane.showMessageDialog(this, "El ganador es: " + controlador.getGanador().getNombre() +
-                                                                        "\n con un puntaje de: " + controlador.getGanador().getPuntaje());
-            System.exit(0);
-        } else {
-            inicializarVentana();
-        }
-
-    }
 
     public void inicializarVentana() {
+
 
         // contiene las cartas, puntos y las herramientas del jugador
         contenedorJugador = new JPanel();
@@ -59,17 +57,12 @@ public class Ventana extends JFrame {
 
         panelHerramientas = new PanelHerramientas(panelJugador, controlador);
 
-        contenedorJugador.add(puntosYAcciones);
+        contenedorJugador.add(panelPuntosYAcciones);
         contenedorJugador.add(panelJugador);
         contenedorJugador.add(panelTomarCarta);
-        contenedorJugador.add(herramientas);
+        contenedorJugador.add(panelHerramientas);
 
-        // label que muestra el turno actual
-        turnoActual = new JLabel();
-        turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
-        turnoActual.setHorizontalAlignment(SwingConstants.HORIZONTAL);
-        turnoActual.setText("Es el Turno de: " + controlador.getJugadorActual().getNombre());
-        add(turnoActual, BorderLayout.NORTH);
+
 
         // contiene el mapa con las cartas
         panelTablero = new PanelTablero(panelJugador, controlador);
@@ -95,4 +88,15 @@ public class Ventana extends JFrame {
         panelHerramientas.dibujarHerramientas();
     }
 
+    @Override
+    public void actualizar() {
+        actualizarTurno();
+        if (controlador.getGanador() != null) {
+            JOptionPane.showMessageDialog(this, "El ganador es: " + controlador.getGanador().getNombre() +
+                    "\n con un puntaje de: " + controlador.getGanador().getPuntaje());
+            System.exit(0);
+        }else{
+            inicializarVentana();
+        }
+    }
 }

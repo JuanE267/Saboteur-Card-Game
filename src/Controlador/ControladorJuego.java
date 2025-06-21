@@ -17,32 +17,20 @@ import java.util.List;
 public class ControladorJuego {
 
     private Juego juego;
-    private Ventana ventana;
     private Jugador ganador;
-    private int turno;
 
-    public ControladorJuego(Juego juego, Ventana ventana) {
+    public ControladorJuego(Juego juego) {
         this.juego = juego;
-        this.turno = juego.getTurnoInicial();
-        this.ventana = ventana;
-    }
-
-
-    public Jugador getJugadorActual() {
-        return juego.getJugadores().get(this.turno);
     }
 
     public void pasarTurno() {
-        if (this.turno == juego.getJugadores().size() - 1) this.turno = 0;
-        else this.turno++;
-        ventana.actualizarTurno();
-        juego.notificarObservers();
+       juego.pasarTurno();
     }
 
     public void verificarSiTerminoLaRonda() {
-         if(juego.getTablero().hayCaminoHastaOro()){
+         if(juego.hayCaminoHastaOro()){
             finalizarRonda(true);
-         }else if(juego.getMazo().noHayCartas()){
+         }else if(juego.noHayCartas()){
              finalizarRonda(false);
          }
     }
@@ -84,7 +72,6 @@ public class ControladorJuego {
             // reinicio el estado logico
             juego.reiniciarRonda(juego.getRondaActual());
             //reinicio la vista
-            ventana.reiniciarVista();
             juego.notificarObservers();
             juego.pasarRonda();
         }else {
@@ -100,67 +87,16 @@ public class ControladorJuego {
     }
 
 
-    public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) {
-
-        Carta carta = getJugadorActual().elegirCarta(posCarta);
-        Jugador actual = getJugadorActual();
-        Boolean pudoSerJugado = false;
-
-        // dependiendo el tipo de la carta juego de cierta manera
-        if (carta instanceof CartaTunel) {
-            pudoSerJugado = actual.jugarCarta(juego.getTablero(), x, y, carta);
-
-            // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
-            if (pudoSerJugado) {
-                actual.getManoCartas().remove(posCarta);
-                // tomo una nueva si el mazo no esta vacio
-                if (!juego.getMazo().noHayCartas()) {
-                    Carta nuevaCarta = juego.getMazo().tomarCarta();
-                    actual.getManoCartas().add(nuevaCarta);
-                }
-            }
-
-        } else if (carta instanceof CartaAccion) {
-            if (((CartaAccion) carta).getTipoAccion().size() == 1) {
-                pudoSerJugado = actual.jugarCartaMapaDerrumbe(juego.getTablero(), x, y, carta);
-
-                if (pudoSerJugado) {
-
-                // despues de jugar elimino la carta de la mano
-                actual.getManoCartas().remove(posCarta);
-
-                // tomo una nueva si el mazo no esta vacio
-                if (!juego.getMazo().noHayCartas()) {
-                    Carta nuevaCarta = juego.getMazo().tomarCarta();
-                    actual.getManoCartas().add(nuevaCarta);
-                }
-                }
-
-            }
-
-        }
-        juego.notificarObservers();
-        return pudoSerJugado;
+    public Boolean jugarUnaCarta(int x, int y, int posCarta, Jugador objetivo) {
+        return juego.jugarCarta(x, y, posCarta, objetivo);
     }
 
     public void jugarHerramienta(int posCarta, Jugador objetivo) {
+        juego.jugarHerramienta(posCarta, objetivo);
+    }
 
-        Carta carta = getJugadorActual().elegirCarta(posCarta);
-        Jugador actual = getJugadorActual();
-
-        if (carta instanceof CartaAccion) {
-            actual.jugarCarta(objetivo, carta);
-
-            // despues de jugar elimino la carta de la mano
-            actual.getManoCartas().remove(posCarta);
-
-            // tomo una nueva si el mazo no esta vacio
-            if (!juego.getMazo().noHayCartas()) {
-                Carta nuevaCarta = juego.getMazo().tomarCarta();
-                actual.getManoCartas().add(nuevaCarta);
-            }
-        }
-        juego.notificarObservers();
+    public Jugador getJugadorActual() {
+        return juego.getJugadorActual();
     }
 
     public void descartarCarta(Carta carta) {
@@ -169,13 +105,7 @@ public class ControladorJuego {
     }
 
     public void tomarCartaDeMazo() {
-        if (getJugadorActual().getManoCartas().size() < 8) {
-            Carta nuevaCarta = juego.getMazo().tomarCarta();
-            getJugadorActual().getManoCartas().add(nuevaCarta);
-        } else {
-            System.out.println("ya tienes el maximo (8) de cartas");
-        }
-        juego.notificarObservers();
+        juego.tomarCartaDeMazo();
     }
 
     public Boolean esTurnoDe(Jugador jugador){
@@ -192,5 +122,13 @@ public class ControladorJuego {
 
     public Jugador getGanador(){
         return ganador;
+    }
+
+    public void agregarObserver(Ventana ventana) {
+        juego.agregarObserver(ventana);
+    }
+
+    public List<Jugador> getJugadores() {
+        return juego.getJugadores();
     }
 }

@@ -51,7 +51,7 @@ public class PanelTablero extends JPanel  implements Observer {
 
             //si es de tipo tunel
             if (cartaAJugar instanceof CartaTunel) {
-                pudoSerJugado = controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                pudoSerJugado = controlador.jugarUnaCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
                 if (!pudoSerJugado) {
                     JOptionPane.showMessageDialog(this, "La carta no coincide con ninguno de los tuneles");
                 }
@@ -61,7 +61,7 @@ public class PanelTablero extends JPanel  implements Observer {
                 // juego la carta si es derrumbre o mapa
 
                 if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA || ((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.DERRUMBAR) {
-                    pudoSerJugado = controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                    pudoSerJugado = controlador.jugarUnaCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
                     if (!pudoSerJugado) {
                         JOptionPane.showMessageDialog(this, "No puede jugar sobre esta carta!");
                     }
@@ -88,8 +88,6 @@ public class PanelTablero extends JPanel  implements Observer {
         }
         // reseteo todo despues de jugar la carta
         panelJugador.resetCartaSeleccionada();
-        panelJugador.revalidate();
-        panelJugador.repaint();
 
         // despues de actualizar todo en el jugador, paso el turno
         if (pudoSerJugado) {
@@ -102,9 +100,7 @@ public class PanelTablero extends JPanel  implements Observer {
 
     public void dibujarTablero() {
 
-        // elimino lo existente
         removeAll();
-
         List<Casillero> listaCasilleros = new ArrayList<>();
         for (int i = 0; i < tablero.getAlto(); i++) {
             for (int j = 0; j < tablero.getAncho(); j++) {
@@ -136,8 +132,6 @@ public class PanelTablero extends JPanel  implements Observer {
                 add(casillero);
             }
         }
-        revalidate();
-        repaint();
 
         for (Casillero c : listaCasilleros) {
             c.addMouseListener(new MouseAdapter() {
