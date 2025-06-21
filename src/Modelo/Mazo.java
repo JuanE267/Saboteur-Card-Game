@@ -95,7 +95,7 @@ public class Mazo {
         //tunel derecha
         cantCartas++;
         carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "tuneles/DERECHA.png", false);
-        carta.setCaminos(false, false, true, false);
+        carta.setCaminos(false, false, false, true);
         agregarCartaAlMazo(carta);
 
         // CARTAS ACCION

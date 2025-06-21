@@ -37,8 +37,8 @@ public class Jugador {
         ((CartaAccion) carta).jugarCarta(afectado);
     }
 
-    // jugar mapa
-    public void jugarCartaMapa(Tablero tablero, int x, int y, Carta carta) {
+    // jugar mapa o derrumbe
+    public void jugarCartaMapaDerrumbe(Tablero tablero, int x, int y, Carta carta) {
         ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 

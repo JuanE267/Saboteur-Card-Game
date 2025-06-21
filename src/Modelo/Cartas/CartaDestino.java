@@ -8,12 +8,19 @@ public class CartaDestino extends Carta {
     private int oroX;
     private int oroY;
     private String dorso;
-
+    private String cara;
 
     public CartaDestino(int id, TipoCarta tipo, String img, String dorso, boolean esOro) {
         super(id, tipo, img);
         this.esOro = esOro;
         this.dorso = dorso;
+        cara = this.getImg();
+        this.setImg(dorso);
+    }
+
+    public void girar(){
+        if(this.getImg().equals(dorso)) setImg(cara);
+        else setImg(dorso);
     }
 
     public boolean getEsOro() {
@@ -38,5 +45,9 @@ public class CartaDestino extends Carta {
 
     public String getDorso() {
         return dorso;
+    }
+
+    public String getCara() {
+        return cara;
     }
 }

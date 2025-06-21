@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class Ventana extends JFrame{
    private ControladorJuego controlador;
-   private PanelTablero tablero;
-   private PanelJugador jugador;
+   private PanelTablero panelTablero;
+   private PanelJugador panelJugador;
 
    public Ventana(Juego juego){
       this.controlador = new ControladorJuego(juego);
@@ -20,11 +20,26 @@ public class Ventana extends JFrame{
       setResizable(false);
       setLayout(new BorderLayout());
 
-      PanelTablero tablero = new PanelTablero(juego.getTablero(), jugador);
-      add(tablero, BorderLayout.CENTER);
+      JPanel contenedorJugador = new JPanel();
+      contenedorJugador.setLayout(new BoxLayout(contenedorJugador, BoxLayout.LINE_AXIS));
+      add(contenedorJugador, BorderLayout.SOUTH);
 
-      PanelJugador jugador = new PanelJugador(controlador.getJugadorActual(), tablero);
-      add(jugador, BorderLayout.SOUTH);
+      PanelPuntos puntos = new PanelPuntos();
+      contenedorJugador.add(puntos);
+
+      PanelJugador panelJugador = new PanelJugador(controlador.getJugadorActual());
+      contenedorJugador.add(panelJugador);
+
+      PanelHerramientas herramientas = new PanelHerramientas();
+      contenedorJugador.add(herramientas);
+
+      PanelTablero panelTablero = new PanelTablero(panelJugador, controlador);
+      add(panelTablero, BorderLayout.CENTER);
+
+      PanelJugadores panelJugadores = new PanelJugadores(panelJugador, controlador);
+      add(panelJugadores, BorderLayout.WEST);
+
+
 
 
 

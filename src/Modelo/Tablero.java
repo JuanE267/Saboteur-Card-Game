@@ -20,7 +20,6 @@ public class Tablero {
     private int ancho = 15;
     private int alto = 9;
     private final Carta[][] cuadricula = new Carta[alto][ancho];
-    private Map<String, Jugador> jugadores;
     private int xInicio;
     private int yInicio;
     private int xOro;
@@ -178,32 +177,13 @@ public class Tablero {
     }
 
 
-    public int getxInicio() {
-        return xInicio;
-    }
-
-    public int getyInicio() {
-        return yInicio;
-    }
-
     public int getAncho() {
         return ancho;
     }
 
-    public void setAncho(int ancho) {
-        this.ancho = ancho;
-    }
 
     public int getAlto() {
         return alto;
-    }
-
-    public void setAlto(int alto) {
-        this.alto = alto;
-    }
-
-    public Map<String, Jugador> getJugadores() {
-        return jugadores;
     }
 
     public Carta[][] getCuadricula() {

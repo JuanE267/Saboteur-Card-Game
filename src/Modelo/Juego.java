@@ -12,10 +12,31 @@ public class Juego {
     private Mazo mazo;
     private Tablero tablero;
     private List<Rol> roles;
+    private int turnoInicial;
 
     public Juego(){
         this.tablero = new Tablero();
         this.mazo = new Mazo();
+
+        //HARDCODEEEEEE
+        List<Jugador> jugadores = new ArrayList<>();
+        jugadores.add(new Jugador("JUAN", 1));
+        jugadores.add(new Jugador("PEPITO", 2));
+        jugadores.add(new Jugador("MARIA", 3));
+        jugadores.add(new Jugador("FRANCIA", 4));
+        setJugadores(jugadores);
+        // el jugador en empezar es el de mayor edad
+        Jugador mayorEdad = getJugadores().getFirst();
+        for (Jugador j : getJugadores()) {
+            if (j.getEdad() > mayorEdad.getEdad()) {
+                mayorEdad = j;
+            }
+        }
+        turnoInicial = jugadores.indexOf(mayorEdad);
+
+        // asigno los roles y reparto las cartas
+        asignarRoles();
+        getMazo().repartirCartas(jugadores);
     }
 
     public Tablero getTablero() {
@@ -154,17 +175,12 @@ public class Juego {
     }
 }
 
-
-    public void setTablero(Tablero tablero) {
-        this.tablero = tablero;
+    public int getTurnoInicial() {
+        return turnoInicial;
     }
 
     public Mazo getMazo() {
         return mazo;
-    }
-
-    public void setMazo(Mazo mazo) {
-        this.mazo = mazo;
     }
 
     public List<Jugador> getJugadores() {

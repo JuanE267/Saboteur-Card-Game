@@ -3,6 +3,7 @@ package Modelo.Cartas;
 import Modelo.Enums.Direccion;
 import Modelo.Enums.TipoCarta;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,9 @@ public class CartaTunel extends Carta {
         }
     }
 
-
+    public void setEstaDerrumbada(Boolean derrumbada){
+        this.estaDerrumbada = derrumbada;
+    }
     public void setCaminos(boolean arriba, boolean abajo,
                            boolean izquierda, boolean derecha) {
         this.caminos.put(Direccion.ARRIBA, arriba);

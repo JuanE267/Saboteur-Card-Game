@@ -2,9 +2,11 @@ package Controlador;
 
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
+import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Juego;
 import Modelo.Jugador;
+import Modelo.Tablero;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +19,7 @@ public class ControladorJuego {
     public ControladorJuego(Juego juego) {
 
         this.juego = juego;
-
-        //HARDCODEEEEEE
-        List<Jugador> jugadore = new ArrayList<>();
-        jugadore.add(new Jugador("juan",1));
-        juego.setJugadores(jugadore);
-        // el jugador en empezar es el de mayor edad
-        Jugador mayorEdad = juego.getJugadores().getFirst();
-        for (Jugador j : juego.getJugadores()) {
-            if (j.getEdad() > mayorEdad.getEdad()) {
-                mayorEdad = j;
-            }
-        }
-        this.turno = jugadore.indexOf(mayorEdad);
-
-        // asigno los roles y reparto las cartas
-        this.juego.asignarRoles();
-        this.juego.getMazo().repartirCartas(jugadore);
+        this.turno = juego.getTurnoInicial();
     }
 
 
@@ -46,38 +32,61 @@ public class ControladorJuego {
         else this.turno++;
     }
 
-    public boolean TerminarRonda() {
-        return juego.getTablero().hayCaminoHastaOro() || jugadoresSinCartas();
+    public boolean terminarRonda() {
+        return juego.getTablero().hayCaminoHastaOro() || juego.getMazo().noHayCartas();
     }
 
     public void jugarCarta(int x, int y, int posCarta, Jugador objetivo) {
 
         Carta carta = getJugadorActual().elegirCarta(posCarta);
         Jugador actual = getJugadorActual();
+        Boolean tunelPudoSerJugado = false;
 
         // dependiendo el tipo de la carta juego de cierta manera
-        if (carta instanceof CartaTunel) actual.jugarCarta(juego.getTablero(), x, y, carta);
-        else if (carta instanceof CartaAccion) {
+        if (carta instanceof CartaTunel) {
+            tunelPudoSerJugado = actual.jugarCarta(juego.getTablero(), x, y, carta);
+
+            // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
+            if (tunelPudoSerJugado) {
+                actual.getManoCartas().remove(posCarta);
+                // tomo una nueva si el mazo no esta vacio
+                if (!juego.getMazo().noHayCartas()) {
+                    Carta nuevaCarta = juego.getMazo().tomarCarta();
+                    actual.getManoCartas().add(nuevaCarta);
+                }
+            }
+
+        } else if (carta instanceof CartaAccion) {
             if (((CartaAccion) carta).getTipoAccion().size() == 1) {
-                actual.jugarCartaMapa(juego.getTablero(), x, y, carta);
+                actual.jugarCartaMapaDerrumbe(juego.getTablero(), x, y, carta);
+
+                // despues de jugar elimino la carta de la mano
+                actual.getManoCartas().remove(posCarta);
+
+                // tomo una nueva si el mazo no esta vacio
+                if (!juego.getMazo().noHayCartas()) {
+                    Carta nuevaCarta = juego.getMazo().tomarCarta();
+                    actual.getManoCartas().add(nuevaCarta);
+                }
             } else {
                 actual.jugarCarta(objetivo, carta);
-            }
-        }
-        // despues de jugar elimino la carta de la mano
-        actual.getManoCartas().remove(posCarta);
 
-        // tomo una nueva si el mazo no esta vacio
-        if(!juego.getMazo().noHayCartas()) {
-            Carta nuevaCarta = juego.getMazo().tomarCarta();
-            actual.getManoCartas().add(nuevaCarta);
-        }
+                // despues de jugar elimino la carta de la mano
+                actual.getManoCartas().remove(posCarta);
+
+                // tomo una nueva si el mazo no esta vacio
+                if (!juego.getMazo().noHayCartas()) {
+                    Carta nuevaCarta = juego.getMazo().tomarCarta();
+                    actual.getManoCartas().add(nuevaCarta);
+                }
+            }
+        }}
+
+    public Juego getJuego() {
+        return juego;
     }
 
-    private boolean jugadoresSinCartas() {
-        for (Jugador j : juego.getJugadores()) {
-            if(!(j.getManoCartas().isEmpty())) return false;
-        }
-        return true;
+    public Tablero getTablero() {
+        return juego.getTablero();
     }
 }

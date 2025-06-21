@@ -23,5 +23,7 @@ public abstract class Carta {
       return img;
     }
 
-
+    public void setImg(String img) {
+        this.img = img;
+    }
 }

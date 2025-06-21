@@ -1,6 +1,7 @@
 package Vista;
 
 import Modelo.Cartas.Carta;
+import Modelo.Cartas.CartaTunel;
 import Modelo.Jugador;
 
 import javax.swing.*;
@@ -12,27 +13,25 @@ import java.util.List;
 public class PanelJugador extends JPanel {
     private Jugador jugador;
     private final int TAM_CARTA = 75;
+    private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(Jugador jugador, PanelTablero tablero) {
+    public PanelJugador(Jugador jugador) {
         this.jugador = jugador;
         setLayout(new FlowLayout());
-
-        List<BotonCarta> botonesCartas = dibujarManoDeCartas();
-
-        // implemento actionListener para cada boton en el mazo actual
-        for(BotonCarta carta : botonesCartas){
-            carta.addActionListener(e -> cartaEnMazoPresionada(carta, tablero));
-        }
-
+        dibujarManoDeCartas();
     }
 
-    private void cartaEnMazoPresionada(BotonCarta boton, PanelTablero tablero) {
-        System.out.println("apretaste una carta en tu mazo");
+    private void cartaEnMazoPresionada(BotonCarta boton) {
         Carta cartaPresionada = boton.getCartaAsociada();
-
+        cartaSeleccionada = jugador.getManoCartas().indexOf(cartaPresionada);
+        System.out.println("apretaste una carta en tu mazo" + cartaSeleccionada);
     }
 
-    public List<BotonCarta> dibujarManoDeCartas() {
+    public void resetCartaSeleccionada() {
+        cartaSeleccionada = -1;
+    }
+
+    public void dibujarManoDeCartas() {
         // elimino lo existente
         removeAll();
 
@@ -58,6 +57,15 @@ public class PanelJugador extends JPanel {
 
             add(botonCarta);
         }
-        return vistaManoActual;
+
+        // implemento actionListener para cada boton en el mazo actual
+        for (BotonCarta carta : vistaManoActual) {
+            carta.addActionListener(e -> cartaEnMazoPresionada(carta));
+        }
+
+    }
+
+    public int getCartaSeleccionada() {
+        return cartaSeleccionada;
     }
 }

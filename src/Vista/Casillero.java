@@ -13,4 +13,10 @@ public class Casillero extends JLabel {
         this.y = i;
     }
 
+    public int posX(){
+        return x;
+    }
+    public int posY(){
+        return y;
+    }
 }
