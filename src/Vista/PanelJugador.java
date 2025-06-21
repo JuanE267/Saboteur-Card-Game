@@ -5,6 +5,7 @@ import Modelo.Cartas.CartaTunel;
 import Modelo.Jugador;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class PanelJugador extends JPanel {
     public PanelJugador(Jugador jugador) {
         this.jugador = jugador;
         setLayout(new FlowLayout());
+        setBorder(new EmptyBorder(0, 0, 0, 0));
         dibujarManoDeCartas();
     }
 

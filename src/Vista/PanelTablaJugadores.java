@@ -10,16 +10,16 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class PanelJugadores extends JPanel {
+public class PanelTablaJugadores extends JPanel {
 
     private ControladorJuego controlador;
-    private Juego juego;
     private PanelJugador panelJugador;
+    private Juego juego;
     private int cantidadJugadores;
 
-    public PanelJugadores(PanelJugador jugador, ControladorJuego controlador) {
+    public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) {
         this.controlador = controlador;
-        this.panelJugador = jugador;
+        this.panelJugador = panelJugador;
 
         juego = controlador.getJuego();
         cantidadJugadores = controlador.getJuego().getJugadores().size();

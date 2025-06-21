@@ -260,6 +260,10 @@ public class Mazo {
         return carta;
     }
 
+    public Carta getPrimerCarta(){
+        return cartas.getFirst();
+    }
+
     public boolean noHayCartas() {
         return cartas.isEmpty();
     }

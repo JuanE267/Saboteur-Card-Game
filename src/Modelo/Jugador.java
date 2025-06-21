@@ -32,6 +32,7 @@ public class Jugador {
         return false;
     }
 
+
     // jugar reparar o romper
     public void jugarCarta(Jugador afectado, Carta carta) {
         ((CartaAccion) carta).jugarCarta(afectado);
@@ -44,6 +45,11 @@ public class Jugador {
 
     public Carta elegirCarta(int posCarta) {
         return manoCartas.get(posCarta);
+    }
+
+    // descartar carta\
+    public Boolean descartarCarta(Carta carta){
+        return manoCartas.remove(carta);
     }
 
     private Boolean puedeConstruir() {
