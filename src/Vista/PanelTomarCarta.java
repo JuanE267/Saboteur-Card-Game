@@ -55,14 +55,21 @@ public class PanelTomarCarta extends JPanel {
 
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e ->{
-
+            if(controlador.esTurnoDe(panelJugador.getJugador())) {
             controlador.tomarCartaDeMazo();
             panelJugador.revalidate();
             panelJugador.repaint();
             panelJugador.dibujarManoDeCartas();
             dibujarPanel();
-            controlador.pasarTurno();
+            controlador.pasarTurno();}
+            else{
+                mensajeNoEsTuTurno();
+            }
         });
+    }
+
+    public void mensajeNoEsTuTurno(){
+        JOptionPane.showMessageDialog(this,"No es tu turno!");
     }
 
 }

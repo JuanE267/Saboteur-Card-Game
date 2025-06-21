@@ -25,18 +25,28 @@ public class Juego {
         jugadores.add(new Jugador("MARIA", 3));
         jugadores.add(new Jugador("FRANCIA", 4));
         setJugadores(jugadores);
-        // el jugador en empezar es el de mayor edad
-        Jugador mayorEdad = getJugadores().getFirst();
-        for (Jugador j : getJugadores()) {
-            if (j.getEdad() > mayorEdad.getEdad()) {
-                mayorEdad = j;
-            }
-        }
-        turnoInicial = jugadores.indexOf(mayorEdad);
 
+
+        asignoPrimerTurno(1);
         // asigno los roles y reparto las cartas
         asignarRoles();
-        getMazo().repartirCartas(jugadores);
+        mazo.repartirCartas(jugadores);
+    }
+
+    private void asignoPrimerTurno(int ronda) {
+        if (ronda == 0) {
+            // el jugador en empezar es el de mayor edad
+            Jugador mayorEdad = getJugadores().getFirst();
+            for (Jugador j : getJugadores()) {
+                if (j.getEdad() > mayorEdad.getEdad()) {
+                    mayorEdad = j;
+                }
+            }
+            turnoInicial = jugadores.indexOf(mayorEdad);
+        }else{
+            turnoInicial++;
+        }
+
     }
 
     public Tablero getTablero() {
@@ -45,6 +55,11 @@ public class Juego {
     
     public void asignarRoles() {
 
+
+        // elimino los roles anteriores
+        for(Jugador j: jugadores){
+            j.setRol(null);
+        }
         // genero los roles dependiendo la cantidad de jugadores
         // asigno los  roles a cada uno
         switch (jugadores.size()) {
@@ -191,4 +206,22 @@ public class Juego {
         this.jugadores = jugadores;
     }
 
+    public void reiniciarRonda(int ronda) {
+
+        // reinicio el mazo
+        mazo = new Mazo();
+        mazo.barajarMazo();
+        // reinicio el tablero
+        tablero = new Tablero();
+        // reinicio jugadores
+        for(Jugador j : jugadores){
+            j.reiniciarEstado();
+        }
+
+        asignoPrimerTurno(ronda);
+        //asigno roles de nuevo
+        asignarRoles();
+        mazo.repartirCartas(jugadores);
+
+    }
 }

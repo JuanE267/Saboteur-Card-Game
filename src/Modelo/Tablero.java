@@ -120,7 +120,6 @@ public class Tablero {
             cuadricula[x][y] = carta;  // coloco la carta en la posicion
             return true;
         }
-        System.out.println("la carta no coincide con ningun vecino");
         return false;
     }
 
@@ -158,10 +157,18 @@ public class Tablero {
 
             // dependiendo la direccion modifico la coordenada
             switch (direccion) {
-                case ARRIBA -> nuevoX--;
-                case ABAJO -> nuevoX++;
-                case IZQUIERDA -> nuevoY--;
-                case DERECHA -> nuevoY++;
+                case ARRIBA -> {
+                    if(x > 0) nuevoX--;
+                }
+                case ABAJO -> {
+                    if(x<alto) nuevoX++;
+                }
+                case IZQUIERDA -> {
+                    if(y > 0) nuevoY--;
+                }
+                case DERECHA -> {
+                    if(y < ancho) nuevoY++;
+                }
             }
 
             // compruebo si la carta vecina en cierta direccion esta conectada con la actual
@@ -191,11 +198,7 @@ public class Tablero {
     }
 
     public Carta getCarta(int x, int y) {
-        // compruebo que este dentro de los limites del tablero
-        if (x < 0 || x >= alto || y < 0 || y >= ancho) {
-            System.out.println("Posicion[" + x + "][" + y + "] fuera del tablero");
-            return null;
-        }
+
         return cuadricula[x][y];
     }
 

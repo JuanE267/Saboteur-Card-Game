@@ -2,8 +2,10 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
+import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
+import Modelo.Enums.TipoAccion;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,7 +29,7 @@ public class PanelHerramientas extends JPanel {
         dibujarHerramientas();
     }
 
-    private void dibujarHerramientas() {
+    public void dibujarHerramientas() {
 
         removeAll();
 
@@ -47,7 +49,7 @@ public class PanelHerramientas extends JPanel {
         String vagonetaRota = "herramientas/VAGONETA ROTA.png";
         String linternaRota = "herramientas/LINTERNA ROTA.png";
 
-        List<Herramienta> herramientasRotas = controlador.getJugadorActual().getHerramientasRotas();
+        List<Herramienta> herramientasRotas = panelJugador.getJugador().getHerramientasRotas();
 
 
         URL urlPico = getClass().getClassLoader().getResource(picoSano);
@@ -71,24 +73,38 @@ public class PanelHerramientas extends JPanel {
         pico.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                herramientaEsPresionada(pico);
+                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                    super.mouseClicked(e);
+                    herramientaEsPresionada(pico);
+                }else{
+                    mensajeNoEsTuTurno();
+                }
             }
         });
 
         vagoneta.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                herramientaEsPresionada(vagoneta);
+
+                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                    super.mouseClicked(e);
+                    herramientaEsPresionada(vagoneta);
+                }else{
+                    mensajeNoEsTuTurno();
+                }
             }
         });
 
         linterna.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                herramientaEsPresionada(linterna);
+
+                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                    super.mouseClicked(e);
+                    herramientaEsPresionada(linterna);
+                }else{
+                    mensajeNoEsTuTurno();
+                }
             }
         });
 
@@ -104,14 +120,24 @@ public class PanelHerramientas extends JPanel {
     private void herramientaEsPresionada(JLabel herr) {
 
         int posCarta = panelJugador.getCartaSeleccionada();
-        controlador.jugarHerramienta(posCarta, controlador.getJugadorActual());
+        Carta cartaHerramienta = panelJugador.getJugador().elegirCarta(posCarta);
+        List<TipoAccion> tipos = ((CartaAccion)cartaHerramienta).getTipoAccion();
 
-        panelJugador.resetCartaSeleccionada();
-        panelJugador.revalidate();
-        panelJugador.repaint();
-        panelJugador.dibujarManoDeCartas();
-        dibujarHerramientas();
-        controlador.pasarTurno();
+        switch (tipos.getFirst()){
+            case REPARARPICO, REPARARLINTERNA, REPARARVAGONETA -> {
+                controlador.jugarHerramienta(posCarta, controlador.getJugadorActual());
+                panelJugador.resetCartaSeleccionada();
+                panelJugador.revalidate();
+                panelJugador.repaint();
+                panelJugador.dibujarManoDeCartas();
+                controlador.verificarSiTerminoLaRonda();
+                controlador.pasarTurno();
+            }
+            default -> JOptionPane.showMessageDialog(this , "No podes romper tu propia herramienta!");
+
+        }
+
+
     }
 
     private void setImagen(JLabel herr, URL url) {
@@ -123,4 +149,10 @@ public class PanelHerramientas extends JPanel {
             System.err.println("Imagen no encontrada: " + url);
         }
     }
+
+
+    public void mensajeNoEsTuTurno(){
+        JOptionPane.showMessageDialog(this,"No es tu turno!");
+    }
+
 }

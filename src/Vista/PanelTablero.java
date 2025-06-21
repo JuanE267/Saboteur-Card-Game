@@ -33,9 +33,6 @@ public class PanelTablero extends JPanel {
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
 
-        if (controlador.terminarRonda()) {
-            JOptionPane.showMessageDialog(null, "¡LLegaste al oro!");
-        }
         dibujarTablero();
 
 
@@ -44,28 +41,40 @@ public class PanelTablero extends JPanel {
     private void casilleroEsPresionado(Casillero casillero) {
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
         Carta cartaAJugar = controlador.getJugadorActual().elegirCarta(cartaSeleccionada);
+        Boolean pudoSerJugado = false;
+        Boolean paseTurnoDespuesDeGirar = false;
+
 
         // si es una carta dentro del mazo
         if (cartaSeleccionada != -1 && cartaSeleccionada >= 0) {
 
             //si es de tipo tunel
             if (cartaAJugar instanceof CartaTunel) {
-                controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                pudoSerJugado = controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                if (!pudoSerJugado) {
+                    JOptionPane.showMessageDialog(this, "La carta no coincide con ninguno de los tuneles");
+                }
             }
             //si es de tipo accion
             else if (cartaAJugar instanceof CartaAccion) {
                 // juego la carta si es derrumbre o mapa
 
                 if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA || ((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.DERRUMBAR) {
-                    controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                    pudoSerJugado = controlador.jugarCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
+                    if (!pudoSerJugado) {
+                        JOptionPane.showMessageDialog(this, "No puede jugar sobre esta carta!");
+                    }
                     // si es el mapa necesito que despues de 3 segundo se de vuelta el destino nuevamente
-                    if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA) {
+                    if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA && pudoSerJugado) {
                         Carta destino = tablero.getCarta(casillero.posX(), casillero.posY());
                         if (destino instanceof CartaDestino) {
                             javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                                 ((CartaDestino) destino).girar();
                                 dibujarTablero();
+                                controlador.pasarTurno();
+
                             });
+                            paseTurnoDespuesDeGirar = true;
                             timer.setRepeats(false);
                             timer.start();
                         }
@@ -84,7 +93,12 @@ public class PanelTablero extends JPanel {
         dibujarTablero();
 
         // despues de actualizar todo en el jugador, paso el turno
-        controlador.pasarTurno();
+        if (pudoSerJugado) {
+            controlador.verificarSiTerminoLaRonda();
+            if (!paseTurnoDespuesDeGirar) {
+                controlador.pasarTurno();
+            }
+        }
     }
 
     public void dibujarTablero() {
@@ -130,11 +144,19 @@ public class PanelTablero extends JPanel {
             c.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    casilleroEsPresionado(c);
+                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        super.mouseClicked(e);
+                        casilleroEsPresionado(c);
+                    } else {
+                        mensajeNoEsTuTurno();
+                    }
                 }
             });
         }
+    }
+
+    public void mensajeNoEsTuTurno() {
+        JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
 }

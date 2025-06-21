@@ -18,6 +18,7 @@ public class Jugador {
     private Rol rol;
     private List<Carta> manoCartas;
     private List<Herramienta> herramientasRotas = new ArrayList<>();
+    private int puntaje;
 
     public Jugador(String nombre, int edad) {
         this.nombre = nombre;
@@ -39,8 +40,8 @@ public class Jugador {
     }
 
     // jugar mapa o derrumbe
-    public void jugarCartaMapaDerrumbe(Tablero tablero, int x, int y, Carta carta) {
-        ((CartaAccion) carta).jugarCarta(x, y, tablero);
+    public Boolean jugarCartaMapaDerrumbe(Tablero tablero, int x, int y, Carta carta) {
+        return ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 
     public Carta elegirCarta(int posCarta) {
@@ -84,6 +85,11 @@ public class Jugador {
         this.herramientasRotas = herramientasRotas;
     }
 
+    public void reiniciarEstado(){
+        manoCartas.clear();
+        herramientasRotas.clear();
+    }
+
     public int getEdad() {
         return edad;
     }
@@ -94,6 +100,14 @@ public class Jugador {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(int puntaje) {
+        this.puntaje = puntaje;
     }
 }
 

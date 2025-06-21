@@ -26,7 +26,7 @@ public class PanelPuntosYAcciones extends JPanel {
         removeAll();
 
         JLabel puntaje = new JLabel();
-        Font letra = new Font("Serif", Font.PLAIN, 27);
+        Font letra = new Font("Arial", Font.PLAIN, 27);
         puntaje.setFont(letra);
         puntaje.setText("PUNTAJE: ");
 
@@ -54,12 +54,18 @@ public class PanelPuntosYAcciones extends JPanel {
     private void comportamientoPasarTurno(JButton pasarTurno) {
         pasarTurno.addActionListener(e -> {
 
-            // paso el turno y vuelvo a dibujar la mano por si acaso
-            panelJugador.resetCartaSeleccionada();
-            panelJugador.revalidate();
-            panelJugador.repaint();
-            panelJugador.dibujarManoDeCartas();
-            controlador.pasarTurno();
+            //si es el turno del jugador, paso el turno y vuelvo a dibujar la mano por si acaso
+            if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                panelJugador.resetCartaSeleccionada();
+                panelJugador.revalidate();
+                panelJugador.repaint();
+                panelJugador.dibujarManoDeCartas();
+                controlador.verificarSiTerminoLaRonda();
+                controlador.pasarTurno();
+            }else{
+                mensajeNoEsTuTurno();
+            }
+
         });
     }
 
@@ -67,15 +73,25 @@ public class PanelPuntosYAcciones extends JPanel {
 
         descartar.addActionListener(e -> {
             // mediante el controlador tomo el jugador de esta ronda y elijo la carta seleccionada en el panel de la interfaz
-            Carta cartaADescartar = controlador.getJugadorActual().elegirCarta(panelJugador.getCartaSeleccionada());
-            controlador.descartarCarta(cartaADescartar);
+            if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                Carta cartaADescartar = controlador.getJugadorActual().elegirCarta(panelJugador.getCartaSeleccionada());
+                controlador.descartarCarta(cartaADescartar);
 
-            // reseteo todo despues de descartar la carta
-            panelJugador.resetCartaSeleccionada();
-            panelJugador.revalidate();
-            panelJugador.repaint();
-            panelJugador.dibujarManoDeCartas();
-            controlador.pasarTurno();
-        });
+                // reseteo todo despues de descartar la carta
+                panelJugador.resetCartaSeleccionada();
+                panelJugador.revalidate();
+                panelJugador.repaint();
+                panelJugador.dibujarManoDeCartas();
+                controlador.verificarSiTerminoLaRonda();
+                controlador.pasarTurno();
+            }else{
+                mensajeNoEsTuTurno();
+            }
+            });
     }
+
+    public void mensajeNoEsTuTurno(){
+        JOptionPane.showMessageDialog(this,"No es tu turno!");
+    }
+
 }

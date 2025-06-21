@@ -1,5 +1,6 @@
 package Vista;
 
+import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Jugador;
@@ -13,20 +14,25 @@ import java.util.List;
 
 public class PanelJugador extends JPanel {
     private Jugador jugador;
+    private ControladorJuego controlador;
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(Jugador jugador) {
+    public PanelJugador(Jugador jugador, ControladorJuego controlador) {
         this.jugador = jugador;
+        this.controlador = controlador;
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
         dibujarManoDeCartas();
     }
 
     private void cartaEnMazoPresionada(BotonCarta boton) {
-        Carta cartaPresionada = boton.getCartaAsociada();
-        cartaSeleccionada = jugador.getManoCartas().indexOf(cartaPresionada);
-        System.out.println("apretaste una carta en tu mazo" + cartaSeleccionada);
+        if (controlador.esTurnoDe(jugador)) {
+            Carta cartaPresionada = boton.getCartaAsociada();
+            cartaSeleccionada = jugador.getManoCartas().indexOf(cartaPresionada);
+        } else {
+            mensajeNoEsTuTurno();
+        }
     }
 
     public void resetCartaSeleccionada() {
@@ -67,7 +73,16 @@ public class PanelJugador extends JPanel {
 
     }
 
+    public Jugador getJugador() {
+        return jugador;
+    }
+
     public int getCartaSeleccionada() {
         return cartaSeleccionada;
     }
+
+    public void mensajeNoEsTuTurno() {
+        JOptionPane.showMessageDialog(this, "No es tu turno!");
+    }
+
 }

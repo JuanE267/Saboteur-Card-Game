@@ -41,22 +41,26 @@ public class CartaAccion extends Carta {
     }
 
     // Acción para ver un destino del tablero o derrumbar
-    public void jugarCarta(int x, int y, Tablero tablero) {
+    public Boolean jugarCarta(int x, int y, Tablero tablero) {
+        Boolean pudoSerJugada = false;
         if (tipo.getFirst() == TipoAccion.MAPA) {
-            verDestino(x, y, tablero);
+            pudoSerJugada = verDestino(x, y, tablero);
         } else if (tipo.getFirst() == TipoAccion.DERRUMBAR) {
-            DerrumbarTunel(x, y, tablero);
+            pudoSerJugada = DerrumbarTunel(x, y, tablero);
         }
+        return pudoSerJugada;
     }
 
-    private void DerrumbarTunel(int x, int y, Tablero tablero) {
+    private Boolean DerrumbarTunel(int x, int y, Tablero tablero) {
         Carta cartaADerrumbar = tablero.getCarta(x, y);
         if (cartaADerrumbar instanceof CartaTunel) {
             if (!(((CartaTunel) cartaADerrumbar).getEsInicio())) {
                 ((CartaTunel) cartaADerrumbar).setEstaDerrumbada(true);
                 tablero.getCuadricula()[x][y] = null;
+                return true;
             }
         }
+        return false;
     }
 
     // romper herramienta
@@ -104,13 +108,18 @@ public class CartaAccion extends Carta {
         }
     }
 
-    public void verDestino(int x, int y, Tablero tablero) {
+    public Boolean verDestino(int x, int y, Tablero tablero) {
         Carta destino = tablero.getCarta(x, y);
 
-        if ((this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO) {
+        if (destino != null) {
+            if ((this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO) {
 
-            ((CartaDestino) destino).girar();
+                ((CartaDestino) destino).girar();
+                return true;
+            }
         }
+
+        return false;
     }
 
 }
