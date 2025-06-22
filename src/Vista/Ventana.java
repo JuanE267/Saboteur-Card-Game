@@ -72,12 +72,13 @@ public class Ventana extends JFrame implements Observer {
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
 
-        controlador.getJuego().agregarObserver(panelJugador);
-        controlador.getJuego().agregarObserver(panelTablero);
-        controlador.getJuego().agregarObserver(panelTablaJugadores);
-        controlador.getJuego().agregarObserver(panelTomarCarta);
-        controlador.getJuego().agregarObserver(panelPuntosYAcciones);
-        controlador.getJuego().agregarObserver(panelHerramientas);
+        controlador.agregarObserver(panelJugador);
+        controlador.agregarObserver(panelTablero);
+        controlador.agregarObserver(panelTablaJugadores);
+        controlador.agregarObserver(panelTomarCarta);
+        controlador.agregarObserver(panelPuntosYAcciones);
+        controlador.agregarObserver(panelHerramientas);
+        controlador.agregarObserver(this);
 
         setVisible(true);
     }

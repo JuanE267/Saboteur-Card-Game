@@ -20,6 +20,7 @@ public class Juego extends Observable {
     private int turnoInicial;
     private int ronda;
     private int turno;
+    private Jugador ganador;
 
     public Juego(){
         this.tablero = new Tablero();
@@ -27,14 +28,11 @@ public class Juego extends Observable {
         ronda = 1;
 
         //HARDCODEEEEEE
-        List<Jugador> jugadores = new ArrayList<>();
+        this.jugadores = new ArrayList<>();
         jugadores.add(new Jugador("JUAN", 1));
         jugadores.add(new Jugador("PEPITO", 2));
         jugadores.add(new Jugador("MARIA", 3));
         jugadores.add(new Jugador("FRANCIA", 4));
-        setJugadores(jugadores);
-
-
         asignoPrimerTurno(1);
         this.turno = turnoInicial;
 
@@ -206,6 +204,60 @@ public class Juego extends Observable {
         notificarObservers();
     }
 
+
+    public Jugador finalizarRonda(boolean ganaronLosMineros) {
+
+        String mensajeGanador;
+
+        if(ganaronLosMineros){
+            mensajeGanador = "GANARON LOS MINEROS";
+
+            for(Jugador j : jugadores){
+                if(j.getRol() == Rol.MINERO){
+                    j.sumarPuntos(4);
+                }else{
+                    j.sumarPuntos(3);
+                }
+            }
+        }else{
+            mensajeGanador = "GANARON LOS SABOTEADORES";
+
+            for(Jugador j : jugadores){
+                if(j.getRol() == Rol.SABOTEADOR){
+                    j.sumarPuntos(4);
+                }else{
+                    j.sumarPuntos(3);
+                }
+            }
+        }
+
+
+        System.out.println(mensajeGanador);
+        System.out.println("Se revelan los roles..");
+        for(Jugador j : jugadores){
+            System.out.println(j.getNombre() +" -> "+ j.getRol());
+        }
+
+        if(ronda <= 3) {
+            // reinicio el estado logico
+            reiniciarRonda(ronda);
+            //reinicio la vista
+            notificarObservers();
+            pasarRonda();
+        }else {
+
+            Jugador mayorPuntaje = jugadores.getFirst();
+            for(Jugador j : jugadores){
+                if(j.getPuntaje() > mayorPuntaje.getPuntaje()){
+                    mayorPuntaje = j;
+                }
+            }
+            ganador = mayorPuntaje;
+        }
+        return ganador;
+    }
+
+
     public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo){
 
         Carta carta = getJugadorActual().elegirCarta(posCarta);
@@ -332,5 +384,18 @@ public class Juego extends Observable {
 
     public boolean noHayCartas() {
         return mazo.noHayCartas();
+    }
+
+    public void verificarSiTerminoLaRonda() {
+        if(hayCaminoHastaOro()){
+            finalizarRonda(true);
+        }else if(noHayCartas()){
+            finalizarRonda(false);
+        }
+    }
+
+    public void descartarCarta(Carta carta) {
+        getJugadorActual().descartarCarta(carta);
+        notificarObservers();
     }
 }

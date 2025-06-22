@@ -10,7 +10,6 @@ import java.util.Map;
 public class CartaTunel extends Carta {
 
     private Map<Direccion, Boolean> caminos = new HashMap<>();
-    private boolean estaDerrumbada;
     private boolean esInicio;
 
     public CartaTunel(int id, TipoCarta tipo, String img, boolean esInicio) {
@@ -56,9 +55,6 @@ public class CartaTunel extends Carta {
         }
     }
 
-    public void setEstaDerrumbada(Boolean derrumbada){
-        this.estaDerrumbada = derrumbada;
-    }
     public void setCaminos(boolean arriba, boolean abajo,
                            boolean izquierda, boolean derecha) {
         this.caminos.put(Direccion.ARRIBA, arriba);

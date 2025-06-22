@@ -55,7 +55,6 @@ public class CartaAccion extends Carta {
         Carta cartaADerrumbar = tablero.getCarta(x, y);
         if (cartaADerrumbar instanceof CartaTunel) {
             if (!(((CartaTunel) cartaADerrumbar).getEsInicio())) {
-                ((CartaTunel) cartaADerrumbar).setEstaDerrumbada(true);
                 tablero.getCuadricula()[x][y] = null;
                 return true;
             }

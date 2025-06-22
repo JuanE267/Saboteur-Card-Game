@@ -8,6 +8,7 @@ import Modelo.Enums.Rol;
 import Modelo.Juego;
 import Modelo.Jugador;
 import Modelo.Tablero;
+import Observer.Observer;
 import Vista.BotonCarta;
 import Vista.Ventana;
 
@@ -28,64 +29,8 @@ public class ControladorJuego {
     }
 
     public void verificarSiTerminoLaRonda() {
-         if(juego.hayCaminoHastaOro()){
-            finalizarRonda(true);
-         }else if(juego.noHayCartas()){
-             finalizarRonda(false);
-         }
+         juego.verificarSiTerminoLaRonda();
     }
-
-    private void finalizarRonda(boolean ganaronLosMineros) {
-
-        String mensajeGanador;
-
-        if(ganaronLosMineros){
-            mensajeGanador = "GANARON LOS MINEROS";
-
-            for(Jugador j : juego.getJugadores()){
-                if(j.getRol() == Rol.MINERO){
-                    j.sumarPuntos(4);
-                }else{
-                    j.sumarPuntos(3);
-                }
-            }
-        }else{
-            mensajeGanador = "GANARON LOS SABOTEADORES";
-
-            for(Jugador j : juego.getJugadores()){
-                if(j.getRol() == Rol.SABOTEADOR){
-                    j.sumarPuntos(4);
-                }else{
-                    j.sumarPuntos(3);
-                }
-            }
-        }
-
-
-        System.out.println(mensajeGanador);
-        System.out.println("Se revelan los roles..");
-        for(Jugador j : juego.getJugadores()){
-            System.out.println(j.getNombre() +" -> "+ j.getRol());
-        }
-
-        if(juego.getRondaActual() <= 3) {
-            // reinicio el estado logico
-            juego.reiniciarRonda(juego.getRondaActual());
-            //reinicio la vista
-            juego.notificarObservers();
-            juego.pasarRonda();
-        }else {
-
-            Jugador mayorPuntaje = juego.getJugadores().getFirst();
-            for(Jugador j : juego.getJugadores()){
-                    if(j.getPuntaje() > mayorPuntaje.getPuntaje()){
-                        mayorPuntaje = j;
-                    }
-            }
-            ganador = mayorPuntaje;
-        }
-    }
-
 
     public Boolean jugarUnaCarta(int x, int y, int posCarta, Jugador objetivo) {
         return juego.jugarCarta(x, y, posCarta, objetivo);
@@ -100,8 +45,7 @@ public class ControladorJuego {
     }
 
     public void descartarCarta(Carta carta) {
-        getJugadorActual().descartarCarta(carta);
-        juego.notificarObservers();
+        juego.descartarCarta(carta);
     }
 
     public void tomarCartaDeMazo() {
@@ -124,8 +68,8 @@ public class ControladorJuego {
         return ganador;
     }
 
-    public void agregarObserver(Ventana ventana) {
-        juego.agregarObserver(ventana);
+    public void agregarObserver(Observer observer) {
+        juego.agregarObserver(observer);
     }
 
     public List<Jugador> getJugadores() {
