@@ -18,11 +18,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelTablero extends JPanel  implements Observer {
+public class PanelTablero extends JPanel implements Observer {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
     private Tablero tablero;
+    List<Casillero> listaCasilleros = new ArrayList<>();
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
 
@@ -71,7 +72,7 @@ public class PanelTablero extends JPanel  implements Observer {
                         if (destino instanceof CartaDestino) {
                             javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                                 ((CartaDestino) destino).girar();
-                                actualizar();
+                                setImagenCasillero(casillero);
                                 controlador.pasarTurno();
 
                             });
@@ -101,34 +102,13 @@ public class PanelTablero extends JPanel  implements Observer {
     public void dibujarTablero() {
 
         removeAll();
-        List<Casillero> listaCasilleros = new ArrayList<>();
         for (int i = 0; i < tablero.getAlto(); i++) {
             for (int j = 0; j < tablero.getAncho(); j++) {
 
-                // recorro mi tablero inicializado
-                Carta carta = tablero.getCarta(i, j);
-
-                // creo un jlabel por cada carta
                 Casillero casillero = new Casillero(i, j);
-                listaCasilleros.add(casillero);
                 casillero.setPreferredSize(new Dimension(ANCHO_CASILLERO, ALTO_CASILLERO));
                 casillero.setBorder(BorderFactory.createDashedBorder(Color.BLACK));
-
-                // si la carta no esta vacia (inicio o destinos)
-                if (carta != null) {
-                    // cargo y escalo la imagen
-                    if (carta instanceof CartaDestino) {
-                        ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + ((CartaDestino) carta).getImg()));
-                        Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
-                        casillero.setIcon(new ImageIcon(imagen));
-                    } else {
-                        ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + carta.getImg()));
-                        Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
-                        casillero.setIcon(new ImageIcon(imagen));
-
-                    }
-                }
-
+                listaCasilleros.add(setImagenCasillero(casillero));
                 add(casillero);
             }
         }
@@ -148,12 +128,36 @@ public class PanelTablero extends JPanel  implements Observer {
         }
     }
 
+    public Casillero setImagenCasillero(Casillero casillero) {
+
+        Carta carta = tablero.getCarta(casillero.posX(), casillero.posY());
+
+        // si la carta no esta vacia (inicio o destinos)
+        if (carta != null) {
+            // cargo y escalo la imagen
+            if (carta instanceof CartaDestino) {
+                ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + ((CartaDestino) carta).getImg()));
+                Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
+                casillero.setIcon(new ImageIcon(imagen));
+            } else {
+                ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + carta.getImg()));
+                Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
+                casillero.setIcon(new ImageIcon(imagen));
+
+            }
+        }
+        return casillero;
+
+    }
+
     public void mensajeNoEsTuTurno() {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
     @Override
     public void actualizar() {
-        dibujarTablero();
+        for(Casillero c: listaCasilleros){
+            setImagenCasillero(c);
+        }
     }
 }
