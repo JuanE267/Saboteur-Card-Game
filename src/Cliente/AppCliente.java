@@ -1,7 +1,8 @@
 package Cliente;
 
 import Controlador.ControladorJuego;
-import Vista.Ventana;
+import Vista.VentanaJuego;
+import Vista.VistaGrafica;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
@@ -46,9 +47,9 @@ public class AppCliente {
                 8888
         );
         ControladorJuego controlador = new ControladorJuego();
-        Ventana ventana = new Ventana(controlador);
+        VistaGrafica vistaGrafica = new VistaGrafica(controlador);
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
-        Ventana.iniciar();
+        vistaGrafica.iniciar();
         try {
             c.iniciar(controlador);
         } catch (RemoteException e) {

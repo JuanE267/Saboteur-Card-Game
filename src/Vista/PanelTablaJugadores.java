@@ -25,18 +25,15 @@ public class PanelTablaJugadores extends JPanel  {
     public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
-
-        juego = controlador.getJuego();
-        cantidadJugadores = controlador.getJuego().getJugadores().size();
         setLayout(new GridLayout(cantidadJugadores, 1));
         setBorder(new EmptyBorder(200, 100, 200, 0));
-        dibujarListaJugadores();
     }
 
     private void dibujarListaJugadores() {
 
         removeAll();
-        for (Jugador j : controlador.getJugadores().values()) {
+        cantidadJugadores = controlador.getJugadores().length;
+        for (Jugador j : controlador.getJugadores()) {
             if(j != panelJugador.getJugador()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));

@@ -30,7 +30,7 @@ public class PanelTomarCarta extends JPanel {
         JButton tomarCarta = new JButton();
 
         String rutaImagen = "";
-        if (controlador.getJuego().getMazo().getPrimerCarta() instanceof CartaTunel) {
+        if (controlador.getMazo().getPrimerCarta() instanceof CartaTunel) {
             rutaImagen = "dorsos/dorso tunel.png";
 
         } else {

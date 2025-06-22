@@ -30,103 +30,104 @@ public class PanelHerramientas extends JPanel {
     }
 
     public void dibujarHerramientas() {
+        if(panelJugador.getJugador() != null) {
+            removeAll();
 
-        removeAll();
+            JLabel pico = new JLabel();
+            JLabel vagoneta = new JLabel();
+            JLabel linterna = new JLabel();
 
-        JLabel pico = new JLabel();
-        JLabel vagoneta = new JLabel();
-        JLabel linterna = new JLabel();
+            pico.setSize(new Dimension(100, 100));
+            vagoneta.setSize(new Dimension(100, 100));
+            linterna.setSize(new Dimension(100, 100));
 
-        pico.setSize(new Dimension(100, 100));
-        vagoneta.setSize(new Dimension(100, 100));
-        linterna.setSize(new Dimension(100, 100));
+            String picoSano = "herramientas/PICO SANO.png";
+            String vagonetaSana = "herramientas/VAGONETA SANA.png";
+            String linternaSana = "herramientas/LINTERNA SANA.png";
 
-        String picoSano = "herramientas/PICO SANO.png";
-        String vagonetaSana = "herramientas/VAGONETA SANA.png";
-        String linternaSana = "herramientas/LINTERNA SANA.png";
+            String picoRoto = "herramientas/PICO ROTO.png";
+            String vagonetaRota = "herramientas/VAGONETA ROTA.png";
+            String linternaRota = "herramientas/LINTERNA ROTA.png";
 
-        String picoRoto = "herramientas/PICO ROTO.png";
-        String vagonetaRota = "herramientas/VAGONETA ROTA.png";
-        String linternaRota = "herramientas/LINTERNA ROTA.png";
-
-        List<Herramienta> herramientasRotas = panelJugador.getJugador().getHerramientasRotas();
+            List<Herramienta> herramientasRotas = panelJugador.getJugador().getHerramientasRotas();
 
 
-        URL urlPico = getClass().getClassLoader().getResource(picoSano);
-        URL urlVagoneta = getClass().getClassLoader().getResource(vagonetaSana);
-        URL urlLinterna = getClass().getClassLoader().getResource(linternaSana);
+            URL urlPico = getClass().getClassLoader().getResource(picoSano);
+            URL urlVagoneta = getClass().getClassLoader().getResource(vagonetaSana);
+            URL urlLinterna = getClass().getClassLoader().getResource(linternaSana);
 
-        for (Herramienta herr : herramientasRotas) {
-            if (herr == Herramienta.PICO) {
-                urlPico = getClass().getClassLoader().getResource(picoRoto);
+            for (Herramienta herr : herramientasRotas) {
+                if (herr == Herramienta.PICO) {
+                    urlPico = getClass().getClassLoader().getResource(picoRoto);
+                }
+
+                if (herr == Herramienta.VAGONETA) {
+                    urlVagoneta = getClass().getClassLoader().getResource(vagonetaRota);
+                }
+
+                if (herr == Herramienta.LINTERNA) {
+                    urlLinterna = getClass().getClassLoader().getResource(linternaRota);
+                }
             }
 
-            if (herr == Herramienta.VAGONETA) {
-                urlVagoneta = getClass().getClassLoader().getResource(vagonetaRota);
-            }
+            pico.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        super.mouseClicked(e);
+                        try {
+                            herramientaEsPresionada(pico);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        mensajeNoEsTuTurno();
+                    }
+                }
+            });
 
-            if (herr == Herramienta.LINTERNA) {
-                urlLinterna = getClass().getClassLoader().getResource(linternaRota);
-            }
+            vagoneta.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        super.mouseClicked(e);
+                        try {
+                            herramientaEsPresionada(vagoneta);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        mensajeNoEsTuTurno();
+                    }
+                }
+            });
+
+            linterna.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        super.mouseClicked(e);
+                        try {
+                            herramientaEsPresionada(linterna);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        mensajeNoEsTuTurno();
+                    }
+                }
+            });
+
+            setImagen(pico, urlPico);
+            setImagen(vagoneta, urlVagoneta);
+            setImagen(linterna, urlLinterna);
+
+            add(pico);
+            add(vagoneta);
+            add(linterna);
         }
-
-        pico.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                    super.mouseClicked(e);
-                    try {
-                        herramientaEsPresionada(pico);
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    mensajeNoEsTuTurno();
-                }
-            }
-        });
-
-        vagoneta.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                    super.mouseClicked(e);
-                    try {
-                        herramientaEsPresionada(vagoneta);
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    mensajeNoEsTuTurno();
-                }
-            }
-        });
-
-        linterna.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                    super.mouseClicked(e);
-                    try {
-                        herramientaEsPresionada(linterna);
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    mensajeNoEsTuTurno();
-                }
-            }
-        });
-
-        setImagen(pico, urlPico);
-        setImagen(vagoneta, urlVagoneta);
-        setImagen(linterna, urlLinterna);
-
-        add(pico);
-        add(vagoneta);
-        add(linterna);
     }
 
     private void herramientaEsPresionada(JLabel herr) throws RemoteException {

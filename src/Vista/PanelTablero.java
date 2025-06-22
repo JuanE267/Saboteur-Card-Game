@@ -35,8 +35,6 @@ public class PanelTablero extends JPanel{
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
 
-        dibujarTablero();
-
     }
 
     public void dibujarTablero() {
@@ -155,10 +153,6 @@ public class PanelTablero extends JPanel{
     }
 
     public void actualizar() {
-        for(Casillero c: listaCasilleros){
-            setImagenCasillero(c);
-            revalidate();
-            repaint();
-        }
+        dibujarTablero();
     }
 }

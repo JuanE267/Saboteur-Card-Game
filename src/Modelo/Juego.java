@@ -27,14 +27,16 @@ public class Juego extends ObservableRemoto {
     public Juego() {
         this.tablero = new Tablero();
         this.mazo = new Mazo();
+        this.jugadores = new HashMap<Integer, Jugador>();
         ronda = 1;
         // asigno los roles y reparto las cartas
 
     }
 
-    public void iniciarPartida(){
+    public void iniciarPartida() throws RemoteException {
         asignarRoles();
         mazo.repartirCartas(jugadores);
+        notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
     public Jugador agregarJugador(String nombre, int edad) throws RemoteException {
@@ -332,8 +334,9 @@ public class Juego extends ObservableRemoto {
         return mazo;
     }
 
-    public HashMap<Integer, Jugador> getJugadores() {
-        return jugadores;
+    public Jugador[] getJugadores() {
+        Jugador[] jugadores = new Jugador[this.jugadores.size()];
+        return this.jugadores.values().toArray(jugadores);
     }
 
     public Jugador getJugadorActual() {

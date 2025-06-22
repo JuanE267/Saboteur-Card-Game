@@ -30,8 +30,9 @@ public class PanelPuntosYAcciones extends JPanel {
         JLabel puntaje = new JLabel();
         Font letra = new Font("Arial", Font.PLAIN, 27);
         puntaje.setFont(letra);
-        puntaje.setText("PUNTAJE: "+ panelJugador.getJugador().getPuntaje());
-
+        if(panelJugador.getJugador() != null) {
+            puntaje.setText("PUNTAJE: " + panelJugador.getJugador().getPuntaje());
+        }
         JPanel contenedorBotones = new JPanel();
         contenedorBotones.setLayout(new FlowLayout());
         contenedorBotones.setBorder(new EmptyBorder(10, 100, 0, 0));

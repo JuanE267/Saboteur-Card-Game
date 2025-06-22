@@ -4,5 +4,7 @@
 	<contentEntry url="file://$MODULE_DIR$"/>
 	<levels>
 		<level name="LibreriaRMIMVC" value="project"/>
+		<level name="miglayout-src" value="project"/>
+		<level name="miglayout15-swing" value="project"/>
 	</levels>
 </component>

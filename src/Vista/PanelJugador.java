@@ -18,8 +18,7 @@ public class PanelJugador extends JPanel {
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(Jugador jugador, ControladorJuego controlador) {
-        this.jugador = jugador;
+    public PanelJugador(ControladorJuego controlador) {
         this.controlador = controlador;
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -27,6 +26,7 @@ public class PanelJugador extends JPanel {
     }
 
     private void cartaEnMazoPresionada(BotonCarta boton) {
+        jugador = controlador.getJugadorActual();
         if (controlador.esTurnoDe(jugador)) {
             Carta cartaPresionada = boton.getCartaAsociada();
             cartaSeleccionada = jugador.getManoCartas().indexOf(cartaPresionada);
@@ -42,32 +42,33 @@ public class PanelJugador extends JPanel {
     public void dibujarManoDeCartas() {
         // elimino lo existente
         removeAll();
+        if(jugador != null) {
+            // tomo la mano del jugador
+            List<Carta> mano = jugador.getManoCartas();
+            // por cada carta creo un JButton
+            for (int i = 0; i < mano.size(); i++) {
 
-        // tomo la mano del jugador
-        List<Carta> mano = jugador.getManoCartas();
-        // por cada carta creo un JButton
-        for (int i = 0; i < mano.size(); i++) {
+                Carta cartaActual = mano.get(i);
+                BotonCarta botonCarta = new BotonCarta(cartaActual);
+                vistaManoActual.add(botonCarta);
+                URL url = cartaActual.getClass().getResource("/" + cartaActual.getImg());
 
-            Carta cartaActual = mano.get(i);
-            BotonCarta botonCarta = new BotonCarta(cartaActual);
-            vistaManoActual.add(botonCarta);
-            URL url = cartaActual.getClass().getResource("/" + cartaActual.getImg());
+                if (url != null) {
+                    ImageIcon icono = new ImageIcon(url);
+                    Image imagen = icono.getImage().getScaledInstance(TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH);
+                    botonCarta.setIcon(new ImageIcon(imagen));
+                } else {
+                    System.err.println("Imagen no encontrada: " + cartaActual.getImg());
+                }
+                botonCarta.setPreferredSize(new Dimension(TAM_CARTA, TAM_CARTA + 30));
 
-            if (url != null) {
-                ImageIcon icono = new ImageIcon(url);
-                Image imagen = icono.getImage().getScaledInstance(TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH);
-                botonCarta.setIcon(new ImageIcon(imagen));
-            } else {
-                System.err.println("Imagen no encontrada: " + cartaActual.getImg());
+                add(botonCarta);
             }
-            botonCarta.setPreferredSize(new Dimension(TAM_CARTA, TAM_CARTA + 30));
 
-            add(botonCarta);
-        }
-
-        // implemento actionListener para cada boton en el mazo actual
-        for (BotonCarta carta : vistaManoActual) {
-            carta.addActionListener(e -> cartaEnMazoPresionada(carta));
+            // implemento actionListener para cada boton en el mazo actual
+            for (BotonCarta carta : vistaManoActual) {
+                carta.addActionListener(e -> cartaEnMazoPresionada(carta));
+            }
         }
 
     }
