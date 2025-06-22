@@ -24,6 +24,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private int ronda;
     private int turno;
     private Jugador ganador;
+    private Jugador jugadorCliente;
 
     public Juego() {
         this.tablero = new Tablero();
@@ -37,7 +38,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     public void iniciarPartida() throws RemoteException {
         asignoPrimerTurno(ronda);
         asignarRoles();
-        mazo.repartirCartas(jugadores);
+        mazo.repartirCartas(jugadorCliente, jugadores.values().size());
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
@@ -45,7 +46,8 @@ public class Juego extends ObservableRemoto implements IJuego {
         Jugador jugador = new Jugador(nombre, edad);
         this.jugadores.put(jugador.getId(), jugador);
         this.notificarObservadores(Evento.NUEVO_USUARIO);
-        return jugador;
+        this.jugadorCliente = jugador;
+        return jugadorCliente;
     }
 
     public void asignoPrimerTurno(int ronda) {
@@ -266,37 +268,36 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) throws RemoteException {
 
-        Carta carta = getJugadorActual().elegirCarta(posCarta);
-        Jugador actual = getJugadorActual();
+        Carta carta = jugadorCliente.elegirCarta(posCarta);
         Boolean pudoSerJugado = false;
 
         // dependiendo el tipo de la carta juego de cierta manera
         if (carta instanceof CartaTunel) {
-            pudoSerJugado = actual.jugarCarta(tablero, x, y, carta);
+            pudoSerJugado = jugadorCliente.jugarCarta(tablero, x, y, carta);
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
             if (pudoSerJugado) {
-                actual.getManoCartas().remove(posCarta);
+                jugadorCliente.getManoCartas().remove(posCarta);
                 // tomo una nueva si el mazo no esta vacio
                 if (!mazo.noHayCartas()) {
                     Carta nuevaCarta = mazo.tomarCarta();
-                    actual.getManoCartas().add(nuevaCarta);
+                    jugadorCliente.getManoCartas().add(nuevaCarta);
                 }
             }
 
         } else if (carta instanceof CartaAccion) {
             if (((CartaAccion) carta).getTipoAccion().size() == 1) {
-                pudoSerJugado = actual.jugarCartaMapaDerrumbe(tablero, x, y, carta);
+                pudoSerJugado = jugadorCliente.jugarCartaMapaDerrumbe(tablero, x, y, carta);
 
                 if (pudoSerJugado) {
 
                     // despues de jugar elimino la carta de la mano
-                    actual.getManoCartas().remove(posCarta);
+                    jugadorCliente.getManoCartas().remove(posCarta);
 
                     // tomo una nueva si el mazo no esta vacio
                     if (!mazo.noHayCartas()) {
                         Carta nuevaCarta = mazo.tomarCarta();
-                        actual.getManoCartas().add(nuevaCarta);
+                        jugadorCliente.getManoCartas().add(nuevaCarta);
                     }
                 }
 
@@ -309,21 +310,21 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void jugarHerramienta(Jugador objetivo, Carta carta) throws RemoteException {
 
-        getJugadorActual().jugarCarta(objetivo, carta);
+        jugadorCliente.jugarCarta(objetivo, carta);
 
         // despues de jugar elimino la carta de la mano
-        getJugadorActual().getManoCartas().remove(carta);
+        jugadorCliente.getManoCartas().remove(carta);
         // tomo una nueva si el mazo no esta vacio
         if (!mazo.noHayCartas()) {
             Carta nuevaCarta = mazo.tomarCarta();
-            getJugadorActual().getManoCartas().add(nuevaCarta);
+            jugadorCliente.getManoCartas().add(nuevaCarta);
         }
         notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
     }
 
     public void tomarCartaDeMazo() throws RemoteException {
         Carta nuevaCarta = mazo.tomarCarta();
-        getJugadorActual().getManoCartas().add(nuevaCarta);
+        jugadorCliente.getManoCartas().add(nuevaCarta);
         notificarObservadores(Evento.TOMAR_CARTA);
     }
 
@@ -356,7 +357,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         asignoPrimerTurno(ronda);
         //asigno roles de nuevo
         asignarRoles();
-        mazo.repartirCartas(jugadores);
+        mazo.repartirCartas(jugadorCliente, jugadores.values().size());
 
     }
 
@@ -377,7 +378,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public void descartarCarta(Carta carta) throws RemoteException {
-        getJugadorActual().descartarCarta(carta);
+        jugadorCliente.descartarCarta(carta);
         notificarObservadores(Evento.DESCARTAR_CARTA);
     }
 

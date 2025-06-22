@@ -1,9 +1,6 @@
 package Vista;
 
 import Controlador.ControladorJuego;
-import Modelo.Cartas.Carta;
-import Modelo.Cartas.CartaAccion;
-import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
 
 import javax.swing.*;
@@ -30,7 +27,7 @@ public class PanelHerramientas extends JPanel {
     }
 
     public void dibujarHerramientas() {
-        if(panelJugador.getJugador() != null) {
+        if(panelJugador.getJugadorCliente() != null) {
             removeAll();
 
             JLabel pico = new JLabel();
@@ -49,7 +46,7 @@ public class PanelHerramientas extends JPanel {
             String vagonetaRota = "herramientas/VAGONETA ROTA.png";
             String linternaRota = "herramientas/LINTERNA ROTA.png";
 
-            List<Herramienta> herramientasRotas = panelJugador.getJugador().getHerramientasRotas();
+            List<Herramienta> herramientasRotas = panelJugador.getJugadorCliente().getHerramientasRotas();
 
 
             URL urlPico = getClass().getClassLoader().getResource(picoSano);
@@ -74,7 +71,7 @@ public class PanelHerramientas extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(pico);
@@ -95,7 +92,7 @@ public class PanelHerramientas extends JPanel {
                 public void mouseClicked(MouseEvent e) {
 
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(vagoneta);
@@ -116,7 +113,7 @@ public class PanelHerramientas extends JPanel {
                 public void mouseClicked(MouseEvent e) {
 
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(linterna);
@@ -146,9 +143,9 @@ public class PanelHerramientas extends JPanel {
 
         int posCarta = panelJugador.getCartaSeleccionada();
 
-        if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActual()).toString().startsWith("ROMPER")) {
+        if (controlador.jugarHerramienta(posCarta, panelJugador.getJugadorCliente()).toString().startsWith("ROMPER")) {
             JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
-        } else if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActual()).toString().startsWith("REPARAR")) {
+        } else if (controlador.jugarHerramienta(posCarta, panelJugador.getJugadorCliente()).toString().startsWith("REPARAR")) {
             JOptionPane.showMessageDialog(this, "La carta ya esta sana!");
         }else
         {

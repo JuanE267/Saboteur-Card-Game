@@ -13,24 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PanelJugador extends JPanel {
-    private Jugador jugador;
+    private Jugador jugadorCliente;
     private ControladorJuego controlador;
     List<BotonCarta> vistaManoActual = new ArrayList<>();
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(ControladorJuego controlador) {
+    public PanelJugador(ControladorJuego controlador, Jugador jugadorCliente) throws RemoteException {
         this.controlador = controlador;
+        this.jugadorCliente = jugadorCliente;
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
         dibujarManoDeCartas();
     }
 
     private void cartaEnMazoPresionada(BotonCarta boton) throws RemoteException {
-        jugador = controlador.getJugadorActual();
-        if (controlador.esTurnoDe(jugador)) {
+        if (controlador.esTurnoDe(jugadorCliente)) {
             Carta cartaPresionada = boton.getCartaAsociada();
-            cartaSeleccionada = jugador.getManoCartas().indexOf(cartaPresionada);
+            cartaSeleccionada = jugadorCliente.getManoCartas().indexOf(cartaPresionada);
         } else {
             mensajeNoEsTuTurno();
         }
@@ -40,12 +40,14 @@ public class PanelJugador extends JPanel {
         cartaSeleccionada = -1;
     }
 
-    public void dibujarManoDeCartas() {
+    public void dibujarManoDeCartas() throws RemoteException {
         // elimino lo existente
+
         removeAll();
-        if(jugador != null) {
-            // tomo la mano del jugador
-            List<Carta> mano = jugador.getManoCartas();
+        vistaManoActual.clear();
+        if(jugadorCliente != null) {
+            // tomo la mano del jugadorCliente
+            List<Carta> mano = jugadorCliente.getManoCartas();
             // por cada carta creo un JButton
             for (int i = 0; i < mano.size(); i++) {
 
@@ -78,10 +80,12 @@ public class PanelJugador extends JPanel {
             }
         }
 
+        revalidate();
+        repaint();
     }
 
-    public Jugador getJugador() {
-        return jugador;
+    public Jugador getJugadorCliente() {
+        return jugadorCliente;
     }
 
     public int getCartaSeleccionada() {
@@ -92,7 +96,7 @@ public class PanelJugador extends JPanel {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    public void actualizar() {
+    public void actualizar() throws RemoteException {
         dibujarManoDeCartas();
         revalidate();
         repaint();

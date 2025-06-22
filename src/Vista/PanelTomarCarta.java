@@ -4,9 +4,7 @@ import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
@@ -55,7 +53,7 @@ public class PanelTomarCarta extends JPanel {
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e -> {
             try {
-                if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                     try {
                         controlador.tomarCartaDeMazo();
                     } catch (RemoteException ex) {

@@ -6,7 +6,6 @@ import Modelo.Juego;
 import Modelo.Jugador;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -22,11 +21,12 @@ public class PanelTablaJugadores extends JPanel  {
     private Juego juego;
     private int cantidadJugadores;
 
-    public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) {
+    public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
         setLayout(new GridLayout(cantidadJugadores, 1));
         setBorder(new EmptyBorder(200, 100, 200, 0));
+        dibujarListaJugadores();
     }
 
     private void dibujarListaJugadores() throws RemoteException {
@@ -34,7 +34,7 @@ public class PanelTablaJugadores extends JPanel  {
         removeAll();
         cantidadJugadores = controlador.getJugadores().length;
         for (Jugador j : controlador.getJugadores()) {
-            if(j != panelJugador.getJugador()) {
+            if(j != panelJugador.getJugadorCliente()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));
                 jugadorTabla.setBackground(Color.WHITE);
@@ -89,7 +89,7 @@ public class PanelTablaJugadores extends JPanel  {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(pico);
@@ -110,7 +110,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(vagoneta);
@@ -131,7 +131,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(linterna);

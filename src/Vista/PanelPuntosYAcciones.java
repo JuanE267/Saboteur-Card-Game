@@ -30,8 +30,8 @@ public class PanelPuntosYAcciones extends JPanel {
         JLabel puntaje = new JLabel();
         Font letra = new Font("Arial", Font.PLAIN, 27);
         puntaje.setFont(letra);
-        if(panelJugador.getJugador() != null) {
-            puntaje.setText("PUNTAJE: " + panelJugador.getJugador().getPuntaje());
+        if (panelJugador.getJugadorCliente() != null) {
+            puntaje.setText("PUNTAJE: " + panelJugador.getJugadorCliente().getPuntaje());
         }
         JPanel contenedorBotones = new JPanel();
         contenedorBotones.setLayout(new FlowLayout());
@@ -59,7 +59,7 @@ public class PanelPuntosYAcciones extends JPanel {
 
             //si es el turno del jugador, paso el turno y vuelvo a dibujar la mano por si acaso
             try {
-                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                     panelJugador.resetCartaSeleccionada();
                     panelJugador.revalidate();
                     panelJugador.repaint();
@@ -74,7 +74,7 @@ public class PanelPuntosYAcciones extends JPanel {
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
-                }else{
+                } else {
                     mensajeNoEsTuTurno();
                 }
             } catch (RemoteException ex) {
@@ -84,18 +84,13 @@ public class PanelPuntosYAcciones extends JPanel {
         });
     }
 
-    public void comportamientoDescarte(JButton descartar){
+    public void comportamientoDescarte(JButton descartar) {
 
         descartar.addActionListener(e -> {
             // mediante el controlador tomo el jugador de esta ronda y elijo la carta seleccionada en el panel de la interfaz
             try {
-                if(controlador.esTurnoDe(panelJugador.getJugador())) {
-                    Carta cartaADescartar = null;
-                    try {
-                        cartaADescartar = controlador.getJugadorActual().elegirCarta(panelJugador.getCartaSeleccionada());
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
+                if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                    Carta cartaADescartar = panelJugador.getJugadorCliente().elegirCarta(panelJugador.getCartaSeleccionada());
                     try {
                         controlador.descartarCarta(cartaADescartar);
                     } catch (RemoteException ex) {
@@ -116,7 +111,7 @@ public class PanelPuntosYAcciones extends JPanel {
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
-                }else{
+                } else {
                     mensajeNoEsTuTurno();
                 }
             } catch (RemoteException ex) {
@@ -125,8 +120,8 @@ public class PanelPuntosYAcciones extends JPanel {
         });
     }
 
-    public void mensajeNoEsTuTurno(){
-        JOptionPane.showMessageDialog(this,"No es tu turno!");
+    public void mensajeNoEsTuTurno() {
+        JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
     public void actualizar() {

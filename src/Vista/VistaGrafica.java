@@ -12,6 +12,7 @@ public class VistaGrafica {
     private VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
     private ControladorJuego controlador;
+    private Jugador jugadorCliente;
 
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
@@ -21,7 +22,7 @@ public class VistaGrafica {
         // agrego jugadores
         this.ventanaInicioSesion.onClickEntrar(e ->
         {
-            controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
+            this.jugadorCliente = controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
             ocultarInicioSesion();
         });
 
@@ -41,31 +42,11 @@ public class VistaGrafica {
         this.ventanaInicioSesion.setVisible(false);
     }
 
-    public void actualizar(Evento evento) throws RemoteException {
-        switch (evento) {
-            case NUEVA_RONDA -> ventanaJuego.actualizarVentana();
-            case PASAR_TURNO -> ventanaJuego.actualizarTurno();
-            case TOMAR_CARTA, DESCARTAR_CARTA -> {
-                ventanaJuego.getPanelJugador().actualizar();
-                ventanaJuego.panelTomarCarta.actualizar();
-            }
-            case ACTUALIZAR_HERRAMIENTAS -> {
-                ventanaJuego.getPanelHerramientas().actualizar();
-                ventanaJuego.getPanelTablaJugadores().actualizar();
-                ventanaJuego.getPanelJugador().actualizar();
-            }
-            case JUGAR_CARTA_TABLERO -> {
-                ventanaJuego.getPanelTablero().actualizar();
-                ventanaJuego.getPanelJugador().actualizar();
-            }
-            case INICIAR_PARTIDA -> {
-                this.ventanaJuego = new VentanaJuego(controlador);
-                ventanaJuego.inicializarVentana();
-                ventanaJuego.setVisible(true);
-                ventanaJuego.actualizarTurno();
+    public VentanaJuego getVentanaJuego(){
+        return this.ventanaJuego;
+    }
 
-            }
-            case FINALIZAR_PARTIDA -> ventanaJuego.mostrarGanador();
-        }
+    public void iniciarVentanaJuego() throws RemoteException {
+        this.ventanaJuego = new VentanaJuego(controlador, jugadorCliente);
     }
 }

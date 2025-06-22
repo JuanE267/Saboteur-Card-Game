@@ -34,11 +34,11 @@ public class PanelTablero extends JPanel{
         setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
-
+        dibujarTablero();
     }
 
     public void dibujarTablero() {
-
+        removeAll();
         for (int i = 0; i < tablero.getAlto(); i++) {
             for (int j = 0; j < tablero.getAncho(); j++) {
 
@@ -56,7 +56,7 @@ public class PanelTablero extends JPanel{
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
                             super.mouseClicked(e);
                             try {
                                 casilleroEsPresionado(c);
@@ -72,11 +72,15 @@ public class PanelTablero extends JPanel{
                 }
             });
         }
+
+        revalidate();
+        repaint();
     }
 
     private void casilleroEsPresionado(Casillero casillero) throws RemoteException {
+
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
-        Carta cartaAJugar = controlador.getJugadorActual().elegirCarta(cartaSeleccionada);
+        Carta cartaAJugar = panelJugador.getJugadorCliente().elegirCarta(cartaSeleccionada);
         Boolean pudoSerJugado = false;
         Boolean paseTurnoDespuesDeGirar = false;
 

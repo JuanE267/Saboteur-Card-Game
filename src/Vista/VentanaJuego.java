@@ -1,7 +1,6 @@
 package Vista;
 
 import Controlador.ControladorJuego;
-import Modelo.Enums.Evento;
 import Modelo.Jugador;
 
 import javax.swing.*;
@@ -12,16 +11,21 @@ public class VentanaJuego extends JFrame {
     private ControladorJuego controlador;
     private PanelTablero panelTablero;
     private PanelJugador panelJugador;
-    PanelTablaJugadores panelTablaJugadores;
-    PanelTomarCarta panelTomarCarta;
-    PanelPuntosYAcciones panelPuntosYAcciones;
-    PanelHerramientas panelHerramientas;
-    JPanel contenedorJugador;
-    JLabel turnoActual;
-    String nombreJugadorActual = "";
 
-    public VentanaJuego(ControladorJuego controlador) throws RemoteException {
+    private PanelTablaJugadores panelTablaJugadores;
+    private PanelTomarCarta panelTomarCarta;
+    private PanelPuntosYAcciones panelPuntosYAcciones;
+    private PanelHerramientas panelHerramientas;
+    private JPanel contenedorJugador;
+    private JLabel turnoActual;
+    private Jugador jugadorCliente;
+    private String nombreJugadorActual = "";
+
+    public VentanaJuego(ControladorJuego controlador, Jugador jugadorCliente) throws RemoteException {
+
         this.controlador = controlador;
+        this.jugadorCliente = jugadorCliente;
+
         setTitle("Saboteur - Juan Espinosa");
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,11 +36,13 @@ public class VentanaJuego extends JFrame {
         // label que muestra el turno actual
         turnoActual = new JLabel();
         turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
-        turnoActual.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+        turnoActual.setHorizontalAlignment(SwingConstants.CENTER);
         turnoActual.setText("Es el Turno de: " + nombreJugadorActual);
         add(turnoActual, BorderLayout.NORTH);
 
         inicializarVentana();
+
+        setVisible(true);
     }
 
 
@@ -49,7 +55,7 @@ public class VentanaJuego extends JFrame {
         add(contenedorJugador, BorderLayout.SOUTH);
 
 
-        panelJugador = new PanelJugador(controlador);
+        panelJugador = new PanelJugador(controlador, jugadorCliente);
 
         panelTomarCarta = new PanelTomarCarta(panelJugador, controlador);
 
@@ -64,7 +70,6 @@ public class VentanaJuego extends JFrame {
         contenedorJugador.add(panelHerramientas);
 
 
-
         // contiene el mapa con las cartas
         panelTablero = new PanelTablero(panelJugador, controlador);
         add(panelTablero, BorderLayout.CENTER);
@@ -72,10 +77,13 @@ public class VentanaJuego extends JFrame {
         // contiene el listado de jugadores
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
-        setVisible(true);
+
+        revalidate();
+        repaint();
     }
 
     public void actualizarTurno() throws RemoteException {
+        // jugador del turno
         Jugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
         panelHerramientas.actualizar();
@@ -89,7 +97,7 @@ public class VentanaJuego extends JFrame {
     }
 
     public void actualizarVentana() throws RemoteException {
-        actualizarVentana();
+        actualizarTurno();
         revalidate();
         repaint();
     }
