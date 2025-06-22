@@ -38,11 +38,6 @@ public class AppServidor {
         try {
             servidor.iniciar(modelo);
 
-            ControladorJuego controlador = new ControladorJuego(modelo);
-            VentanaServidor ventanaServidor = new VentanaServidor(controlador);
-            controlador.setVistaServidor(ventanaServidor);
-            ventanaServidor.iniciar();
-
             System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block

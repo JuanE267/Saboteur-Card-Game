@@ -53,9 +53,6 @@ public class VentanaInicioSesion extends JFrame {
         this.btnEntrar.addActionListener(listener);
     }
 
-    private void mostrarListado() {
-        setVisible(false);
-    }
 
     public String getNombreJugador() {
         return this.textUsuario.getText();

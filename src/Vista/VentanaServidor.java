@@ -51,6 +51,7 @@ public class VentanaServidor extends JFrame {
         btnIniciarPartida.addActionListener(e -> {
             try {
                 controlador.iniciarPartida();
+                ocultarVentanaServidor();
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
@@ -58,6 +59,10 @@ public class VentanaServidor extends JFrame {
 
         add(contentPane);
 
+    }
+
+    private void ocultarVentanaServidor() {
+        setVisible(false);
     }
 
     public void actualizarListaJugadores(Jugador[] jugadores) {
