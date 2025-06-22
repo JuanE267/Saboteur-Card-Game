@@ -96,8 +96,6 @@ public class Ventana extends JFrame implements Observer {
             JOptionPane.showMessageDialog(this, "El ganador es: " + controlador.getGanador().getNombre() +
                     "\n con un puntaje de: " + controlador.getGanador().getPuntaje());
             System.exit(0);
-        }else{
-            inicializarVentana();
         }
     }
 }
