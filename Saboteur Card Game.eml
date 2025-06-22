@@ -2,4 +2,7 @@
 <component inherit-compiler-output="true" inheritJdk="true">
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
+	<levels>
+		<level name="LibreriaRMIMVC" value="project"/>
+	</levels>
 </component>

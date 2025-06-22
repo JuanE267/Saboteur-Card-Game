@@ -17,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.List;
 
-public class PanelTablaJugadores extends JPanel  implements Observer {
+public class PanelTablaJugadores extends JPanel  {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
@@ -173,7 +173,6 @@ public class PanelTablaJugadores extends JPanel  implements Observer {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    @Override
     public void actualizar() {
         dibujarListaJugadores();
     }

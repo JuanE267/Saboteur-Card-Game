@@ -65,28 +65,29 @@ public class CartaAccion extends Carta {
     // romper herramienta
     private void romperHerramienta(Jugador afectado, TipoAccion tipoAccion) {
 
-        Herramienta herramienta = null;
+            Herramienta herramienta = null;
 
-        switch (tipoAccion) {
-            case ROMPERPICO -> herramienta = Herramienta.PICO;
-            case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
-            case ROMPERLINTERNA -> herramienta = Herramienta.LINTERNA;
-        }
+            switch (tipoAccion) {
+                case ROMPERPICO -> herramienta = Herramienta.PICO;
+                case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
+                case ROMPERLINTERNA -> herramienta = Herramienta.LINTERNA;
+            }
 
-        boolean yaEstaRota = false;
-        List<Herramienta> herramientasRotas = afectado.getHerramientasRotas();
-        for (Herramienta h : herramientasRotas) {
-            if (h == herramienta) yaEstaRota = true;
-        }
-        if (!yaEstaRota) {
-            herramientasRotas.add(herramienta);
-        } else {
-            System.out.println("la herramienta del jugador " + afectado.getNombre() + "ya esta rota");
-        }
+            boolean yaEstaRota = false;
+            List<Herramienta> herramientasRotas = afectado.getHerramientasRotas();
+            for (Herramienta h : herramientasRotas) {
+                if (h == herramienta) yaEstaRota = true;
+            }
+            if (!yaEstaRota) {
+                herramientasRotas.add(herramienta);
+            } else {
+                System.out.println("la herramienta del jugador " + afectado.getNombre() + "ya esta rota");
+            }
+
     }
 
     //reparar herramienta
-    private void repararHerramienta(Jugador afectado, TipoAccion tipoAccion) {
+    private Boolean repararHerramienta(Jugador afectado, TipoAccion tipoAccion) {
         Herramienta herramienta = null;
 
         switch (tipoAccion) {
@@ -102,9 +103,11 @@ public class CartaAccion extends Carta {
         }
         if (!yaEstaSana) {
             herramientasRotas.remove(herramienta);
+            return true;
         } else {
-            System.out.println("la herramienta del jugador " + afectado.getNombre() + "ya esta sana");
+            System.out.println("la herramienta del jugador " + afectado.getNombre() + " ya esta sana");
         }
+        return false;
     }
 
     public Boolean verDestino(int x, int y, Tablero tablero) {

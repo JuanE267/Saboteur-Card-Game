@@ -1,14 +1,16 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.Enums.Evento;
 import Modelo.Juego;
 import Modelo.Jugador;
 import Observer.Observer;
+import jdk.jfr.Event;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Ventana extends JFrame implements Observer {
+public class Ventana extends JFrame {
     private ControladorJuego controlador;
     private PanelTablero panelTablero;
     private PanelJugador panelJugador;
@@ -21,6 +23,7 @@ public class Ventana extends JFrame implements Observer {
 
     public Ventana(ControladorJuego controlador) {
         this.controlador = controlador;
+        controlador.setVentana(this);
         setTitle("Saboteur - Juan Espinosa");
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,14 +75,6 @@ public class Ventana extends JFrame implements Observer {
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
 
-        controlador.agregarObserver(panelJugador);
-        controlador.agregarObserver(panelTablero);
-        controlador.agregarObserver(panelTablaJugadores);
-        controlador.agregarObserver(panelTomarCarta);
-        controlador.agregarObserver(panelPuntosYAcciones);
-        controlador.agregarObserver(panelHerramientas);
-        controlador.agregarObserver(this);
-
         setVisible(true);
     }
 
@@ -89,13 +84,24 @@ public class Ventana extends JFrame implements Observer {
         panelHerramientas.dibujarHerramientas();
     }
 
-    @Override
-    public void actualizar() {
-        actualizarTurno();
-        if (controlador.getGanador() != null) {
-            JOptionPane.showMessageDialog(this, "El ganador es: " + controlador.getGanador().getNombre() +
-                    "\n con un puntaje de: " + controlador.getGanador().getPuntaje());
-            System.exit(0);
+    public void actualizarVentana(){
+        inicializarVentana();
+    }
+
+    public void actualizar(Evento evento){
+        switch (evento){
+            case NUEVA_RONDA -> actualizarVentana();
+            case PASAR_TURNO -> actualizarTurno();
+            case TOMAR_CARTA, DESCARTAR_CARTA -> panelJugador.actualizar();
+            case ACTUALIZAR_HERRAMIENTAS -> {
+                panelHerramientas.actualizar();
+                panelTablaJugadores.actualizar();
+            }
+            case JUGAR_CARTA_TABLERO -> {
+                panelTablero.actualizar();
+                panelJugador.actualizar();
+            }
         }
     }
+
 }

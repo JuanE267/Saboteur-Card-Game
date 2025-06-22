@@ -17,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.net.URL;
 
-public class PanelHerramientas extends JPanel implements Observer {
+public class PanelHerramientas extends JPanel {
 
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
@@ -75,10 +75,10 @@ public class PanelHerramientas extends JPanel implements Observer {
         pico.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
                     herramientaEsPresionada(pico);
-                }else{
+                } else {
                     mensajeNoEsTuTurno();
                 }
             }
@@ -88,10 +88,10 @@ public class PanelHerramientas extends JPanel implements Observer {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
                     herramientaEsPresionada(vagoneta);
-                }else{
+                } else {
                     mensajeNoEsTuTurno();
                 }
             }
@@ -101,10 +101,10 @@ public class PanelHerramientas extends JPanel implements Observer {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                if(controlador.esTurnoDe(panelJugador.getJugador())) {
+                if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
                     herramientaEsPresionada(linterna);
-                }else{
+                } else {
                     mensajeNoEsTuTurno();
                 }
             }
@@ -122,25 +122,20 @@ public class PanelHerramientas extends JPanel implements Observer {
     private void herramientaEsPresionada(JLabel herr) {
 
         int posCarta = panelJugador.getCartaSeleccionada();
-        Carta cartaHerramienta = panelJugador.getJugador().elegirCarta(posCarta);
-        List<TipoAccion> tipos = ((CartaAccion)cartaHerramienta).getTipoAccion();
 
-        switch (tipos.getFirst()){
-            case REPARARPICO, REPARARLINTERNA, REPARARVAGONETA -> {
-                controlador.jugarHerramienta(posCarta, controlador.getJugadorActual());
-
-                panelJugador.resetCartaSeleccionada();
-                panelJugador.revalidate();
-                panelJugador.repaint();
-                controlador.verificarSiTerminoLaRonda();
-                controlador.pasarTurno();
-            }
-            default -> JOptionPane.showMessageDialog(this , "No podes romper tu propia herramienta!");
+        if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActual()).toString().startsWith("ROMPER")) {
+            JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
+        } else if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActual()).toString().startsWith("REPARAR")) {
+            JOptionPane.showMessageDialog(this, "La carta ya esta sana!");
+        }else
+        {
+            panelJugador.resetCartaSeleccionada();
+            controlador.verificarSiTerminoLaRonda();
+            controlador.pasarTurno();
 
         }
-
-
     }
+
 
     private void setImagen(JLabel herr, URL url) {
         if (url != null) {
@@ -153,11 +148,10 @@ public class PanelHerramientas extends JPanel implements Observer {
     }
 
 
-    public void mensajeNoEsTuTurno(){
-        JOptionPane.showMessageDialog(this,"No es tu turno!");
+    public void mensajeNoEsTuTurno() {
+        JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    @Override
     public void actualizar() {
         dibujarHerramientas();
     }

@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class PanelPuntosYAcciones extends JPanel  implements Observer {
+public class PanelPuntosYAcciones extends JPanel {
 
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
@@ -96,7 +96,6 @@ public class PanelPuntosYAcciones extends JPanel  implements Observer {
         JOptionPane.showMessageDialog(this,"No es tu turno!");
     }
 
-    @Override
     public void actualizar() {
         dibujarPanel();
     }

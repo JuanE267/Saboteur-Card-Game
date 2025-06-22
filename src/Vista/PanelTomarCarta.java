@@ -11,7 +11,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PanelTomarCarta extends JPanel implements Observer {
+public class PanelTomarCarta extends JPanel {
 
 
     private PanelJugador panelJugador;
@@ -73,8 +73,4 @@ public class PanelTomarCarta extends JPanel implements Observer {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    @Override
-    public void actualizar() {
-        dibujarPanel();
-    }
 }

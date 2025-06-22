@@ -1,5 +1,7 @@
 package Observer;
 
+import Modelo.Enums.Evento;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +12,9 @@ public class Observable {
         observers.add(observer);
     }
 
-    public void notificarObservers(){
-        List<Observer> copiaObservers = new ArrayList<>(observers);
-        for(Observer o : copiaObservers){
-            o.actualizar();
+    public void notificarObservers(Evento evento){
+        for(Observer o : this.observers) {
+            o.actualizar(evento);
         }
-        observers = copiaObservers;
     }
 }

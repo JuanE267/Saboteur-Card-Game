@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelTablero extends JPanel implements Observer {
+public class PanelTablero extends JPanel{
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
@@ -38,6 +38,35 @@ public class PanelTablero extends JPanel implements Observer {
 
         dibujarTablero();
 
+    }
+
+    public void dibujarTablero() {
+
+        for (int i = 0; i < tablero.getAlto(); i++) {
+            for (int j = 0; j < tablero.getAncho(); j++) {
+
+                Casillero casillero = new Casillero(i, j);
+                casillero.setPreferredSize(new Dimension(ANCHO_CASILLERO, ALTO_CASILLERO));
+                casillero.setBorder(BorderFactory.createDashedBorder(Color.BLACK));
+                setImagenCasillero(casillero);
+                listaCasilleros.add(casillero);
+                add(casillero);
+            }
+        }
+
+        for (Casillero c : listaCasilleros) {
+            c.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                        super.mouseClicked(e);
+                        casilleroEsPresionado(c);
+                    } else {
+                        mensajeNoEsTuTurno();
+                    }
+                }
+            });
+        }
     }
 
     private void casilleroEsPresionado(Casillero casillero) {
@@ -99,54 +128,18 @@ public class PanelTablero extends JPanel implements Observer {
         }
     }
 
-    public void dibujarTablero() {
-
-        removeAll();
-        for (int i = 0; i < tablero.getAlto(); i++) {
-            for (int j = 0; j < tablero.getAncho(); j++) {
-
-                Casillero casillero = new Casillero(i, j);
-                casillero.setPreferredSize(new Dimension(ANCHO_CASILLERO, ALTO_CASILLERO));
-                casillero.setBorder(BorderFactory.createDashedBorder(Color.BLACK));
-                listaCasilleros.add(setImagenCasillero(casillero));
-                add(casillero);
-            }
-        }
-
-        for (Casillero c : listaCasilleros) {
-            c.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        casilleroEsPresionado(c);
-                    } else {
-                        mensajeNoEsTuTurno();
-                    }
-                }
-            });
-        }
-    }
-
-    public Casillero setImagenCasillero(Casillero casillero) {
+    public void setImagenCasillero(Casillero casillero) {
 
         Carta carta = tablero.getCarta(casillero.posX(), casillero.posY());
 
         // si la carta no esta vacia (inicio o destinos)
         if (carta != null) {
             // cargo y escalo la imagen
-            if (carta instanceof CartaDestino) {
-                ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + ((CartaDestino) carta).getImg()));
-                Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
-                casillero.setIcon(new ImageIcon(imagen));
-            } else {
-                ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + carta.getImg()));
-                Image imagen = icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH);
-                casillero.setIcon(new ImageIcon(imagen));
-
-            }
+            ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + carta.getImg()));
+            casillero.setIcon(new ImageIcon(icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH)));
+        } else {
+            casillero.setIcon(null);
         }
-        return casillero;
 
     }
 
@@ -154,10 +147,11 @@ public class PanelTablero extends JPanel implements Observer {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    @Override
     public void actualizar() {
         for(Casillero c: listaCasilleros){
             setImagenCasillero(c);
+            revalidate();
+            repaint();
         }
     }
 }

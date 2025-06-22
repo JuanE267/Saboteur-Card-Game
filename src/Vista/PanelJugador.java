@@ -14,9 +14,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelJugador extends JPanel  implements Observer {
+public class PanelJugador extends JPanel {
     private Jugador jugador;
     private ControladorJuego controlador;
+    List<BotonCarta> vistaManoActual = new ArrayList<>();
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
@@ -47,7 +48,6 @@ public class PanelJugador extends JPanel  implements Observer {
 
         // tomo la mano del jugador
         List<Carta> mano = jugador.getManoCartas();
-        List<BotonCarta> vistaManoActual = new ArrayList<>();
         // por cada carta creo un JButton
         for (int i = 0; i < mano.size(); i++) {
 
@@ -87,7 +87,6 @@ public class PanelJugador extends JPanel  implements Observer {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    @Override
     public void actualizar() {
         dibujarManoDeCartas();
     }
