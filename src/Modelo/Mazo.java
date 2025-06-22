@@ -7,9 +7,12 @@ import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Mazo {
+public class Mazo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<Carta> cartas = new ArrayList<>();
 

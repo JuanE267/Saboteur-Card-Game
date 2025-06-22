@@ -7,11 +7,14 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Jugador {
+public class Jugador implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String nombre;
     private static int ID = 0;

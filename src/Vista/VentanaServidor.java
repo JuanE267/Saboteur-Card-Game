@@ -8,14 +8,17 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.rmi.RemoteException;
 
-public class VentanaJugadores extends JFrame {
+public class VentanaServidor extends JFrame {
+    private ControladorJuego controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
-    private JList listUsuarios;
+    private JList listJugadores;
 
-    public VentanaJugadores(){
+    public VentanaServidor(ControladorJuego controlador){
+        this.controlador = controlador;
+        this.controlador.setVistaServidor(this);
         setTitle("Saboteur - Juan Espinosa");
         setSize(230, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -23,7 +26,7 @@ public class VentanaJugadores extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
 
-        inicializarVentana();
+
     }
 
     private void inicializarVentana() {
@@ -40,31 +43,37 @@ public class VentanaJugadores extends JFrame {
         btnIniciarPartida = new JButton("Iniciar Partida");
         contentPane.add(btnIniciarPartida, "cell 0 1, alignx center ");
 
-        listUsuarios = new JList();
-        listUsuarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        scrollPane.setViewportView(listUsuarios);
+        listJugadores = new JList();
+        listJugadores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        scrollPane.setViewportView(listJugadores);
+
+        // inicio la partida
+        btnIniciarPartida.addActionListener(e -> {
+            try {
+                controlador.iniciarPartida();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        });
 
         add(contentPane);
 
     }
 
-    public void onClickIniciarPartida(ActionListener listener){
+    public void actualizarListaJugadores(Jugador[] jugadores) {
+
+    }
+
+
+    public void iniciar() {
+        inicializarVentana();
+        setVisible(true);
+    }
+
+    public void onClickIniciarPartida(ActionListener listener) {
         this.btnIniciarPartida.addActionListener(listener);
     }
 
-    public void actualizarListaJugadores(Jugador[] jugadores) {
-        this.listUsuarios.setModel(new AbstractListModel() {
-            @Override
-            public Object getElementAt(int arg0) {
-                return jugadores[arg0].getNombre();
-            }
-            @Override
-            public int getSize() {
-                return jugadores.length;
-            }
-        });
+    public void actualizar() {
     }
-
-
-
 }

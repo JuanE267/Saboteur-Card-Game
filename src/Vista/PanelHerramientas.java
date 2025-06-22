@@ -73,15 +73,19 @@ public class PanelHerramientas extends JPanel {
             pico.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        try {
-                            herramientaEsPresionada(pico);
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
+                    try {
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            try {
+                                herramientaEsPresionada(pico);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            mensajeNoEsTuTurno();
                         }
-                    } else {
-                        mensajeNoEsTuTurno();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
                     }
                 }
             });
@@ -90,15 +94,19 @@ public class PanelHerramientas extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
 
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        try {
-                            herramientaEsPresionada(vagoneta);
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
+                    try {
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            try {
+                                herramientaEsPresionada(vagoneta);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            mensajeNoEsTuTurno();
                         }
-                    } else {
-                        mensajeNoEsTuTurno();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
                     }
                 }
             });
@@ -107,15 +115,19 @@ public class PanelHerramientas extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
 
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        try {
-                            herramientaEsPresionada(linterna);
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
+                    try {
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            try {
+                                herramientaEsPresionada(linterna);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            mensajeNoEsTuTurno();
                         }
-                    } else {
-                        mensajeNoEsTuTurno();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
                     }
                 }
             });

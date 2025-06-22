@@ -26,7 +26,7 @@ public class PanelTablero extends JPanel{
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
 
-    public PanelTablero(PanelJugador jugador, ControladorJuego controlador) {
+    public PanelTablero(PanelJugador jugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = jugador;
         tablero = controlador.getTablero();
@@ -55,15 +55,19 @@ public class PanelTablero extends JPanel{
             c.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                        super.mouseClicked(e);
-                        try {
-                            casilleroEsPresionado(c);
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
+                    try {
+                        if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                            super.mouseClicked(e);
+                            try {
+                                casilleroEsPresionado(c);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            mensajeNoEsTuTurno();
                         }
-                    } else {
-                        mensajeNoEsTuTurno();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
                     }
                 }
             });

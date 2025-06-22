@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class CartaAccion extends Carta {
 
+    private static final long serialVersionUID = 1L;
     private List<TipoAccion> tipo;
 
     public List<TipoAccion> getTipoAccion() {

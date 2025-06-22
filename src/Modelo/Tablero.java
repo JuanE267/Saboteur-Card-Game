@@ -9,13 +9,16 @@ import Modelo.Enums.Rol;
 import Modelo.Enums.TipoCarta;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tablero {
+public class Tablero implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int ancho = 15;
     private int alto = 9;

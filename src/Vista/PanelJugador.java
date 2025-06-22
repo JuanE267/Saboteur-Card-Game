@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class PanelJugador extends JPanel {
         dibujarManoDeCartas();
     }
 
-    private void cartaEnMazoPresionada(BotonCarta boton) {
+    private void cartaEnMazoPresionada(BotonCarta boton) throws RemoteException {
         jugador = controlador.getJugadorActual();
         if (controlador.esTurnoDe(jugador)) {
             Carta cartaPresionada = boton.getCartaAsociada();
@@ -67,7 +68,13 @@ public class PanelJugador extends JPanel {
 
             // implemento actionListener para cada boton en el mazo actual
             for (BotonCarta carta : vistaManoActual) {
-                carta.addActionListener(e -> cartaEnMazoPresionada(carta));
+                carta.addActionListener(e -> {
+                    try {
+                        cartaEnMazoPresionada(carta);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                });
             }
         }
 

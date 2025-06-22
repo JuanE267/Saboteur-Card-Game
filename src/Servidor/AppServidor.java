@@ -1,5 +1,7 @@
 package Servidor;
 
+import Cliente.AppServidorCliente;
+import Controlador.ControladorJuego;
 import Modelo.Juego;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
@@ -30,9 +32,12 @@ public class AppServidor {
         );
 
         Juego modelo = new Juego();
+        ControladorJuego controladorJuego = new ControladorJuego();
         Servidor servidor = new Servidor(ip, Integer.parseInt(port));
+        AppServidorCliente serverCliente = new AppServidorCliente();
         try {
             servidor.iniciar(modelo);
+            serverCliente.iniciar();
             System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -41,5 +46,7 @@ public class AppServidor {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
+
 }

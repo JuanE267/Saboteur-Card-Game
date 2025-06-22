@@ -3,7 +3,9 @@ package Modelo.Cartas;
 import Modelo.Enums.TipoCarta;
 import Modelo.Jugador;
 
-public abstract class Carta {
+import java.io.Serializable;
+
+public abstract class Carta implements Serializable {
 
     private int id;
     private TipoCarta tipo;

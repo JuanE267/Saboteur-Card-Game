@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import Modelo.Enums.Evento;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
-public class Juego extends ObservableRemoto {
+public class Juego extends ObservableRemoto  implements IJuego{
 
     private HashMap<Integer, Jugador> jugadores;
     private Mazo mazo;
@@ -34,6 +35,8 @@ public class Juego extends ObservableRemoto {
     }
 
     public void iniciarPartida() throws RemoteException {
+        asignoPrimerTurno(ronda);
+        this.turno = turnoInicial;
         asignarRoles();
         mazo.repartirCartas(jugadores);
         notificarObservadores(Evento.INICIAR_PARTIDA);
@@ -46,7 +49,7 @@ public class Juego extends ObservableRemoto {
         return jugador;
     }
 
-    private void asignoPrimerTurno(int ronda) {
+    public void asignoPrimerTurno(int ronda) {
         if (ronda == 0) {
             // el jugador en empezar es el de mayor edad
             Jugador mayorEdad = jugadores.get(0);
@@ -211,7 +214,7 @@ public class Juego extends ObservableRemoto {
     }
 
 
-    public Jugador finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
+    public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
         String mensajeGanador;
 
@@ -248,7 +251,7 @@ public class Juego extends ObservableRemoto {
             reiniciarRonda(ronda);
             //reinicio la vista
             notificarObservadores(Evento.NUEVA_RONDA);
-            pasarRonda();
+            ronda++;
         } else {
 
             Jugador mayorPuntaje = jugadores.get(0);
@@ -258,8 +261,8 @@ public class Juego extends ObservableRemoto {
                 }
             }
             ganador = mayorPuntaje;
+            notificarObservadores(Evento.FINALIZAR_PARTIDA);
         }
-        return ganador;
     }
 
 
@@ -367,9 +370,6 @@ public class Juego extends ObservableRemoto {
         return ronda;
     }
 
-    public void pasarRonda() {
-        ronda += 1;
-    }
 
     public boolean hayCaminoHastaOro() {
         return tablero.hayCaminoHastaOro();
@@ -392,6 +392,9 @@ public class Juego extends ObservableRemoto {
         notificarObservadores(Evento.DESCARTAR_CARTA);
     }
 
+    public String getGanador(){
+        return this.ganador.getNombre();
+    }
 
 }
 

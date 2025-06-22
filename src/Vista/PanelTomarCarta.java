@@ -17,14 +17,14 @@ public class PanelTomarCarta extends JPanel {
     private ControladorJuego controlador;
     private final int TAM_CARTA = 75;
 
-    public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) {
+    public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.panelJugador = panelJugador;
         this.controlador = controlador;
 
         dibujarPanel();
     }
 
-    public void dibujarPanel() {
+    public void dibujarPanel() throws RemoteException {
         removeAll();
 
         JButton tomarCarta = new JButton();
@@ -55,23 +55,27 @@ public class PanelTomarCarta extends JPanel {
 
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e -> {
-            if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                try {
-                    controlador.tomarCartaDeMazo();
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
+            try {
+                if (controlador.esTurnoDe(panelJugador.getJugador())) {
+                    try {
+                        controlador.tomarCartaDeMazo();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                    panelJugador.revalidate();
+                    panelJugador.repaint();
+                    panelJugador.dibujarManoDeCartas();
+                    dibujarPanel();
+                    try {
+                        controlador.pasarTurno();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    mensajeNoEsTuTurno();
                 }
-                panelJugador.revalidate();
-                panelJugador.repaint();
-                panelJugador.dibujarManoDeCartas();
-                dibujarPanel();
-                try {
-                    controlador.pasarTurno();
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                mensajeNoEsTuTurno();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
             }
         });
     }

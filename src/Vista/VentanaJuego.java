@@ -6,6 +6,7 @@ import Modelo.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class VentanaJuego extends JFrame {
     private ControladorJuego controlador;
@@ -19,7 +20,7 @@ public class VentanaJuego extends JFrame {
     JLabel turnoActual;
     String nombreJugadorActual = "";
 
-    public VentanaJuego(ControladorJuego controlador) {
+    public VentanaJuego(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         setTitle("Saboteur - Juan Espinosa");
         setSize(1800, 1000);
@@ -39,7 +40,7 @@ public class VentanaJuego extends JFrame {
     }
 
 
-    public VentanaJuego inicializarVentana() {
+    public void inicializarVentana() throws RemoteException {
 
 
         // contiene las cartas, puntos y las herramientas del jugador
@@ -73,16 +74,15 @@ public class VentanaJuego extends JFrame {
         add(panelTablaJugadores, BorderLayout.WEST);
 
         setVisible(true);
-        return this;
     }
 
-    public void actualizarTurno() {
+    public void actualizarTurno() throws RemoteException {
         Jugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
         panelHerramientas.dibujarHerramientas();
     }
 
-    public void actualizarVentana(){
+    public void actualizarVentana() throws RemoteException {
         inicializarVentana();
     }
 
@@ -132,5 +132,9 @@ public class VentanaJuego extends JFrame {
 
     public void setPanelHerramientas(PanelHerramientas panelHerramientas) {
         this.panelHerramientas = panelHerramientas;
+    }
+
+    public void mostrarGanador() throws RemoteException {
+        JOptionPane.showMessageDialog(this, "El ganador es " + controlador.getGanador());
     }
 }
