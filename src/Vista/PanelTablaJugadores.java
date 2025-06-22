@@ -194,5 +194,7 @@ public class PanelTablaJugadores extends JPanel  {
 
     public void actualizar() throws RemoteException {
         dibujarListaJugadores();
+        revalidate();
+        repaint();
     }
 }

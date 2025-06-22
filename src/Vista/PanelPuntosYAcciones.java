@@ -131,5 +131,7 @@ public class PanelPuntosYAcciones extends JPanel {
 
     public void actualizar() {
         dibujarPanel();
+        revalidate();
+        repaint();
     }
 }

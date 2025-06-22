@@ -84,7 +84,6 @@ public class VentanaJuego extends JFrame {
         panelTablero.actualizar();
         panelTomarCarta.actualizar();
         panelPuntosYAcciones.actualizar();
-
         revalidate();
         repaint();
     }

@@ -81,6 +81,8 @@ public class PanelTomarCarta extends JPanel {
 
     public void actualizar() throws RemoteException {
         dibujarPanel();
+        revalidate();
+        repaint();
     }
 
     public void mensajeNoEsTuTurno() {

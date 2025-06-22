@@ -94,5 +94,7 @@ public class PanelJugador extends JPanel {
 
     public void actualizar() {
         dibujarManoDeCartas();
+        revalidate();
+        repaint();
     }
 }

@@ -177,5 +177,7 @@ public class PanelHerramientas extends JPanel {
 
     public void actualizar() {
         dibujarHerramientas();
+        revalidate();
+        repaint();
     }
 }

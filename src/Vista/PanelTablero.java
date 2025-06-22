@@ -158,5 +158,7 @@ public class PanelTablero extends JPanel{
 
     public void actualizar() {
         dibujarTablero();
+        revalidate();
+        repaint();
     }
 }
