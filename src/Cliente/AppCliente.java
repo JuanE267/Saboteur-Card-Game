@@ -49,7 +49,6 @@ public class AppCliente {
         ControladorJuego controlador = new ControladorJuego();
         VistaGrafica vistaGrafica = new VistaGrafica(controlador);
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
-        vistaGrafica.iniciar();
         try {
             c.iniciar(controlador);
         } catch (RemoteException e) {
@@ -59,5 +58,7 @@ public class AppCliente {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        vistaGrafica.iniciar();
+
     }
 }

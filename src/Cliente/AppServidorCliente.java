@@ -20,8 +20,8 @@ public class AppServidorCliente {
 
         ControladorJuego controlador = new ControladorJuego();
         VentanaServidor ventanaServidor = new VentanaServidor(controlador);
+        controlador.setVistaServidor(ventanaServidor);
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
-        ventanaServidor.iniciar();
 
         try {
             c.iniciar(controlador);
@@ -32,6 +32,8 @@ public class AppServidorCliente {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        ventanaServidor.iniciar();
+
 
 
     }

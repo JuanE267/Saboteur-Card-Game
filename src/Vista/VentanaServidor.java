@@ -61,7 +61,16 @@ public class VentanaServidor extends JFrame {
     }
 
     public void actualizarListaJugadores(Jugador[] jugadores) {
-
+        this.listJugadores.setModel(new AbstractListModel() {
+            @Override
+            public Object getElementAt(int arg0) {
+                return jugadores[arg0].getNombre();
+            }
+            @Override
+            public int getSize() {
+                return jugadores.length;
+            }
+        });
     }
 
 

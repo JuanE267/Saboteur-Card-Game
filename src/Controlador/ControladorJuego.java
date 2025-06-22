@@ -126,9 +126,10 @@ public class ControladorJuego implements IControladorRemoto {
 
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
+        System.out.println("ControladorJuego recibió evento: " + o);
         if (o instanceof Evento) {
             if (o == Evento.NUEVO_USUARIO) {
-                this.vistaServidor.actualizarListaJugadores(this.juego.getJugadores());
+                if(vistaServidor != null) this.vistaServidor.actualizarListaJugadores(this.juego.getJugadores());
             } else {
                 vista.actualizar((Evento) o);
             }
