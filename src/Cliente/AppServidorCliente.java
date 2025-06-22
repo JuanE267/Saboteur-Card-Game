@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class AppServidorCliente {
-    public static void main(String[] args){
+    public void iniciar(){
         ArrayList<String> ips = Util.getIpDisponibles();
         String ip = "192.168.1.33";
         String port = "1";

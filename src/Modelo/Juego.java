@@ -14,7 +14,7 @@ import Modelo.Enums.Evento;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
-public class Juego extends ObservableRemoto  implements IJuego{
+public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, Jugador> jugadores;
     private Mazo mazo;
@@ -28,7 +28,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     public Juego() {
         this.tablero = new Tablero();
         this.mazo = new Mazo();
-        this.jugadores = new HashMap<Integer, Jugador>();
+        this.jugadores = new HashMap<>();
         ronda = 1;
         // asigno los roles y reparto las cartas
 
@@ -36,7 +36,6 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
     public void iniciarPartida() throws RemoteException {
         asignoPrimerTurno(ronda);
-        this.turno = turnoInicial;
         asignarRoles();
         mazo.repartirCartas(jugadores);
         notificarObservadores(Evento.INICIAR_PARTIDA);
@@ -50,7 +49,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void asignoPrimerTurno(int ronda) {
-        if (ronda == 0) {
+        if (ronda == 1) {
             // el jugador en empezar es el de mayor edad
             Jugador mayorEdad = jugadores.get(0);
             for (Jugador j : jugadores.values()) {
@@ -59,10 +58,9 @@ public class Juego extends ObservableRemoto  implements IJuego{
                 }
             }
             turnoInicial = jugadores.get(mayorEdad.getId()).getId();
-        } else {
-            turnoInicial++;
-        }
 
+            this.turno = turnoInicial;
+        }
     }
 
     public Tablero getTablero() {
@@ -89,7 +87,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
                 Collections.shuffle(roles);
 
                 jugadores.forEach((id, j) -> {
-                        j.setRol(roles.removeFirst());
+                    j.setRol(roles.removeFirst());
                 });
             }
             case 4 -> {
@@ -221,7 +219,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         if (ganaronLosMineros) {
             mensajeGanador = "GANARON LOS MINEROS";
 
-            jugadores.forEach((id,j)->{
+            jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.MINERO) {
                     j.sumarPuntos(4);
                 } else {
@@ -231,7 +229,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         } else {
             mensajeGanador = "GANARON LOS SABOTEADORES";
 
-            jugadores.forEach((id, j)->{
+            jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.SABOTEADOR) {
                     j.sumarPuntos(4);
                 } else {
@@ -242,7 +240,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
         System.out.println(mensajeGanador);
         System.out.println("Se revelan los roles..");
-        jugadores.forEach((id,j) ->  {
+        jugadores.forEach((id, j) -> {
             System.out.println(j.getNombre() + " -> " + j.getRol());
         });
 
@@ -329,10 +327,6 @@ public class Juego extends ObservableRemoto  implements IJuego{
         notificarObservadores(Evento.TOMAR_CARTA);
     }
 
-    public int getTurnoInicial() {
-        return turnoInicial;
-    }
-
     public Mazo getMazo() {
         return mazo;
     }
@@ -366,11 +360,6 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
     }
 
-    public int getRondaActual() {
-        return ronda;
-    }
-
-
     public boolean hayCaminoHastaOro() {
         return tablero.hayCaminoHastaOro();
     }
@@ -392,7 +381,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         notificarObservadores(Evento.DESCARTAR_CARTA);
     }
 
-    public String getGanador(){
+    public String getGanador() {
         return this.ganador.getNombre();
     }
 

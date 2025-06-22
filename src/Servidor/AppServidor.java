@@ -17,7 +17,7 @@ public class AppServidor {
         ArrayList<String> ips = Util.getIpDisponibles();
         String ip = (String) JOptionPane.showInputDialog(
                 null,
-                "Seleccione la IP en la que escuchar� peticiones el servidor", "IP del servidor",
+                "Seleccione la IP en la que escuchara peticiones el servidor", "IP del servidor",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 ips.toArray(),
@@ -37,6 +37,9 @@ public class AppServidor {
 
         try {
             servidor.iniciar(modelo);
+
+            AppServidorCliente appServidorCliente = new AppServidorCliente();
+            appServidorCliente.iniciar();
 
             System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
         } catch (RemoteException e) {

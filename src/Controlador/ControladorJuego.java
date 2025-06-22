@@ -10,6 +10,7 @@ import Vista.VistaGrafica;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
+import java.awt.*;
 import java.rmi.RemoteException;
 public class ControladorJuego implements IControladorRemoto {
 
@@ -48,11 +49,13 @@ public class ControladorJuego implements IControladorRemoto {
         this.vistaServidor = vista;
     }
 
-    public void iniciarPartida() throws RemoteException {
+    public Boolean iniciarPartida() throws RemoteException {
         if (getJugadores().length <= 10 && getJugadores().length >= 3) {
             juego.iniciarPartida();
+            return true;
         } else {
             System.out.println("no hay jugadores suficientes");
+            return false;
         }
 
     }
@@ -127,9 +130,8 @@ public class ControladorJuego implements IControladorRemoto {
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
         if (o instanceof Evento) {
-            if (o == Evento.NUEVO_USUARIO) {
+            if (o == Evento.NUEVO_USUARIO && vistaServidor != null) {
                 Jugador[] jugadores = this.juego.getJugadores();
-                if(vistaServidor != null)
                     this.vistaServidor.actualizarListaJugadores(jugadores);
             } else {
                 if(vista != null) {

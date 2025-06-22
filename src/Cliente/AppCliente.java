@@ -12,11 +12,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class AppCliente {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         ArrayList<String> ips = Util.getIpDisponibles();
         String ip = (String) JOptionPane.showInputDialog(
                 null,
-                "Seleccione la IP en la que escuchar� peticiones el cliente", "IP del cliente",
+                "Seleccione la IP en la que escuchara peticiones el cliente", "IP del cliente",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 ips.toArray(),
@@ -24,7 +24,7 @@ public class AppCliente {
         );
         String port = (String) JOptionPane.showInputDialog(
                 null,
-                "Seleccione el puerto en el que escuchar� peticiones el cliente", "Puerto del cliente",
+                "Seleccione el puerto en el que escuchara peticiones el cliente", "Puerto del cliente",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,

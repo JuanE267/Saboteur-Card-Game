@@ -32,7 +32,6 @@ public class PanelTomarCarta extends JPanel {
         String rutaImagen = "";
         if (controlador.getMazo().getPrimerCarta() instanceof CartaTunel) {
             rutaImagen = "dorsos/dorso tunel.png";
-
         } else {
             rutaImagen = "dorsos/dorso accion.png";
         }
@@ -78,6 +77,10 @@ public class PanelTomarCarta extends JPanel {
                 ex.printStackTrace();
             }
         });
+    }
+
+    public void actualizar() throws RemoteException {
+        dibujarPanel();
     }
 
     public void mensajeNoEsTuTurno() {

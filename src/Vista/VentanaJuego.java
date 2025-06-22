@@ -72,18 +72,27 @@ public class VentanaJuego extends JFrame {
         // contiene el listado de jugadores
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
-
         setVisible(true);
     }
 
     public void actualizarTurno() throws RemoteException {
         Jugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
-        panelHerramientas.dibujarHerramientas();
+        panelHerramientas.actualizar();
+        panelTablaJugadores.actualizar();
+        panelJugador.actualizar();
+        panelTablero.actualizar();
+        panelTomarCarta.actualizar();
+        panelPuntosYAcciones.actualizar();
+
+        revalidate();
+        repaint();
     }
 
     public void actualizarVentana() throws RemoteException {
-        inicializarVentana();
+        actualizarVentana();
+        revalidate();
+        repaint();
     }
 
     public PanelTablero getPanelTablero() {
