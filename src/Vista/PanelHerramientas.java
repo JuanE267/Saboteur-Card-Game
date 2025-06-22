@@ -5,15 +5,13 @@ import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
-import Modelo.Enums.TipoAccion;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.net.URL;
 
@@ -77,7 +75,11 @@ public class PanelHerramientas extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
-                    herramientaEsPresionada(pico);
+                    try {
+                        herramientaEsPresionada(pico);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     mensajeNoEsTuTurno();
                 }
@@ -90,7 +92,11 @@ public class PanelHerramientas extends JPanel {
 
                 if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
-                    herramientaEsPresionada(vagoneta);
+                    try {
+                        herramientaEsPresionada(vagoneta);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     mensajeNoEsTuTurno();
                 }
@@ -103,7 +109,11 @@ public class PanelHerramientas extends JPanel {
 
                 if (controlador.esTurnoDe(panelJugador.getJugador())) {
                     super.mouseClicked(e);
-                    herramientaEsPresionada(linterna);
+                    try {
+                        herramientaEsPresionada(linterna);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     mensajeNoEsTuTurno();
                 }
@@ -119,7 +129,7 @@ public class PanelHerramientas extends JPanel {
         add(linterna);
     }
 
-    private void herramientaEsPresionada(JLabel herr) {
+    private void herramientaEsPresionada(JLabel herr) throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
 

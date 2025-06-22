@@ -2,12 +2,11 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class PanelPuntosYAcciones extends JPanel {
 
@@ -63,8 +62,16 @@ public class PanelPuntosYAcciones extends JPanel {
                 panelJugador.revalidate();
                 panelJugador.repaint();
                 panelJugador.dibujarManoDeCartas();
-                controlador.verificarSiTerminoLaRonda();
-                controlador.pasarTurno();
+                try {
+                    controlador.verificarSiTerminoLaRonda();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    controlador.pasarTurno();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             }else{
                 mensajeNoEsTuTurno();
             }
@@ -78,14 +85,26 @@ public class PanelPuntosYAcciones extends JPanel {
             // mediante el controlador tomo el jugador de esta ronda y elijo la carta seleccionada en el panel de la interfaz
             if(controlador.esTurnoDe(panelJugador.getJugador())) {
                 Carta cartaADescartar = controlador.getJugadorActual().elegirCarta(panelJugador.getCartaSeleccionada());
-                controlador.descartarCarta(cartaADescartar);
+                try {
+                    controlador.descartarCarta(cartaADescartar);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
 
                 // reseteo todo despues de descartar la carta
                 panelJugador.resetCartaSeleccionada();
                 panelJugador.revalidate();
                 panelJugador.repaint();
-                controlador.verificarSiTerminoLaRonda();
-                controlador.pasarTurno();
+                try {
+                    controlador.verificarSiTerminoLaRonda();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    controlador.pasarTurno();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             }else{
                 mensajeNoEsTuTurno();
             }

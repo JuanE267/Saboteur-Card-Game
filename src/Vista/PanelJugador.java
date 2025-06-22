@@ -2,10 +2,7 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
-import Modelo.Cartas.CartaTunel;
 import Modelo.Jugador;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

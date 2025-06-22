@@ -4,9 +4,6 @@ import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
 import Modelo.Juego;
 import Modelo.Jugador;
-import Modelo.Tablero;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -15,6 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class PanelTablaJugadores extends JPanel  {
@@ -38,7 +36,7 @@ public class PanelTablaJugadores extends JPanel  {
     private void dibujarListaJugadores() {
 
         removeAll();
-        for (Jugador j : controlador.getJugadores()) {
+        for (Jugador j : controlador.getJugadores().values()) {
             if(j != panelJugador.getJugador()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));
@@ -95,7 +93,11 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
                         if (controlador.esTurnoDe(panelJugador.getJugador())) {
                             super.mouseClicked(e);
-                            herramientaEsPresionada(pico);
+                            try {
+                                herramientaEsPresionada(pico);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
                         } else {
                             mensajeNoEsTuTurno();
                         }
@@ -108,7 +110,11 @@ public class PanelTablaJugadores extends JPanel  {
 
                         if (controlador.esTurnoDe(panelJugador.getJugador())) {
                             super.mouseClicked(e);
-                            herramientaEsPresionada(vagoneta);
+                            try {
+                                herramientaEsPresionada(vagoneta);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
                         } else {
                             mensajeNoEsTuTurno();
                         }
@@ -121,7 +127,11 @@ public class PanelTablaJugadores extends JPanel  {
 
                         if (controlador.esTurnoDe(panelJugador.getJugador())) {
                             super.mouseClicked(e);
-                            herramientaEsPresionada(linterna);
+                            try {
+                                herramientaEsPresionada(linterna);
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
                         } else {
                             mensajeNoEsTuTurno();
                         }
@@ -145,7 +155,7 @@ public class PanelTablaJugadores extends JPanel  {
 
     }
 
-    private void herramientaEsPresionada(HerramientaTabla herr) {
+    private void herramientaEsPresionada(HerramientaTabla herr) throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
         controlador.jugarHerramienta(posCarta, herr.getDueño());

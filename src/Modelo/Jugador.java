@@ -14,6 +14,8 @@ import java.util.Scanner;
 public class Jugador {
 
     private String nombre;
+    private static int ID = 0;
+    private int id = 0;
     private int edad;
     private Rol rol;
     private List<Carta> manoCartas;
@@ -23,6 +25,7 @@ public class Jugador {
     public Jugador(String nombre, int edad) {
         this.nombre = nombre;
         this.edad = edad;
+        this.id = Jugador.ID++;
     }
 
     // jugar tunel
@@ -112,6 +115,10 @@ public class Jugador {
 
     public void sumarPuntos(int puntos) {
         puntaje += puntos;
+    }
+
+    public int getId() {
+        return id;
     }
 }
 

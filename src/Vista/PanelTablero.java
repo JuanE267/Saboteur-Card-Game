@@ -7,14 +7,13 @@ import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.TipoAccion;
 import Modelo.Tablero;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +59,11 @@ public class PanelTablero extends JPanel{
                 public void mouseClicked(MouseEvent e) {
                     if (controlador.esTurnoDe(panelJugador.getJugador())) {
                         super.mouseClicked(e);
-                        casilleroEsPresionado(c);
+                        try {
+                            casilleroEsPresionado(c);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
                     } else {
                         mensajeNoEsTuTurno();
                     }
@@ -69,7 +72,7 @@ public class PanelTablero extends JPanel{
         }
     }
 
-    private void casilleroEsPresionado(Casillero casillero) {
+    private void casilleroEsPresionado(Casillero casillero) throws RemoteException {
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
         Carta cartaAJugar = controlador.getJugadorActual().elegirCarta(cartaSeleccionada);
         Boolean pudoSerJugado = false;
@@ -102,7 +105,11 @@ public class PanelTablero extends JPanel{
                             javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                                 ((CartaDestino) destino).girar();
                                 setImagenCasillero(casillero);
-                                controlador.pasarTurno();
+                                try {
+                                    controlador.pasarTurno();
+                                } catch (RemoteException ex) {
+                                    ex.printStackTrace();
+                                }
 
                             });
                             paseTurnoDespuesDeGirar = true;

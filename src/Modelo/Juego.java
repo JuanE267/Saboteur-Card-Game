@@ -1,7 +1,9 @@
 package Modelo;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import Modelo.Cartas.Carta;
@@ -9,12 +11,11 @@ import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Evento;
 import Modelo.Enums.Rol;
-import Modelo.Enums.TipoAccion;
-import Observer.Observable;
+import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
-public class Juego extends Observable {
+public class Juego extends ObservableRemoto {
 
-    private List<Jugador> jugadores;
+    private HashMap<Integer, Jugador> jugadores;
     private Mazo mazo;
     private Tablero tablero;
     private List<Rol> roles;
@@ -27,31 +28,32 @@ public class Juego extends Observable {
         this.tablero = new Tablero();
         this.mazo = new Mazo();
         ronda = 1;
-
-        //HARDCODEEEEEE
-        this.jugadores = new ArrayList<>();
-        jugadores.add(new Jugador("JUAN", 1));
-        jugadores.add(new Jugador("PEPITO", 2));
-        jugadores.add(new Jugador("MARIA", 3));
-        jugadores.add(new Jugador("FRANCIA", 4));
-        asignoPrimerTurno(1);
-        this.turno = turnoInicial;
-
         // asigno los roles y reparto las cartas
+
+    }
+
+    public void iniciarPartida(){
         asignarRoles();
         mazo.repartirCartas(jugadores);
+    }
+
+    public Jugador agregarJugador(String nombre, int edad) throws RemoteException {
+        Jugador jugador = new Jugador(nombre, edad);
+        this.jugadores.put(jugador.getId(), jugador);
+        this.notificarObservadores(Evento.NUEVO_USUARIO);
+        return jugador;
     }
 
     private void asignoPrimerTurno(int ronda) {
         if (ronda == 0) {
             // el jugador en empezar es el de mayor edad
-            Jugador mayorEdad = getJugadores().getFirst();
-            for (Jugador j : getJugadores()) {
+            Jugador mayorEdad = jugadores.get(0);
+            for (Jugador j : jugadores.values()) {
                 if (j.getEdad() > mayorEdad.getEdad()) {
                     mayorEdad = j;
                 }
             }
-            turnoInicial = jugadores.indexOf(mayorEdad);
+            turnoInicial = jugadores.get(mayorEdad.getId()).getId();
         } else {
             turnoInicial++;
         }
@@ -66,9 +68,10 @@ public class Juego extends Observable {
 
 
         // elimino los roles anteriores
-        for (Jugador j : jugadores) {
+        jugadores.forEach((id, j) -> {
             j.setRol(null);
-        }
+        });
+
         // genero los roles dependiendo la cantidad de jugadores
         // asigno los  roles a cada uno
         switch (jugadores.size()) {
@@ -80,9 +83,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
-                    j.setRol(roles.removeFirst());
-                }
+                jugadores.forEach((id, j) -> {
+                        j.setRol(roles.removeFirst());
+                });
             }
             case 4 -> {
                 roles = new ArrayList<>();
@@ -93,9 +96,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 5 -> {
                 roles = new ArrayList<>();
@@ -107,9 +110,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 6 -> {
                 roles = new ArrayList<>();
@@ -122,9 +125,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 7 -> {
                 roles = new ArrayList<>();
@@ -138,9 +141,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 8 -> {
                 roles = new ArrayList<>();
@@ -155,9 +158,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 9 -> {
                 roles = new ArrayList<>();
@@ -173,9 +176,9 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
             case 10 -> {
                 roles = new ArrayList<>();
@@ -192,63 +195,62 @@ public class Juego extends Observable {
                 roles.add(Rol.SABOTEADOR);
                 Collections.shuffle(roles);
 
-                for (Jugador j : jugadores) {
+                jugadores.forEach((id, j) -> {
                     j.setRol(roles.removeFirst());
-                }
+                });
             }
         }
     }
 
-    public void pasarTurno() {
+    public void pasarTurno() throws RemoteException {
         if (this.turno == jugadores.size() - 1) this.turno = 0;
         else this.turno++;
-        notificarObservers(Evento.PASAR_TURNO);
+        notificarObservadores(Evento.PASAR_TURNO);
     }
 
 
-    public Jugador finalizarRonda(boolean ganaronLosMineros) {
+    public Jugador finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
         String mensajeGanador;
 
         if (ganaronLosMineros) {
             mensajeGanador = "GANARON LOS MINEROS";
 
-            for (Jugador j : jugadores) {
+            jugadores.forEach((id,j)->{
                 if (j.getRol() == Rol.MINERO) {
                     j.sumarPuntos(4);
                 } else {
                     j.sumarPuntos(3);
                 }
-            }
+            });
         } else {
             mensajeGanador = "GANARON LOS SABOTEADORES";
 
-            for (Jugador j : jugadores) {
+            jugadores.forEach((id, j)->{
                 if (j.getRol() == Rol.SABOTEADOR) {
                     j.sumarPuntos(4);
                 } else {
                     j.sumarPuntos(3);
                 }
-            }
+            });
         }
-
 
         System.out.println(mensajeGanador);
         System.out.println("Se revelan los roles..");
-        for (Jugador j : jugadores) {
+        jugadores.forEach((id,j) ->  {
             System.out.println(j.getNombre() + " -> " + j.getRol());
-        }
+        });
 
         if (ronda <= 3) {
             // reinicio el estado logico
             reiniciarRonda(ronda);
             //reinicio la vista
-            notificarObservers(Evento.NUEVA_RONDA);
+            notificarObservadores(Evento.NUEVA_RONDA);
             pasarRonda();
         } else {
 
-            Jugador mayorPuntaje = jugadores.getFirst();
-            for (Jugador j : jugadores) {
+            Jugador mayorPuntaje = jugadores.get(0);
+            for (Jugador j : jugadores.values()) {
                 if (j.getPuntaje() > mayorPuntaje.getPuntaje()) {
                     mayorPuntaje = j;
                 }
@@ -259,7 +261,7 @@ public class Juego extends Observable {
     }
 
 
-    public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) {
+    public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) throws RemoteException {
 
         Carta carta = getJugadorActual().elegirCarta(posCarta);
         Jugador actual = getJugadorActual();
@@ -298,11 +300,11 @@ public class Juego extends Observable {
             }
 
         }
-        notificarObservers(Evento.JUGAR_CARTA_TABLERO);
+        notificarObservadores(Evento.JUGAR_CARTA_TABLERO);
         return pudoSerJugado;
     }
 
-    public void jugarHerramienta(Jugador objetivo, Carta carta) {
+    public void jugarHerramienta(Jugador objetivo, Carta carta) throws RemoteException {
 
         getJugadorActual().jugarCarta(objetivo, carta);
 
@@ -313,14 +315,13 @@ public class Juego extends Observable {
             Carta nuevaCarta = mazo.tomarCarta();
             getJugadorActual().getManoCartas().add(nuevaCarta);
         }
-
-        notificarObservers(Evento.ACTUALIZAR_HERRAMIENTAS);
+        notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
     }
 
-    public void tomarCartaDeMazo() {
+    public void tomarCartaDeMazo() throws RemoteException {
         Carta nuevaCarta = mazo.tomarCarta();
         getJugadorActual().getManoCartas().add(nuevaCarta);
-        notificarObservers(Evento.TOMAR_CARTA);
+        notificarObservadores(Evento.TOMAR_CARTA);
     }
 
     public int getTurnoInicial() {
@@ -331,7 +332,7 @@ public class Juego extends Observable {
         return mazo;
     }
 
-    public List<Jugador> getJugadores() {
+    public HashMap<Integer, Jugador> getJugadores() {
         return jugadores;
     }
 
@@ -339,9 +340,6 @@ public class Juego extends Observable {
         return jugadores.get(this.turno);
     }
 
-    public void setJugadores(List<Jugador> jugadores) {
-        this.jugadores = jugadores;
-    }
 
     public void reiniciarRonda(int ronda) {
 
@@ -351,7 +349,7 @@ public class Juego extends Observable {
         // reinicio el tablero
         tablero = new Tablero();
         // reinicio jugadores
-        for (Jugador j : jugadores) {
+        for (Jugador j : jugadores.values()) {
             j.reiniciarEstado();
         }
 
@@ -378,7 +376,7 @@ public class Juego extends Observable {
         return mazo.noHayCartas();
     }
 
-    public void verificarSiTerminoLaRonda() {
+    public void verificarSiTerminoLaRonda() throws RemoteException {
         if (hayCaminoHastaOro()) {
             finalizarRonda(true);
         } else if (noHayCartas()) {
@@ -386,8 +384,11 @@ public class Juego extends Observable {
         }
     }
 
-    public void descartarCarta(Carta carta) {
+    public void descartarCarta(Carta carta) throws RemoteException {
         getJugadorActual().descartarCarta(carta);
-        notificarObservers(Evento.DESCARTAR_CARTA);
+        notificarObservadores(Evento.DESCARTAR_CARTA);
     }
+
+
 }
+

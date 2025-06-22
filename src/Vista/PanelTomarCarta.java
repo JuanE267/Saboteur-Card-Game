@@ -2,14 +2,13 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
-import Observer.Observable;
-import Observer.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 
 public class PanelTomarCarta extends JPanel {
 
@@ -57,12 +56,20 @@ public class PanelTomarCarta extends JPanel {
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e -> {
             if (controlador.esTurnoDe(panelJugador.getJugador())) {
-                controlador.tomarCartaDeMazo();
+                try {
+                    controlador.tomarCartaDeMazo();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
                 panelJugador.revalidate();
                 panelJugador.repaint();
                 panelJugador.dibujarManoDeCartas();
                 dibujarPanel();
-                controlador.pasarTurno();
+                try {
+                    controlador.pasarTurno();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             } else {
                 mensajeNoEsTuTurno();
             }

@@ -7,10 +7,7 @@ import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Mazo {
 
@@ -219,34 +216,36 @@ public class Mazo {
         Collections.shuffle(cartas);
     }
 
-    public void repartirCartas(List<Jugador> jugadores) {
+    public void repartirCartas(HashMap<Integer, Jugador> jugadores) {
 
         //por cada jugador genero una mano y se la doy
-        for (Jugador j : jugadores) {
-            switch (jugadores.size()) {
-                case 1,3, 4, 5 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 6; i++) {
-                        mano.add(tomarCarta());
+        jugadores.forEach((id, j)->{
+                switch (jugadores.size()) {
+                    case 3, 4, 5 -> {
+                        List<Carta> mano = new ArrayList<>();
+                        for (int i = 0; i < 6; i++) {
+                            mano.add(tomarCarta());
+                        }
+                        j.setManoCartas(mano);
                     }
-                    j.setManoCartas(mano);
-                }
-                case 6, 7 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 5; i++) {
-                        mano.add(tomarCarta());
+                    case 6, 7 -> {
+                        List<Carta> mano = new ArrayList<>();
+                        for (int i = 0; i < 5; i++) {
+                            mano.add(tomarCarta());
+                        }
+                        j.setManoCartas(mano);
                     }
-                    j.setManoCartas(mano);
-                }
-                case 8, 9, 10 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 4; i++) {
-                        mano.add(tomarCarta());
+                    case 8, 9, 10 -> {
+                        List<Carta> mano = new ArrayList<>();
+                        for (int i = 0; i < 4; i++) {
+                            mano.add(tomarCarta());
+                        }
+                        j.setManoCartas(mano);
                     }
-                    j.setManoCartas(mano);
-                }
-            }
+                    default -> System.out.println("Minimo 3 jugadores y Maximo 10");
         }
+    });
+
     }
 
     
