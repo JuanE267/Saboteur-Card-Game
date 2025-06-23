@@ -4,6 +4,7 @@ import Modelo.Cartas.Carta;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface IJuego extends IObservableRemoto {
      void iniciarPartida() throws RemoteException;

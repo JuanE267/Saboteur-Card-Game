@@ -4,7 +4,6 @@ import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
 import Modelo.IJugador;
 import Modelo.Juego;
-import Modelo.Jugador;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,15 +26,15 @@ public class PanelTablaJugadores extends JPanel  {
         this.panelJugador = panelJugador;
         setLayout(new GridLayout(cantidadJugadores, 1));
         setBorder(new EmptyBorder(200, 100, 200, 0));
-        dibujarListaJugadores();
+        dibujarListaJugadores(controlador.getJugadores());
     }
 
-    private void dibujarListaJugadores() throws RemoteException {
+    private void dibujarListaJugadores(IJugador[] jugadores) throws RemoteException {
 
         removeAll();
-        cantidadJugadores = controlador.getJugadores().length;
-        for (IJugador j : controlador.getJugadores()) {
-            if(j != panelJugador.getJugadorCliente()) {
+        cantidadJugadores = jugadores.length;
+        for (IJugador j : jugadores) {
+            if(j != controlador.getJugadorActualizado()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));
                 jugadorTabla.setBackground(Color.WHITE);
@@ -111,7 +110,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                            if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(vagoneta);
@@ -132,7 +131,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                            if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(linterna);
@@ -193,8 +192,8 @@ public class PanelTablaJugadores extends JPanel  {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    public void actualizar() throws RemoteException {
-        dibujarListaJugadores();
+    public void actualizar(IJugador[] jugadores) throws RemoteException {
+        dibujarListaJugadores(jugadores);
         revalidate();
         repaint();
     }

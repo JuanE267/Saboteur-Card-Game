@@ -1,12 +1,13 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.IJugador;
 import Modelo.Jugador;
 
 import java.rmi.RemoteException;
 
 
-public class VistaGrafica implements IVistaGrafica{
+public class VistaGrafica implements IVistaGrafica {
     private VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
     private ControladorJuego controlador;
@@ -17,9 +18,9 @@ public class VistaGrafica implements IVistaGrafica{
         this.ventanaInicioSesion = new VentanaInicioSesion();
 
         // agrego jugadores
-        this.ventanaInicioSesion.onClickEntrar(e ->
-        {
-            controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
+        this.ventanaInicioSesion.onClickEntrar(e -> {
+            IJugador jugador = controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
+            controlador.setJugadorCliente(jugador);
             ocultarInicioSesion();
         });
 
@@ -39,11 +40,31 @@ public class VistaGrafica implements IVistaGrafica{
         this.ventanaInicioSesion.setVisible(false);
     }
 
-    public VentanaJuego getVentanaJuego(){
+    public VentanaJuego getVentanaJuego() {
         return this.ventanaJuego;
     }
 
-    public void iniciarVentanaJuego() throws RemoteException {
-        this.ventanaJuego = new VentanaJuego(controlador);
+    @Override
+    public void mostrarPartida() throws RemoteException {
+        // mostrar todos los elementos de la partida
+        iniciarVentanaJuego();
+    }
+
+    public void actualizar() throws RemoteException {
+        IJugador actualizado = controlador.getJugadorActualizado();
+        if (actualizado != null) {
+            VentanaJuego ventana = iniciarVentanaJuego();
+            ventana.getPanelJugador().actualizar(actualizado);
+            ventana.getPanelHerramientas().actualizar(actualizado);
+            ventana.getPanelPuntosYAcciones().actualizar(actualizado);
+            ventana.getPanelTablaJugadores().actualizar(controlador.getJugadores());
+            ventana.getPanelTablero().actualizar(controlador.getTablero());
+            ventana.actualizarTurno();
+
+        }
+    }
+
+    public VentanaJuego iniciarVentanaJuego() throws RemoteException {
+        return ventanaJuego = new VentanaJuego(controlador);
     }
 }

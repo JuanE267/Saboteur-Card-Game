@@ -29,15 +29,15 @@ public class PanelTablero extends JPanel{
     public PanelTablero(PanelJugador jugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = jugador;
-        tablero = controlador.getTablero();
+        this.tablero = controlador.getTablero();
 
         setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
-        dibujarTablero();
+        dibujarTablero(this.tablero);
     }
 
-    public void dibujarTablero() {
+    public void dibujarTablero(Tablero tablero) {
         removeAll();
         for (int i = 0; i < tablero.getAlto(); i++) {
             for (int j = 0; j < tablero.getAncho(); j++) {
@@ -160,8 +160,8 @@ public class PanelTablero extends JPanel{
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    public void actualizar() {
-        dibujarTablero();
+    public void actualizar(Tablero tablero) {
+        dibujarTablero(tablero);
         revalidate();
         repaint();
     }

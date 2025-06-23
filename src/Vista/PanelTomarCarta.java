@@ -14,12 +14,10 @@ public class PanelTomarCarta extends JPanel {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
-    private IJugador jugadorCliente;
     private final int TAM_CARTA = 75;
 
     public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
-        this.jugadorCliente = controlador.getJugadorCliente();
         this.panelJugador = panelJugador;
         dibujarPanel();
     }
@@ -55,7 +53,7 @@ public class PanelTomarCarta extends JPanel {
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e -> {
             try {
-                if (controlador.esTurnoDe(jugadorCliente)) {
+                if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
                     try {
                         controlador.tomarCartaDeMazo();
                     } catch (RemoteException ex) {
@@ -63,7 +61,7 @@ public class PanelTomarCarta extends JPanel {
                     }
                     panelJugador.revalidate();
                     panelJugador.repaint();
-                    panelJugador.dibujarManoDeCartas();
+                    panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
                     dibujarPanel();
                     try {
                         controlador.pasarTurno();

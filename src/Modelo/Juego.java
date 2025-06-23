@@ -1,6 +1,5 @@
 package Modelo;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +35,9 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void iniciarPartida() throws RemoteException {
-        repartirCartas(jugadores);
+        for(IJugador j : getJugadores()){
+            j.setManoCartas(repartirCartas());
+        }
         ordenTurnos.clear();
         ordenTurnos.addAll(jugadores.keySet());
         Collections.sort(ordenTurnos);
@@ -365,39 +366,39 @@ public class Juego extends ObservableRemoto  implements IJuego{
         asignoPrimerTurno(ronda);
         //asigno roles de nuevo
         asignarRoles();
-        repartirCartas(jugadores);
+        for(IJugador j : getJugadores()){
+            repartirCartas();
+        }
 
     }
-    public void repartirCartas(HashMap<Integer, IJugador> jugadores) {
+    public List<Carta> repartirCartas() {
 
         //por cada jugador genero una mano y se la doy
-        jugadores.forEach((id, j)->{
-            switch (jugadores.size()) {
-                case 1,3, 4, 5 -> {
+            switch (getJugadores().length) {
+                case 3, 4, 5 -> {
                     List<Carta> mano = new ArrayList<>();
                     for (int i = 0; i < 6; i++) {
                         mano.add(mazo.tomarCarta());
                     }
-                    j.setManoCartas(mano);
+                    return mano;
                 }
                 case 6, 7 -> {
                     List<Carta> mano = new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         mano.add(mazo.tomarCarta());
                     }
-                    j.setManoCartas(mano);
+                    return mano;
                 }
                 case 8, 9, 10 -> {
                     List<Carta> mano = new ArrayList<>();
                     for (int i = 0; i < 4; i++) {
                         mano.add(mazo.tomarCarta());
                     }
-                    j.setManoCartas(mano);
+                    return mano;
                 }
                 default -> System.out.println("Minimo 3 jugadores y Maximo 10");
             }
-        });
-
+        return null;
     }
 
     public boolean hayCaminoHastaOro() {

@@ -2,7 +2,6 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.IJugador;
-import Modelo.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,9 @@ public class VentanaJuego extends JFrame {
     public VentanaJuego(ControladorJuego controlador) throws RemoteException {
 
         this.controlador = controlador;
-        setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorCliente().getNombre() + ")");
+//        if (controlador.getJugadorActualizado() != null) {
+//            setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
+//        }
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -35,13 +36,9 @@ public class VentanaJuego extends JFrame {
         turnoActual = new JLabel();
         turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
         turnoActual.setHorizontalAlignment(SwingConstants.CENTER);
-        this.nombreJugadorActual = controlador.getJugadorActual().getNombre();
-        turnoActual.setText("Es el Turno de: " + nombreJugadorActual);
-        add(turnoActual, BorderLayout.NORTH);
-
         inicializarVentana();
-
         setVisible(true);
+
     }
 
 
@@ -76,22 +73,22 @@ public class VentanaJuego extends JFrame {
         // contiene el listado de jugadores
         panelTablaJugadores = new PanelTablaJugadores(panelJugador, controlador);
         add(panelTablaJugadores, BorderLayout.WEST);
-
+        setVisible(true);
         revalidate();
         repaint();
     }
 
     public void actualizarTurno() throws RemoteException {
-        IJugador jugadorCliente = controlador.getJugadorCliente();
-        panelJugador.actualizar();
+        IJugador jugadorCliente = controlador.getJugadorActualizado();
+        panelJugador.actualizar(jugadorCliente);
         // jugador del turno
         IJugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
-        panelHerramientas.actualizar();
-        panelTablaJugadores.actualizar();
-        panelTablero.actualizar();
+        panelHerramientas.actualizar(jugadorCliente);
+        panelTablaJugadores.actualizar(controlador.getJugadores());
+        panelTablero.actualizar(controlador.getTablero());
         panelTomarCarta.actualizar();
-        panelPuntosYAcciones.actualizar();
+        panelPuntosYAcciones.actualizar(jugadorCliente);
         revalidate();
         repaint();
     }

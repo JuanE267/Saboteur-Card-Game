@@ -1,6 +1,7 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Controlador.ControladorServer;
 import Modelo.IJugador;
 import Modelo.Jugador;
 import net.miginfocom.swing.MigLayout;
@@ -12,12 +13,12 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 public class VentanaServidor extends JFrame implements IVistaServidor {
-    private ControladorJuego controlador;
+    private ControladorServer controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
     private JList listJugadores;
 
-    public VentanaServidor(ControladorJuego controlador){
+    public VentanaServidor(ControladorServer controlador){
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
         setTitle("Saboteur - Juan Espinosa");
@@ -51,9 +52,8 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
         // inicio la partida
         btnIniciarPartida.addActionListener(e -> {
             try {
-                if(controlador.iniciarPartida()){
-                    ocultarVentanaServidor();
-                }
+                ocultarVentanaServidor();
+                controlador.iniciarPartida();
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }

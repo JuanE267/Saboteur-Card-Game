@@ -2,6 +2,7 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
+import Modelo.IJugador;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,17 +18,16 @@ public class PanelHerramientas extends JPanel {
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
 
-    public PanelHerramientas(PanelJugador panelJugador, ControladorJuego controlador) {
+    public PanelHerramientas(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.panelJugador = panelJugador;
         this.controlador = controlador;
 
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(10, 0, 0, 0));
-        dibujarHerramientas();
+        dibujarHerramientas(controlador.getJugadorActualizado());
     }
 
-    public void dibujarHerramientas() {
-        if(panelJugador.getJugadorCliente() != null) {
+    public void dibujarHerramientas(IJugador jugadorCliente) {
             removeAll();
 
             JLabel pico = new JLabel();
@@ -46,7 +46,7 @@ public class PanelHerramientas extends JPanel {
             String vagonetaRota = "herramientas/VAGONETA ROTA.png";
             String linternaRota = "herramientas/LINTERNA ROTA.png";
 
-            List<Herramienta> herramientasRotas = panelJugador.getJugadorCliente().getHerramientasRotas();
+            List<Herramienta> herramientasRotas = jugadorCliente.getHerramientasRotas();
 
 
             URL urlPico = getClass().getClassLoader().getResource(picoSano);
@@ -71,7 +71,7 @@ public class PanelHerramientas extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                        if (controlador.esTurnoDe(jugadorCliente)) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(pico);
@@ -92,7 +92,7 @@ public class PanelHerramientas extends JPanel {
                 public void mouseClicked(MouseEvent e) {
 
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                        if (controlador.esTurnoDe(jugadorCliente)) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(vagoneta);
@@ -113,7 +113,7 @@ public class PanelHerramientas extends JPanel {
                 public void mouseClicked(MouseEvent e) {
 
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                        if (controlador.esTurnoDe(jugadorCliente)) {
                             super.mouseClicked(e);
                             try {
                                 herramientaEsPresionada(linterna);
@@ -137,15 +137,15 @@ public class PanelHerramientas extends JPanel {
             add(vagoneta);
             add(linterna);
         }
-    }
+
 
     private void herramientaEsPresionada(JLabel herr) throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
 
-        if (controlador.jugarHerramienta(posCarta, panelJugador.getJugadorCliente()).toString().startsWith("ROMPER")) {
+        if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActualizado()).toString().startsWith("ROMPER")) {
             JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
-        } else if (controlador.jugarHerramienta(posCarta, panelJugador.getJugadorCliente()).toString().startsWith("REPARAR")) {
+        } else if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActualizado()).toString().startsWith("REPARAR")) {
             JOptionPane.showMessageDialog(this, "La carta ya esta sana!");
         }else
         {
@@ -172,8 +172,8 @@ public class PanelHerramientas extends JPanel {
         JOptionPane.showMessageDialog(this, "No es tu turno!");
     }
 
-    public void actualizar() {
-        dibujarHerramientas();
+    public void actualizar(IJugador jugadorCliente) throws RemoteException {
+        dibujarHerramientas(jugadorCliente);
         revalidate();
         repaint();
     }

@@ -8,7 +8,7 @@ import Modelo.Enums.TipoAccion;
 import Vista.*;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
-
+import java.util.List;
 import java.awt.*;
 import java.rmi.RemoteException;
 
@@ -34,9 +34,7 @@ public class ControladorJuego implements IControladorRemoto {
 
     public IJugador conectarUsuario(String nombre, int edad) {
         try {
-            IJugador nuevoJugador = this.juego.agregarJugador(nombre, edad);
-            this.jugadorCliente = new Jugador(nuevoJugador.getNombre(), nuevoJugador.getEdad());
-            this.jugadorCliente.setId(nuevoJugador.getId());
+            jugadorCliente = this.juego.agregarJugador(nombre, edad);
             return this.jugadorCliente;
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -63,14 +61,9 @@ public class ControladorJuego implements IControladorRemoto {
             this.vista = vista;
         }
 
-
-        public void setVistaServidor (VentanaServidor vista){
-            this.vistaServidor = (IVistaServidor) vista;
-        }
-
         public Boolean iniciarPartida () throws RemoteException {
             if (getJugadores().length <= 10 && getJugadores().length >= 1) {
-                juego.iniciarPartida();
+                 juego.iniciarPartida();
                 return true;
             } else {
                 System.out.println("no hay jugadores suficientes");
@@ -147,47 +140,39 @@ public class ControladorJuego implements IControladorRemoto {
         }
 
 
-        @Override
-        public void actualizar (IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
-            if (o instanceof Evento evento) {
-                if (o == Evento.NUEVO_USUARIO && vistaServidor != null) {
-                    IJugador[] jugadores = this.juego.getJugadores();
-                    this.vistaServidor.actualizarListaJugadores(jugadores);
-                } else {
-                    if (vista != null) {
-                        switch (evento) {
-                            case NUEVA_RONDA -> {
-                                vista.getVentanaJuego().actualizarVentana();
-                                vista.getVentanaJuego().getPanelPuntosYAcciones().actualizar();
-                            }
-                            case PASAR_TURNO -> vista.getVentanaJuego().actualizarTurno();
-                            case TOMAR_CARTA, DESCARTAR_CARTA -> {
-                                vista.getVentanaJuego().getPanelJugador().actualizar();
-                                vista.getVentanaJuego().getPanelTomarCarta().actualizar();
-                            }
-                            case ACTUALIZAR_HERRAMIENTAS -> {
-                                vista.getVentanaJuego().getPanelHerramientas().actualizar();
-                                vista.getVentanaJuego().getPanelTablaJugadores().actualizar();
-                                vista.getVentanaJuego().getPanelJugador().actualizar();
-                            }
-                            case JUGAR_CARTA_TABLERO -> {
-                                vista.getVentanaJuego().getPanelTablero().actualizar();
-                                vista.getVentanaJuego().getPanelJugador().actualizar();
-                            }
-                            case INICIAR_PARTIDA -> {
-                                this.vista.iniciarVentanaJuego();
-                                vista.getVentanaJuego().inicializarVentana();
-                                vista.getVentanaJuego().setVisible(true);
-                                jugadorCliente = getJugadorActualizado();
-                            }
-                            case FINALIZAR_PARTIDA -> vista.getVentanaJuego().mostrarGanador();
-                        }
-                    }
+    @Override
+    public void actualizar (IObservableRemoto iObservableRemoto, Object o)  throws RemoteException {
+        if (o instanceof Evento evento) {
+            switch (evento) {
+                case INICIAR_PARTIDA -> {
+                    iniciarVistaGrafica();
+                    vista.mostrarPartida();
+                }
+                case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA, NUEVA_RONDA -> {
+                    vista.actualizar();
+                }
+                case FINALIZAR_PARTIDA -> {
+                    vista.getVentanaJuego().mostrarGanador();
                 }
             }
         }
+    }
 
-        @Override
+    private void iniciarVistaGrafica() throws RemoteException {
+        this.vista = new VistaGrafica(this);
+    }
+
+
+    private IJugador getJugadorClienteActualizado() throws RemoteException {
+        for (IJugador j : juego.getJugadores()) {
+            if (j.getId() == jugadorCliente.getId()) {
+                return j;
+            }
+        }
+        return null;
+    }
+
+    @Override
         public <T extends IObservableRemoto > void setModeloRemoto (T modelo) throws RemoteException {
             this.juego = (IJuego) modelo;
         }
@@ -201,4 +186,7 @@ public class ControladorJuego implements IControladorRemoto {
             return juego.getGanador();
         }
 
+    public void setJugadorCliente(IJugador jugador) {
+        this.jugadorCliente = jugador;
     }
+}

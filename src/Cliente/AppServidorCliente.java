@@ -1,6 +1,7 @@
 package Cliente;
 
 import Controlador.ControladorJuego;
+import Controlador.ControladorServer;
 import Vista.VentanaServidor;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
@@ -18,13 +19,13 @@ public class AppServidorCliente {
         String portServidor = "8888";
 
 
-        ControladorJuego controlador = new ControladorJuego();
-        VentanaServidor ventanaServidor = new VentanaServidor(controlador);
-        controlador.setVistaServidor(ventanaServidor);
+        ControladorServer controladorServer = new ControladorServer();
+        VentanaServidor ventanaServidor = new VentanaServidor(controladorServer);
+        controladorServer.setVistaServidor(ventanaServidor);
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
 
         try {
-            c.iniciar(controlador);
+            c.iniciar(controladorServer);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
