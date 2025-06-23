@@ -23,9 +23,10 @@ public class VentanaJuego extends JFrame {
     public VentanaJuego(ControladorJuego controlador) throws RemoteException {
 
         this.controlador = controlador;
-//        if (controlador.getJugadorActualizado() != null) {
-//            setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
-//        }
+
+        if (controlador.getJugadorActualizado() != null) {
+            setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
+        }
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -36,6 +37,11 @@ public class VentanaJuego extends JFrame {
         turnoActual = new JLabel();
         turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
         turnoActual.setHorizontalAlignment(SwingConstants.CENTER);
+        // jugador del turno
+        IJugador jugadorActual = controlador.getJugadorActual();
+        turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
+        add(turnoActual);
+
         inicializarVentana();
         setVisible(true);
 

@@ -44,7 +44,14 @@ public class ControladorServer implements IControladorRemoto {
         this.juego = (IJuego) modelo;
     }
 
-    public void iniciarPartida() throws RemoteException {
-        this.juego.iniciarPartida();
+    public Boolean iniciarPartida () throws RemoteException {
+        if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 1) {
+            juego.iniciarPartida();
+            return true;
+        } else {
+            System.out.println("no hay jugadores suficientes");
+            return false;
+        }
+
     }
 }

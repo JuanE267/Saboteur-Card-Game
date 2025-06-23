@@ -44,6 +44,7 @@ public class PanelJugador extends JPanel {
 
         removeAll();
         vistaManoActual.clear();
+        mano = jugadorCliente.getManoCartas();
         // por cada carta creo un JButton
         for (int i = 0; i < mano.size(); i++) {
 

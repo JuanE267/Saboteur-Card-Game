@@ -52,8 +52,9 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
         // inicio la partida
         btnIniciarPartida.addActionListener(e -> {
             try {
+                if(controlador.iniciarPartida()){
                 ocultarVentanaServidor();
-                controlador.iniciarPartida();
+            }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }

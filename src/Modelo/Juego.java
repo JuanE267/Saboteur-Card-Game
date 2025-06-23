@@ -41,7 +41,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         ordenTurnos.clear();
         ordenTurnos.addAll(jugadores.keySet());
         Collections.sort(ordenTurnos);
-        turno = 1;
+        turno = 0;
         asignoPrimerTurno(ronda);
         asignarRoles();
         notificarObservadores(Evento.INICIAR_PARTIDA);
@@ -212,8 +212,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void pasarTurno() throws RemoteException {
-        if (this.turno == ordenTurnos.size()) this.turno = 1;
-        else this.turno++;
+        turno = (turno + 1) % ordenTurnos.size();
         notificarObservadores(Evento.PASAR_TURNO);
     }
 
@@ -338,8 +337,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public IJugador[] getJugadores() {
-        IJugador[] jugadores = new IJugador[this.jugadores.size()];
-        return this.jugadores.values().toArray(jugadores);
+        return this.jugadores.values().toArray(new IJugador[0]);
     }
 
     public IJugador getJugadorActual() {
@@ -375,7 +373,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
         //por cada jugador genero una mano y se la doy
             switch (getJugadores().length) {
-                case 3, 4, 5 -> {
+                case 2, 3, 4, 5 -> {
                     List<Carta> mano = new ArrayList<>();
                     for (int i = 0; i < 6; i++) {
                         mano.add(mazo.tomarCarta());

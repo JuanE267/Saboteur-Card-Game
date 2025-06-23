@@ -17,7 +17,7 @@ public class Jugador implements Serializable, IJugador {
     private static final long serialVersionUID = 1L;
 
     private String nombre;
-    private static int ID = 0;
+    private static int ID = -1;
     private int id = 0;
     private int edad;
     private Rol rol;
@@ -28,7 +28,7 @@ public class Jugador implements Serializable, IJugador {
     public Jugador(String nombre, int edad) {
         this.nombre = nombre;
         this.edad = edad;
-        this.id = Jugador.ID++;
+        this.id = ++Jugador.ID;
     }
 
     // jugar tunel

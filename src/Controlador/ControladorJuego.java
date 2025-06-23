@@ -34,8 +34,7 @@ public class ControladorJuego implements IControladorRemoto {
 
     public IJugador conectarUsuario(String nombre, int edad) {
         try {
-            jugadorCliente = this.juego.agregarJugador(nombre, edad);
-            return this.jugadorCliente;
+            return this.juego.agregarJugador(nombre, edad);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -52,6 +51,14 @@ public class ControladorJuego implements IControladorRemoto {
         return null;
     }
 
+    public void actualizarJugador() throws RemoteException {
+        for (IJugador j : juego.getJugadores()) {
+            if (j.getId() == jugadorCliente.getId()) {
+                jugadorCliente = j;
+            }
+        }
+    }
+
         public IJugador getJugadorCliente () throws RemoteException {
             return jugadorCliente;
         }
@@ -61,16 +68,7 @@ public class ControladorJuego implements IControladorRemoto {
             this.vista = vista;
         }
 
-        public Boolean iniciarPartida () throws RemoteException {
-            if (getJugadores().length <= 10 && getJugadores().length >= 1) {
-                 juego.iniciarPartida();
-                return true;
-            } else {
-                System.out.println("no hay jugadores suficientes");
-                return false;
-            }
 
-        }
 
         public void pasarTurno () throws RemoteException {
             juego.pasarTurno();
@@ -143,15 +141,19 @@ public class ControladorJuego implements IControladorRemoto {
     @Override
     public void actualizar (IObservableRemoto iObservableRemoto, Object o)  throws RemoteException {
         if (o instanceof Evento evento) {
+
             switch (evento) {
                 case INICIAR_PARTIDA -> {
+                    actualizarJugador();
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA, NUEVA_RONDA -> {
+                    actualizarJugador();
                     vista.actualizar();
                 }
                 case FINALIZAR_PARTIDA -> {
+                    actualizarJugador();
                     vista.getVentanaJuego().mostrarGanador();
                 }
             }
@@ -163,14 +165,6 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
 
-    private IJugador getJugadorClienteActualizado() throws RemoteException {
-        for (IJugador j : juego.getJugadores()) {
-            if (j.getId() == jugadorCliente.getId()) {
-                return j;
-            }
-        }
-        return null;
-    }
 
     @Override
         public <T extends IObservableRemoto > void setModeloRemoto (T modelo) throws RemoteException {
