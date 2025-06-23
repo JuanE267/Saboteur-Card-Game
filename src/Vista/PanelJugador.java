@@ -19,11 +19,10 @@ public class PanelJugador extends JPanel {
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(ControladorJuego controlador, Jugador jugadorCliente) throws RemoteException {
+    public PanelJugador(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
-        this.jugadorCliente = jugadorCliente;
+        this.jugadorCliente = controlador.getJugadorCliente();
         setLayout(new FlowLayout());
-        setBorder(new EmptyBorder(0, 0, 0, 0));
         dibujarManoDeCartas();
     }
 

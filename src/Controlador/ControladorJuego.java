@@ -44,6 +44,10 @@ public class ControladorJuego implements IControladorRemoto {
         return null;
     }
 
+    public Jugador getJugadorCliente(){
+        return this.jugadorCliente;
+    }
+
     public void setVistaGrafica(VistaGrafica vista) {
         this.vista = vista;
     }
@@ -54,7 +58,7 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
     public Boolean iniciarPartida() throws RemoteException {
-        if (getJugadores().length <= 10 && getJugadores().length >= 3) {
+        if (getJugadores().length <= 10 && getJugadores().length >= 1) {
             juego.iniciarPartida();
             return true;
         } else {
@@ -141,7 +145,10 @@ public class ControladorJuego implements IControladorRemoto {
             } else {
                 if(vista != null) {
                     switch (evento) {
-                        case NUEVA_RONDA -> vista.getVentanaJuego().actualizarVentana();
+                        case NUEVA_RONDA -> {
+                            vista.getVentanaJuego().actualizarVentana();
+                            vista.getVentanaJuego().getPanelPuntosYAcciones().actualizar();
+                        }
                         case PASAR_TURNO -> vista.getVentanaJuego().actualizarTurno();
                         case TOMAR_CARTA, DESCARTAR_CARTA -> {
                             vista.getVentanaJuego().getPanelJugador().actualizar();
@@ -160,7 +167,6 @@ public class ControladorJuego implements IControladorRemoto {
                             this.vista.iniciarVentanaJuego();
                             vista.getVentanaJuego().inicializarVentana();
                             vista.getVentanaJuego().setVisible(true);
-                            vista.getVentanaJuego().actualizarTurno();
                         }
                         case FINALIZAR_PARTIDA -> vista.getVentanaJuego().mostrarGanador();
                     }
@@ -181,5 +187,9 @@ public class ControladorJuego implements IControladorRemoto {
 
     public String getGanador() throws RemoteException {
         return juego.getGanador();
+    }
+
+    public void setJugadorCliente(Jugador jugadorCliente) {
+        this.jugadorCliente = jugadorCliente;
     }
 }

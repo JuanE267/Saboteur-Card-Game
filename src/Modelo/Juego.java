@@ -22,6 +22,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     private List<Rol> roles;
     private int turnoInicial;
     private int ronda;
+    private List<Integer> ordenTurnos = new ArrayList<>();
     private int turno;
     private Jugador ganador;
 
@@ -35,9 +36,13 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void iniciarPartida() throws RemoteException {
+        repartirCartas(jugadores);
+        ordenTurnos.clear();
+        ordenTurnos.addAll(jugadores.keySet());
+        Collections.sort(ordenTurnos);
+        turno = 1;
         asignoPrimerTurno(ronda);
         asignarRoles();
-        mazo.repartirCartas(jugadores);
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
@@ -51,13 +56,13 @@ public class Juego extends ObservableRemoto  implements IJuego{
     public void asignoPrimerTurno(int ronda) {
         if (ronda == 1) {
             // el jugador en empezar es el de mayor edad
-            Jugador mayorEdad = jugadores.get(0);
+            Jugador mayorEdad = jugadores.values().iterator().next();
             for (Jugador j : jugadores.values()) {
                 if (j.getEdad() > mayorEdad.getEdad()) {
                     mayorEdad = j;
                 }
             }
-            turnoInicial = jugadores.get(mayorEdad.getId()).getId();
+            turnoInicial = ordenTurnos.indexOf(mayorEdad.getId());
 
         this.turno = turnoInicial;
     }
@@ -206,7 +211,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void pasarTurno() throws RemoteException {
-        if (this.turno == jugadores.size() - 1) this.turno = 0;
+        if (this.turno == ordenTurnos.size()) this.turno = 1;
         else this.turno++;
         notificarObservadores(Evento.PASAR_TURNO);
     }
@@ -337,7 +342,11 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public Jugador getJugadorActual() {
-        return jugadores.get(this.turno);
+        if (ordenTurnos.isEmpty()) return null;
+        // tomo el id que corresponde al jugador de este turno
+        int idActual = ordenTurnos.get(turno);
+        // devuelvo el jugador en base al id
+        return jugadores.get(idActual);
     }
 
 
@@ -356,7 +365,38 @@ public class Juego extends ObservableRemoto  implements IJuego{
         asignoPrimerTurno(ronda);
         //asigno roles de nuevo
         asignarRoles();
-        mazo.repartirCartas(jugadores);
+        repartirCartas(jugadores);
+
+    }
+    public void repartirCartas(HashMap<Integer, Jugador> jugadores) {
+
+        //por cada jugador genero una mano y se la doy
+        jugadores.forEach((id, j)->{
+            switch (jugadores.size()) {
+                case 1,3, 4, 5 -> {
+                    List<Carta> mano = new ArrayList<>();
+                    for (int i = 0; i < 6; i++) {
+                        mano.add(mazo.tomarCarta());
+                    }
+                    j.setManoCartas(mano);
+                }
+                case 6, 7 -> {
+                    List<Carta> mano = new ArrayList<>();
+                    for (int i = 0; i < 5; i++) {
+                        mano.add(mazo.tomarCarta());
+                    }
+                    j.setManoCartas(mano);
+                }
+                case 8, 9, 10 -> {
+                    List<Carta> mano = new ArrayList<>();
+                    for (int i = 0; i < 4; i++) {
+                        mano.add(mazo.tomarCarta());
+                    }
+                    j.setManoCartas(mano);
+                }
+                default -> System.out.println("Minimo 3 jugadores y Maximo 10");
+            }
+        });
 
     }
 

@@ -2,6 +2,7 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
+import Modelo.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,15 +11,15 @@ import java.rmi.RemoteException;
 
 public class PanelTomarCarta extends JPanel {
 
-
-    private PanelJugador panelJugador;
     private ControladorJuego controlador;
+    private PanelJugador panelJugador;
+    private Jugador jugadorCliente;
     private final int TAM_CARTA = 75;
 
     public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
-        this.panelJugador = panelJugador;
         this.controlador = controlador;
-
+        this.jugadorCliente = controlador.getJugadorCliente();
+        this.panelJugador = panelJugador;
         dibujarPanel();
     }
 
@@ -53,7 +54,7 @@ public class PanelTomarCarta extends JPanel {
     private void comportamientoTomarCarta(JButton tomarCarta) {
         tomarCarta.addActionListener(e -> {
             try {
-                if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                if (controlador.esTurnoDe(jugadorCliente)) {
                     try {
                         controlador.tomarCartaDeMazo();
                     } catch (RemoteException ex) {

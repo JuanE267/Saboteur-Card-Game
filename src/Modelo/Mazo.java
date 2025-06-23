@@ -219,38 +219,6 @@ public class Mazo implements Serializable {
         Collections.shuffle(cartas);
     }
 
-    public void repartirCartas(HashMap<Integer, Jugador> jugadores) {
-
-        //por cada jugador genero una mano y se la doy
-        jugadores.forEach((id, j)->{
-                switch (jugadores.size()) {
-                    case 3, 4, 5 -> {
-                        List<Carta> mano = new ArrayList<>();
-                        for (int i = 0; i < 6; i++) {
-                            mano.add(tomarCarta());
-                        }
-                        j.setManoCartas(mano);
-                    }
-                    case 6, 7 -> {
-                        List<Carta> mano = new ArrayList<>();
-                        for (int i = 0; i < 5; i++) {
-                            mano.add(tomarCarta());
-                        }
-                        j.setManoCartas(mano);
-                    }
-                    case 8, 9, 10 -> {
-                        List<Carta> mano = new ArrayList<>();
-                        for (int i = 0; i < 4; i++) {
-                            mano.add(tomarCarta());
-                        }
-                        j.setManoCartas(mano);
-                    }
-                    default -> System.out.println("Minimo 3 jugadores y Maximo 10");
-        }
-    });
-
-    }
-
 
 
     public void agregarCartaAlMazo(Carta carta) {
