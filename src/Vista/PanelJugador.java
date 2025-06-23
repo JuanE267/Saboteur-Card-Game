@@ -2,10 +2,10 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
+import Modelo.IJugador;
 import Modelo.Jugador;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PanelJugador extends JPanel {
-    private Jugador jugadorCliente;
+    private IJugador jugadorCliente;
     private ControladorJuego controlador;
     List<BotonCarta> vistaManoActual = new ArrayList<>();
     private final int TAM_CARTA = 75;
@@ -83,7 +83,7 @@ public class PanelJugador extends JPanel {
         repaint();
     }
 
-    public Jugador getJugadorCliente() {
+    public IJugador getJugadorCliente() {
         return jugadorCliente;
     }
 

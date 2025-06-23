@@ -2,6 +2,7 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
+import Modelo.IJugador;
 import Modelo.Jugador;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class PanelTomarCarta extends JPanel {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
-    private Jugador jugadorCliente;
+    private IJugador jugadorCliente;
     private final int TAM_CARTA = 75;
 
     public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {

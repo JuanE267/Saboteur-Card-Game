@@ -3,6 +3,7 @@ package Modelo.Cartas;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
+import Modelo.IJugador;
 import Modelo.Jugador;
 import Modelo.Tablero;
 
@@ -28,7 +29,7 @@ public class CartaAccion extends Carta {
     }
 
     // Acción para romper/reparar herramienta a un jugador
-    public void jugarCarta(Jugador afectado) {
+    public void jugarCarta(IJugador afectado) {
         for (TipoAccion tipoAccion : tipo) {
             switch (tipoAccion) {
                 case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
@@ -64,7 +65,7 @@ public class CartaAccion extends Carta {
     }
 
     // romper herramienta
-    private void romperHerramienta(Jugador afectado, TipoAccion tipoAccion) {
+    private void romperHerramienta(IJugador afectado, TipoAccion tipoAccion) {
 
             Herramienta herramienta = null;
 
@@ -88,7 +89,7 @@ public class CartaAccion extends Carta {
     }
 
     //reparar herramienta
-    private Boolean repararHerramienta(Jugador afectado, TipoAccion tipoAccion) {
+    private Boolean repararHerramienta(IJugador afectado, TipoAccion tipoAccion) {
         Herramienta herramienta = null;
 
         switch (tipoAccion) {

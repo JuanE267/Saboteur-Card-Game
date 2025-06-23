@@ -1,16 +1,17 @@
 package Vista;
 
+import Modelo.IJugador;
 import Modelo.Jugador;
 
 import javax.swing.*;
 
 public class HerramientaTabla extends JLabel {
-    private Jugador dueño;
-    public HerramientaTabla(Jugador jugador){
+    private IJugador dueño;
+    public HerramientaTabla(IJugador jugador){
         dueño = jugador;
     }
 
-    public Jugador getDueño(){
+    public IJugador getDueño(){
         return dueño;
     }
 }

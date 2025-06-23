@@ -6,7 +6,7 @@ import Modelo.Jugador;
 import java.rmi.RemoteException;
 
 
-public class VistaGrafica {
+public class VistaGrafica implements IVistaGrafica{
     private VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
     private ControladorJuego controlador;

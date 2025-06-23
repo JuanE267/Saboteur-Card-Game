@@ -2,6 +2,7 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
+import Modelo.IJugador;
 import Modelo.Juego;
 import Modelo.Jugador;
 
@@ -33,7 +34,7 @@ public class PanelTablaJugadores extends JPanel  {
 
         removeAll();
         cantidadJugadores = controlador.getJugadores().length;
-        for (Jugador j : controlador.getJugadores()) {
+        for (IJugador j : controlador.getJugadores()) {
             if(j != panelJugador.getJugadorCliente()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));

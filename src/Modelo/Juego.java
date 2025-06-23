@@ -16,7 +16,7 @@ import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
 public class Juego extends ObservableRemoto  implements IJuego{
 
-    private HashMap<Integer, Jugador> jugadores;
+    private HashMap<Integer, IJugador> jugadores;
     private Mazo mazo;
     private Tablero tablero;
     private List<Rol> roles;
@@ -24,12 +24,12 @@ public class Juego extends ObservableRemoto  implements IJuego{
     private int ronda;
     private List<Integer> ordenTurnos = new ArrayList<>();
     private int turno;
-    private Jugador ganador;
+    private IJugador ganador;
 
     public Juego() {
         this.tablero = new Tablero();
         this.mazo = new Mazo();
-        this.jugadores = new HashMap<Integer, Jugador>();
+        this.jugadores = new HashMap<Integer, IJugador>();
         ronda = 1;
         // asigno los roles y reparto las cartas
 
@@ -46,8 +46,8 @@ public class Juego extends ObservableRemoto  implements IJuego{
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
-    public Jugador agregarJugador(String nombre, int edad) throws RemoteException {
-        Jugador jugador = new Jugador(nombre, edad);
+    public IJugador agregarJugador(String nombre, int edad) throws RemoteException {
+        IJugador jugador = new Jugador(nombre, edad);
         this.jugadores.put(jugador.getId(), jugador);
         this.notificarObservadores(Evento.NUEVO_USUARIO);
         return jugador;
@@ -56,8 +56,8 @@ public class Juego extends ObservableRemoto  implements IJuego{
     public void asignoPrimerTurno(int ronda) {
         if (ronda == 1) {
             // el jugador en empezar es el de mayor edad
-            Jugador mayorEdad = jugadores.values().iterator().next();
-            for (Jugador j : jugadores.values()) {
+            IJugador mayorEdad = jugadores.values().iterator().next();
+            for (IJugador j : jugadores.values()) {
                 if (j.getEdad() > mayorEdad.getEdad()) {
                     mayorEdad = j;
                 }
@@ -257,8 +257,8 @@ public class Juego extends ObservableRemoto  implements IJuego{
             ronda++;
         } else {
 
-            Jugador mayorPuntaje = jugadores.get(0);
-            for (Jugador j : jugadores.values()) {
+            IJugador mayorPuntaje = jugadores.get(0);
+            for (IJugador j : jugadores.values()) {
                 if (j.getPuntaje() > mayorPuntaje.getPuntaje()) {
                     mayorPuntaje = j;
                 }
@@ -269,9 +269,9 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
 
-    public Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) throws RemoteException {
+    public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
 
-        Jugador actual = getJugadorActual();
+        IJugador actual = getJugadorActual();
         Carta carta = actual.elegirCarta(posCarta);
         Boolean pudoSerJugado = false;
 
@@ -312,7 +312,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         return pudoSerJugado;
     }
 
-    public void jugarHerramienta(Jugador objetivo, Carta carta) throws RemoteException {
+    public void jugarHerramienta(IJugador objetivo, Carta carta) throws RemoteException {
 
         getJugadorActual().jugarCarta(objetivo, carta);
 
@@ -336,12 +336,12 @@ public class Juego extends ObservableRemoto  implements IJuego{
         return mazo;
     }
 
-    public Jugador[] getJugadores() {
-        Jugador[] jugadores = new Jugador[this.jugadores.size()];
+    public IJugador[] getJugadores() {
+        IJugador[] jugadores = new IJugador[this.jugadores.size()];
         return this.jugadores.values().toArray(jugadores);
     }
 
-    public Jugador getJugadorActual() {
+    public IJugador getJugadorActual() {
         if (ordenTurnos.isEmpty()) return null;
         // tomo el id que corresponde al jugador de este turno
         int idActual = ordenTurnos.get(turno);
@@ -358,7 +358,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         // reinicio el tablero
         tablero = new Tablero();
         // reinicio jugadores
-        for (Jugador j : jugadores.values()) {
+        for (IJugador j : jugadores.values()) {
             j.reiniciarEstado();
         }
 
@@ -368,7 +368,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         repartirCartas(jugadores);
 
     }
-    public void repartirCartas(HashMap<Integer, Jugador> jugadores) {
+    public void repartirCartas(HashMap<Integer, IJugador> jugadores) {
 
         //por cada jugador genero una mano y se la doy
         jugadores.forEach((id, j)->{

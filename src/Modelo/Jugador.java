@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Jugador implements Serializable {
+public class Jugador implements Serializable, IJugador {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class Jugador implements Serializable {
 
 
     // jugar reparar o romper
-    public void jugarCarta(Jugador afectado, Carta carta) {
+    public void jugarCarta(IJugador afectado, Carta carta) {
         ((CartaAccion) carta).jugarCarta(afectado);
     }
 
@@ -122,6 +122,10 @@ public class Jugador implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
 

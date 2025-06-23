@@ -1,6 +1,7 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.IJugador;
 import Modelo.Jugador;
 
 import javax.swing.*;
@@ -81,9 +82,10 @@ public class VentanaJuego extends JFrame {
     }
 
     public void actualizarTurno() throws RemoteException {
+        IJugador jugadorCliente = controlador.getJugadorCliente();
         panelJugador.actualizar();
         // jugador del turno
-        Jugador jugadorActual = controlador.getJugadorActual();
+        IJugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
         panelHerramientas.actualizar();
         panelTablaJugadores.actualizar();

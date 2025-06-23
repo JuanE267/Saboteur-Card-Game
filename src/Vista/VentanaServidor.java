@@ -1,6 +1,7 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.IJugador;
 import Modelo.Jugador;
 import net.miginfocom.swing.MigLayout;
 
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
-public class VentanaServidor extends JFrame {
+public class VentanaServidor extends JFrame implements IVistaServidor {
     private ControladorJuego controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
@@ -66,7 +67,7 @@ public class VentanaServidor extends JFrame {
         setVisible(false);
     }
 
-    public void actualizarListaJugadores(Jugador[] jugadores) {
+    public void actualizarListaJugadores(IJugador[] jugadores) {
         this.listJugadores.setModel(new AbstractListModel() {
             @Override
             public Object getElementAt(int arg0) {

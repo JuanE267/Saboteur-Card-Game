@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 public interface IJuego extends IObservableRemoto {
      void iniciarPartida() throws RemoteException;
 
-     Jugador agregarJugador(String nombre, int edad) throws RemoteException;
+     IJugador agregarJugador(String nombre, int edad) throws RemoteException;
 
      void asignoPrimerTurno(int ronda) throws RemoteException;
 
@@ -20,17 +20,17 @@ public interface IJuego extends IObservableRemoto {
 
      void finalizarRonda(boolean ganaronLosMineros) throws RemoteException;
 
-     Boolean jugarCarta(int x, int y, int posCarta, Jugador objetivo) throws RemoteException;
+     Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException;
 
-     void jugarHerramienta(Jugador objetivo, Carta carta) throws RemoteException;
+     void jugarHerramienta(IJugador objetivo, Carta carta) throws RemoteException;
 
      void tomarCartaDeMazo() throws RemoteException;
 
      Mazo getMazo()throws RemoteException;
 
-     Jugador[] getJugadores()throws RemoteException;
+     IJugador[] getJugadores()throws RemoteException;
 
-     Jugador getJugadorActual()throws RemoteException;
+     IJugador getJugadorActual()throws RemoteException;
 
      void reiniciarRonda(int ronda)throws RemoteException;
 
