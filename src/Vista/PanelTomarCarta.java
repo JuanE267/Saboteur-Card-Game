@@ -84,7 +84,7 @@ public class PanelTomarCarta extends JPanel {
     }
 
     public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(this, "No es tu turno!");
+        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
 }

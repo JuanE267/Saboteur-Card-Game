@@ -13,7 +13,7 @@ import Modelo.Enums.Evento;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
-public class Juego extends ObservableRemoto  implements IJuego{
+public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, IJugador> jugadores;
     private Mazo mazo;
@@ -35,7 +35,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
     }
 
     public void iniciarPartida() throws RemoteException {
-        for(IJugador j : getJugadores()){
+        for (IJugador j : getJugadores()) {
             j.setManoCartas(repartirCartas());
         }
         ordenTurnos.clear();
@@ -65,8 +65,8 @@ public class Juego extends ObservableRemoto  implements IJuego{
             }
             turnoInicial = ordenTurnos.indexOf(mayorEdad.getId());
 
-        this.turno = turnoInicial;
-    }
+            this.turno = turnoInicial;
+        }
     }
 
     public Tablero getTablero() {
@@ -84,7 +84,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         // genero los roles dependiendo la cantidad de jugadores
         // asigno los  roles a cada uno
         switch (jugadores.size()) {
-            case 1, 3 -> {
+            case 1, 2, 3 -> {
                 roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -93,7 +93,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
                 Collections.shuffle(roles);
 
                 jugadores.forEach((id, j) -> {
-                        j.setRol(roles.removeFirst());
+                    j.setRol(roles.removeFirst());
                 });
             }
             case 4 -> {
@@ -224,7 +224,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         if (ganaronLosMineros) {
             mensajeGanador = "GANARON LOS MINEROS";
 
-            jugadores.forEach((id,j)->{
+            jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.MINERO) {
                     j.sumarPuntos(4);
                 } else {
@@ -234,7 +234,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
         } else {
             mensajeGanador = "GANARON LOS SABOTEADORES";
 
-            jugadores.forEach((id, j)->{
+            jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.SABOTEADOR) {
                     j.sumarPuntos(4);
                 } else {
@@ -245,7 +245,7 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
         System.out.println(mensajeGanador);
         System.out.println("Se revelan los roles..");
-        jugadores.forEach((id,j) ->  {
+        jugadores.forEach((id, j) -> {
             System.out.println(j.getNombre() + " -> " + j.getRol());
         });
 
@@ -277,27 +277,26 @@ public class Juego extends ObservableRemoto  implements IJuego{
 
         // dependiendo el tipo de la carta juego de cierta manera
         if (carta instanceof CartaTunel) {
-            pudoSerJugado = actual.jugarCarta(tablero, x, y, carta);
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
-            if (pudoSerJugado) {
-                actual.getManoCartas().remove(posCarta);
-                // tomo una nueva si el mazo no esta vacio
-                if (!mazo.noHayCartas()) {
-                    Carta nuevaCarta = mazo.tomarCarta();
-                    actual.getManoCartas().add(nuevaCarta);
+            if(actual.getHerramientasRotas().isEmpty()) {
+                if (actual.jugarCarta(tablero, x, y, carta)) {
+                    actual.getManoCartas().remove(posCarta);
+                    pudoSerJugado = true;
+                    // tomo una nueva si el mazo no esta vacio
+                    if (!mazo.noHayCartas()) {
+                        Carta nuevaCarta = mazo.tomarCarta();
+                        actual.getManoCartas().add(nuevaCarta);
+                    }
                 }
             }
 
         } else if (carta instanceof CartaAccion) {
             if (((CartaAccion) carta).getTipoAccion().size() == 1) {
-                pudoSerJugado = actual.jugarCartaMapaDerrumbe(tablero, x, y, carta);
-
-                if (pudoSerJugado) {
-
+                if (actual.jugarCartaMapaDerrumbe(tablero, x, y, carta)) {
                     // despues de jugar elimino la carta de la mano
                     actual.getManoCartas().remove(posCarta);
-
+                    pudoSerJugado = true;
                     // tomo una nueva si el mazo no esta vacio
                     if (!mazo.noHayCartas()) {
                         Carta nuevaCarta = mazo.tomarCarta();
@@ -312,17 +311,21 @@ public class Juego extends ObservableRemoto  implements IJuego{
         return pudoSerJugado;
     }
 
-    public void jugarHerramienta(IJugador objetivo, Carta carta) throws RemoteException {
+    public void jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException {
 
-        getJugadorActual().jugarCarta(objetivo, carta);
-
-        // despues de jugar elimino la carta de la mano
-        getJugadorActual().getManoCartas().remove(carta);
-        // tomo una nueva si el mazo no esta vacio
-        if (!mazo.noHayCartas()) {
-            Carta nuevaCarta = mazo.tomarCarta();
-            getJugadorActual().getManoCartas().add(nuevaCarta);
+        IJugador actual = getJugadorActual();
+        Carta carta = actual.elegirCarta(posCarta);
+        if (actual.jugarCarta(objetivo, carta)) {
+            // despues de jugar elimino la carta de la mano
+            actual.getManoCartas().remove(carta);
+            // tomo una nueva si el mazo no esta vacio
+            if (!mazo.noHayCartas()) {
+                Carta nuevaCarta = mazo.tomarCarta();
+                getJugadorActual().getManoCartas().add(nuevaCarta);
+            }
         }
+        ;
+
         notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
     }
 
@@ -348,6 +351,10 @@ public class Juego extends ObservableRemoto  implements IJuego{
         return jugadores.get(idActual);
     }
 
+    public int getTurnoActual() {
+        return turno;
+    }
+
 
     public void reiniciarRonda(int ronda) {
 
@@ -364,38 +371,39 @@ public class Juego extends ObservableRemoto  implements IJuego{
         asignoPrimerTurno(ronda);
         //asigno roles de nuevo
         asignarRoles();
-        for(IJugador j : getJugadores()){
+        for (IJugador j : getJugadores()) {
             repartirCartas();
         }
 
     }
+
     public List<Carta> repartirCartas() {
 
         //por cada jugador genero una mano y se la doy
-            switch (getJugadores().length) {
-                case 2, 3, 4, 5 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 6; i++) {
-                        mano.add(mazo.tomarCarta());
-                    }
-                    return mano;
+        switch (getJugadores().length) {
+            case 2, 3, 4, 5 -> {
+                List<Carta> mano = new ArrayList<>();
+                for (int i = 0; i < 6; i++) {
+                    mano.add(mazo.tomarCarta());
                 }
-                case 6, 7 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 5; i++) {
-                        mano.add(mazo.tomarCarta());
-                    }
-                    return mano;
-                }
-                case 8, 9, 10 -> {
-                    List<Carta> mano = new ArrayList<>();
-                    for (int i = 0; i < 4; i++) {
-                        mano.add(mazo.tomarCarta());
-                    }
-                    return mano;
-                }
-                default -> System.out.println("Minimo 3 jugadores y Maximo 10");
+                return mano;
             }
+            case 6, 7 -> {
+                List<Carta> mano = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    mano.add(mazo.tomarCarta());
+                }
+                return mano;
+            }
+            case 8, 9, 10 -> {
+                List<Carta> mano = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    mano.add(mazo.tomarCarta());
+                }
+                return mano;
+            }
+            default -> System.out.println("Minimo 3 jugadores y Maximo 10");
+        }
         return null;
     }
 
@@ -415,12 +423,12 @@ public class Juego extends ObservableRemoto  implements IJuego{
         }
     }
 
-    public void descartarCarta(Carta carta) throws RemoteException {
-        getJugadorActual().descartarCarta(carta);
+    public void descartarCarta(int posCarta) throws RemoteException {
+        getJugadorActual().descartarCarta(posCarta);
         notificarObservadores(Evento.DESCARTAR_CARTA);
     }
 
-    public String getGanador(){
+    public String getGanador() {
         return this.ganador.getNombre();
     }
 

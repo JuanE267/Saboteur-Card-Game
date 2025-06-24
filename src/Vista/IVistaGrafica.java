@@ -1,12 +1,13 @@
 package Vista;
 
-import Controlador.ControladorJuego;
+import Modelo.IJugador;
+import Modelo.Tablero;
 
 import java.rmi.RemoteException;
 
 public interface IVistaGrafica {
 
-    void actualizar() throws RemoteException;
+    void actualizar(Tablero tablero, IJugador[] jugadores) throws RemoteException;
 
     void iniciar();
 

@@ -90,13 +90,13 @@ public class ControladorJuego implements IControladorRemoto {
             if (carta instanceof CartaAccion) {
                 // si el objetivo no es el mismo jugador
                 if (objetivo != jugadorCliente) {
-                    juego.jugarHerramienta(objetivo, carta);
+                    juego.jugarHerramienta(objetivo, posCarta);
                 }
                 // es el mismo jugador pero la carta es de reparar
                 else if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
                     // reviso si tiene cartas rotas
                     if (!(jugadorCliente.getHerramientasRotas().isEmpty())) {
-                        juego.jugarHerramienta(objetivo, carta);
+                        juego.jugarHerramienta(objetivo, posCarta);
                     } else {
                         return TipoAccion.REPARARPICO;
                     }
@@ -111,8 +111,12 @@ public class ControladorJuego implements IControladorRemoto {
             return juego.getJugadorActual();
         }
 
-        public void descartarCarta (Carta carta) throws RemoteException {
-            juego.descartarCarta(carta);
+        public int getTurnoActual() throws RemoteException {
+         return juego.getTurnoActual();
+        }
+
+        public void descartarCarta (int posCarta) throws RemoteException {
+            juego.descartarCarta(posCarta);
         }
 
         public void tomarCartaDeMazo () throws RemoteException {
@@ -125,7 +129,8 @@ public class ControladorJuego implements IControladorRemoto {
 
         public Boolean esTurnoDe (IJugador jugador) throws RemoteException {
             if (jugador == null) return false;
-            return jugador.equals(jugadorCliente);
+            juego.getJugadorActual();
+            return getTurnoActual() == jugador.getId();
         }
 
         public Tablero getTablero () throws RemoteException {
@@ -150,11 +155,11 @@ public class ControladorJuego implements IControladorRemoto {
                 }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA, NUEVA_RONDA -> {
                     actualizarJugador();
-                    vista.actualizar();
+                    vista.actualizar(juego.getTablero(), juego.getJugadores());
                 }
                 case FINALIZAR_PARTIDA -> {
                     actualizarJugador();
-                    vista.getVentanaJuego().mostrarGanador();
+                    vista.getVentanaJuego().mostrarGanador(juego.getGanador());
                 }
             }
         }

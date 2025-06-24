@@ -16,25 +16,27 @@ import java.util.List;
 
 public class PanelTablaJugadores extends JPanel  {
 
+    private IJugador jugadorCliente;
+    private IJugador[] jugadores;
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
-    private Juego juego;
-    private int cantidadJugadores;
 
     public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
-        setLayout(new GridLayout(cantidadJugadores, 1));
+        this.jugadores = controlador.getJugadores();
+        this.jugadorCliente = controlador.getJugadorActualizado();
+        setLayout(new GridLayout(jugadores.length, 1));
         setBorder(new EmptyBorder(200, 100, 200, 0));
-        dibujarListaJugadores(controlador.getJugadores());
+        dibujarListaJugadores(jugadores, jugadorCliente);
     }
 
-    private void dibujarListaJugadores(IJugador[] jugadores) throws RemoteException {
+    private void dibujarListaJugadores(IJugador[] jugadores, IJugador jugadorCliente) throws RemoteException {
 
         removeAll();
-        cantidadJugadores = jugadores.length;
+        jugadores = controlador.getJugadores();
         for (IJugador j : jugadores) {
-            if(j != controlador.getJugadorActualizado()) {
+            if(j != jugadorCliente) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));
                 jugadorTabla.setBackground(Color.WHITE);
@@ -89,7 +91,7 @@ public class PanelTablaJugadores extends JPanel  {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         try {
-                            if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                            if (controlador.esTurnoDe(jugadorCliente)) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(pico);
@@ -110,7 +112,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
+                            if (controlador.esTurnoDe(jugadorCliente)) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(vagoneta);
@@ -131,7 +133,7 @@ public class PanelTablaJugadores extends JPanel  {
                     public void mouseClicked(MouseEvent e) {
 
                         try {
-                            if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
+                            if (controlador.esTurnoDe(jugadorCliente)) {
                                 super.mouseClicked(e);
                                 try {
                                     herramientaEsPresionada(linterna);
@@ -169,6 +171,7 @@ public class PanelTablaJugadores extends JPanel  {
         int posCarta = panelJugador.getCartaSeleccionada();
         controlador.jugarHerramienta(posCarta, herr.getDueño());
 
+        actualizar(jugadores, jugadorCliente);
         panelJugador.resetCartaSeleccionada();
         panelJugador.revalidate();
         panelJugador.repaint();
@@ -189,11 +192,13 @@ public class PanelTablaJugadores extends JPanel  {
 
 
     public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(this, "No es tu turno!");
+        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
-    public void actualizar(IJugador[] jugadores) throws RemoteException {
-        dibujarListaJugadores(jugadores);
+    public void actualizar(IJugador[] jugadores, IJugador jugadorCliente) throws RemoteException {
+        this.jugadores = jugadores;
+        this.jugadorCliente = jugadorCliente;
+        dibujarListaJugadores(jugadores, jugadorCliente);
         revalidate();
         repaint();
     }

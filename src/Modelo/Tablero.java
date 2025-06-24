@@ -201,7 +201,6 @@ public class Tablero implements Serializable {
     }
 
     public Carta getCarta(int x, int y) {
-
         return cuadricula[x][y];
     }
 

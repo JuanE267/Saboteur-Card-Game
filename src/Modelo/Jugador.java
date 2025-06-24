@@ -41,8 +41,8 @@ public class Jugador implements Serializable, IJugador {
 
 
     // jugar reparar o romper
-    public void jugarCarta(IJugador afectado, Carta carta) {
-        ((CartaAccion) carta).jugarCarta(afectado);
+    public boolean jugarCarta(IJugador afectado, Carta carta) {
+        return ((CartaAccion) carta).jugarCarta(afectado);
     }
 
     // jugar mapa o derrumbe
@@ -55,7 +55,8 @@ public class Jugador implements Serializable, IJugador {
     }
 
     // descartar carta\
-    public Boolean descartarCarta(Carta carta) {
+    public Boolean descartarCarta(int posCarta) {
+        Carta carta = elegirCarta(posCarta);
         return manoCartas.remove(carta);
     }
 

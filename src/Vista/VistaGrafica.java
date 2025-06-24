@@ -3,6 +3,7 @@ package Vista;
 import Controlador.ControladorJuego;
 import Modelo.IJugador;
 import Modelo.Jugador;
+import Modelo.Tablero;
 
 import java.rmi.RemoteException;
 
@@ -50,16 +51,15 @@ public class VistaGrafica implements IVistaGrafica {
         iniciarVentanaJuego();
     }
 
-    public void actualizar() throws RemoteException {
+    public void actualizar(Tablero tablero, IJugador[] jugadores) throws RemoteException {
         IJugador actualizado = controlador.getJugadorActualizado();
         if (actualizado != null) {
-            VentanaJuego ventana = iniciarVentanaJuego();
-            ventana.getPanelJugador().actualizar(actualizado);
-            ventana.getPanelHerramientas().actualizar(actualizado);
-            ventana.getPanelPuntosYAcciones().actualizar(actualizado);
-            ventana.getPanelTablaJugadores().actualizar(controlador.getJugadores());
-            ventana.getPanelTablero().actualizar(controlador.getTablero());
-            ventana.actualizarTurno();
+            ventanaJuego.getPanelJugador().actualizar(actualizado);
+            ventanaJuego.getPanelHerramientas().actualizar(actualizado);
+            ventanaJuego.getPanelPuntosYAcciones().actualizar(actualizado);
+            ventanaJuego.getPanelTablaJugadores().actualizar(jugadores, actualizado);
+            ventanaJuego.getPanelTablero().actualizar(tablero, actualizado);
+            ventanaJuego.actualizarVentana();
 
         }
     }

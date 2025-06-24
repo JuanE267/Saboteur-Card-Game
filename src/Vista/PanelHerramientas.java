@@ -17,14 +17,16 @@ public class PanelHerramientas extends JPanel {
 
     private PanelJugador panelJugador;
     private ControladorJuego controlador;
+    private IJugador jugadorCliente;
 
     public PanelHerramientas(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.panelJugador = panelJugador;
         this.controlador = controlador;
+        this.jugadorCliente = controlador.getJugadorActualizado();
 
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(10, 0, 0, 0));
-        dibujarHerramientas(controlador.getJugadorActualizado());
+        dibujarHerramientas(jugadorCliente);
     }
 
     public void dibujarHerramientas(IJugador jugadorCliente) {
@@ -143,9 +145,9 @@ public class PanelHerramientas extends JPanel {
 
         int posCarta = panelJugador.getCartaSeleccionada();
 
-        if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActualizado()).toString().startsWith("ROMPER")) {
+        if (controlador.jugarHerramienta(posCarta, jugadorCliente).toString().startsWith("ROMPER")) {
             JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
-        } else if (controlador.jugarHerramienta(posCarta, controlador.getJugadorActualizado()).toString().startsWith("REPARAR")) {
+        } else if (controlador.jugarHerramienta(posCarta, jugadorCliente).toString().startsWith("REPARAR")) {
             JOptionPane.showMessageDialog(this, "La carta ya esta sana!");
         }else
         {
@@ -169,10 +171,11 @@ public class PanelHerramientas extends JPanel {
 
 
     public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(this, "No es tu turno!");
+        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
     public void actualizar(IJugador jugadorCliente) throws RemoteException {
+        this.jugadorCliente = jugadorCliente;
         dibujarHerramientas(jugadorCliente);
         revalidate();
         repaint();

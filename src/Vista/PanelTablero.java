@@ -6,6 +6,7 @@ import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.TipoAccion;
+import Modelo.IJugador;
 import Modelo.Tablero;
 
 import javax.swing.*;
@@ -25,20 +26,23 @@ public class PanelTablero extends JPanel{
     List<Casillero> listaCasilleros = new ArrayList<>();
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
+    private IJugador jugadorCliente;
 
     public PanelTablero(PanelJugador jugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = jugador;
+        this.jugadorCliente = controlador.getJugadorActualizado();
         this.tablero = controlador.getTablero();
 
         setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
-        dibujarTablero(this.tablero);
+        dibujarTablero(tablero);
     }
 
     public void dibujarTablero(Tablero tablero) {
-        removeAll();
+        this.removeAll();
+        setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         for (int i = 0; i < tablero.getAlto(); i++) {
             for (int j = 0; j < tablero.getAncho(); j++) {
 
@@ -56,7 +60,7 @@ public class PanelTablero extends JPanel{
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     try {
-                        if (controlador.esTurnoDe(panelJugador.getJugadorCliente())) {
+                        if (controlador.esTurnoDe(jugadorCliente)) {
                             super.mouseClicked(e);
                             try {
                                 casilleroEsPresionado(c);
@@ -80,7 +84,7 @@ public class PanelTablero extends JPanel{
     private void casilleroEsPresionado(Casillero casillero) throws RemoteException {
 
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
-        Carta cartaAJugar = panelJugador.getJugadorCliente().elegirCarta(cartaSeleccionada);
+        Carta cartaAJugar = jugadorCliente.elegirCarta(cartaSeleccionada);
         Boolean pudoSerJugado = false;
         Boolean paseTurnoDespuesDeGirar = false;
 
@@ -157,10 +161,12 @@ public class PanelTablero extends JPanel{
     }
 
     public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(this, "No es tu turno!");
+        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
-    public void actualizar(Tablero tablero) {
+    public void actualizar(Tablero tablero, IJugador jugadorCliente) {
+        this.jugadorCliente = jugadorCliente;
+        this.tablero = tablero;
         dibujarTablero(tablero);
         revalidate();
         repaint();

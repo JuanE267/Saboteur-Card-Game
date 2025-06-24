@@ -35,12 +35,13 @@ public class VentanaJuego extends JFrame {
 
         // label que muestra el turno actual
         turnoActual = new JLabel();
-        turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
-        turnoActual.setHorizontalAlignment(SwingConstants.CENTER);
         // jugador del turno
         IJugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
-        add(turnoActual);
+
+        turnoActual.setFont(new Font("Arial", Font.BOLD, 18));
+        turnoActual.setHorizontalAlignment(SwingConstants.CENTER);
+        add(turnoActual, BorderLayout.NORTH);
 
         inicializarVentana();
         setVisible(true);
@@ -84,23 +85,10 @@ public class VentanaJuego extends JFrame {
         repaint();
     }
 
-    public void actualizarTurno() throws RemoteException {
-        IJugador jugadorCliente = controlador.getJugadorActualizado();
-        panelJugador.actualizar(jugadorCliente);
-        // jugador del turno
-        IJugador jugadorActual = controlador.getJugadorActual();
-        turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
-        panelHerramientas.actualizar(jugadorCliente);
-        panelTablaJugadores.actualizar(controlador.getJugadores());
-        panelTablero.actualizar(controlador.getTablero());
-        panelTomarCarta.actualizar();
-        panelPuntosYAcciones.actualizar(jugadorCliente);
-        revalidate();
-        repaint();
-    }
 
     public void actualizarVentana() throws RemoteException {
-        actualizarTurno();
+        IJugador jugadorActual = controlador.getJugadorActual();
+        turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
         revalidate();
         repaint();
     }
@@ -131,7 +119,7 @@ public class VentanaJuego extends JFrame {
     }
 
 
-    public void mostrarGanador() throws RemoteException {
-        JOptionPane.showMessageDialog(this, "El ganador es " + controlador.getGanador());
+    public void mostrarGanador(String ganador) throws RemoteException {
+        JOptionPane.showMessageDialog(this, "El ganador es " + ganador);
     }
 }

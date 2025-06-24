@@ -13,13 +13,13 @@ public interface IJugador {
 
     boolean jugarCarta(Tablero tablero, int x, int y, Carta carta);
 
-    void jugarCarta(IJugador afectado, Carta carta);
+    boolean jugarCarta(IJugador afectado, Carta carta);
 
     Boolean jugarCartaMapaDerrumbe(Tablero tablero, int x, int y, Carta carta);
 
     Carta elegirCarta(int posCarta);
 
-    Boolean descartarCarta(Modelo.Cartas.Carta carta);
+    Boolean descartarCarta(int posCarta);
 
     String getNombre();
 

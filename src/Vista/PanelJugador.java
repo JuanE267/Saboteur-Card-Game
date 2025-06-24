@@ -80,20 +80,16 @@ public class PanelJugador extends JPanel {
 
     }
 
-
-    public IJugador getJugadorCliente() {
-        return jugadorCliente;
-    }
-
     public int getCartaSeleccionada() {
         return cartaSeleccionada;
     }
 
     public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(this, "No es tu turno!");
+        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
     public void actualizar(IJugador jugador) throws RemoteException {
+        this.jugadorCliente = jugador;
         removeAll();
         if (jugador.getManoCartas() != null) {
             dibujarManoDeCartas(jugador.getManoCartas());

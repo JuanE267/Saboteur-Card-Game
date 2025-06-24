@@ -29,17 +29,18 @@ public class CartaAccion extends Carta {
     }
 
     // Acción para romper/reparar herramienta a un jugador
-    public void jugarCarta(IJugador afectado) {
+    public Boolean jugarCarta(IJugador afectado) {
         for (TipoAccion tipoAccion : tipo) {
             switch (tipoAccion) {
                 case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
-                    romperHerramienta(afectado, tipoAccion);
+                   return  romperHerramienta(afectado, tipoAccion);
                 }
                 case REPARARLINTERNA, REPARARVAGONETA, REPARARPICO -> {
-                    repararHerramienta(afectado, tipoAccion);
+                    return repararHerramienta(afectado, tipoAccion);
                 }
             }
         }
+        return false;
     }
 
     // Acción para ver un destino del tablero o derrumbar
@@ -65,7 +66,7 @@ public class CartaAccion extends Carta {
     }
 
     // romper herramienta
-    private void romperHerramienta(IJugador afectado, TipoAccion tipoAccion) {
+    private Boolean romperHerramienta(IJugador afectado, TipoAccion tipoAccion) {
 
             Herramienta herramienta = null;
 
@@ -82,8 +83,10 @@ public class CartaAccion extends Carta {
             }
             if (!yaEstaRota) {
                 herramientasRotas.add(herramienta);
+                return true;
             } else {
                 System.out.println("la herramienta del jugador " + afectado.getNombre() + "ya esta rota");
+                return false;
             }
 
     }
