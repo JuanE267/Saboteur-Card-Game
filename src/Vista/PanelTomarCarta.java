@@ -19,6 +19,8 @@ public class PanelTomarCarta extends JPanel {
     public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
+
+        setBackground(Color.decode("#736d62"));
         dibujarPanel();
     }
 
@@ -54,20 +56,16 @@ public class PanelTomarCarta extends JPanel {
         tomarCarta.addActionListener(e -> {
             try {
                 if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
-                    try {
-                        controlador.tomarCartaDeMazo();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                    panelJugador.revalidate();
-                    panelJugador.repaint();
-                    panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
-                    dibujarPanel();
-                    try {
+                    if (!controlador.tomarCartaDeMazo()) {
+                        JOptionPane.showMessageDialog(this, "Tenes el maximo de cartas!");
+                    } else {
+                        panelJugador.revalidate();
+                        panelJugador.repaint();
+                        panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
+                        dibujarPanel();
                         controlador.pasarTurno();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
                     }
+
                 } else {
                     mensajeNoEsTuTurno();
                 }

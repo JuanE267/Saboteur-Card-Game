@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelTablero extends JPanel{
+public class PanelTablero extends JPanel {
 
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
@@ -34,6 +34,7 @@ public class PanelTablero extends JPanel{
         this.jugadorCliente = controlador.getJugadorActualizado();
         this.tablero = controlador.getTablero();
 
+        setBackground(Color.decode("#736d62"));
         setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
         setBorder(new EmptyBorder(0, 200, 0, 400));
@@ -48,7 +49,7 @@ public class PanelTablero extends JPanel{
 
                 Casillero casillero = new Casillero(i, j);
                 casillero.setPreferredSize(new Dimension(ANCHO_CASILLERO, ALTO_CASILLERO));
-                casillero.setBorder(BorderFactory.createDashedBorder(Color.BLACK));
+                casillero.setBorder(BorderFactory.createDashedBorder(new Color(212, 210, 210, 128)));
                 setImagenCasillero(casillero);
                 listaCasilleros.add(casillero);
                 add(casillero);
@@ -84,19 +85,22 @@ public class PanelTablero extends JPanel{
     private void casilleroEsPresionado(Casillero casillero) throws RemoteException {
 
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
-        Carta cartaAJugar = jugadorCliente.elegirCarta(cartaSeleccionada);
         Boolean pudoSerJugado = false;
         Boolean paseTurnoDespuesDeGirar = false;
 
 
         // si es una carta dentro del mazo
         if (cartaSeleccionada != -1 && cartaSeleccionada >= 0) {
-
+            Carta cartaAJugar = jugadorCliente.elegirCarta(cartaSeleccionada);
             //si es de tipo tunel
             if (cartaAJugar instanceof CartaTunel) {
                 pudoSerJugado = controlador.jugarUnaCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
                 if (!pudoSerJugado) {
-                    JOptionPane.showMessageDialog(this, "La carta no coincide con ninguno de los tuneles");
+                    if (jugadorCliente.puedeConstruir()) {
+                        JOptionPane.showMessageDialog(this, "La carta no coincide con ninguno de los tuneles!!");
+                    }else{
+                        JOptionPane.showMessageDialog(this, "Tenes una herramienta rota, NO podes construir!!");
+                    }
                 }
             }
             //si es de tipo accion
@@ -108,10 +112,12 @@ public class PanelTablero extends JPanel{
                     if (!pudoSerJugado) {
                         JOptionPane.showMessageDialog(this, "No puede jugar sobre esta carta!");
                     }
-                    // si es el mapa necesito que despues de 3 segundo se de vuelta el destino nuevamente
+                    // si es el mapa muestro la carta destino dada vuelta
                     if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA && pudoSerJugado) {
                         Carta destino = tablero.getCarta(casillero.posX(), casillero.posY());
                         if (destino instanceof CartaDestino) {
+                            //intento de girar (no funciona)
+                            /*
                             javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                                 ((CartaDestino) destino).girar();
                                 setImagenCasillero(casillero);
@@ -125,6 +131,14 @@ public class PanelTablero extends JPanel{
                             paseTurnoDespuesDeGirar = true;
                             timer.setRepeats(false);
                             timer.start();
+                            */
+                            // guardo la imagen de la cara del destino
+                            ImageIcon icono = new ImageIcon(destino.getClass().getResource("/" + ((CartaDestino) destino).getCara()));
+                            // la escalo al tamaño de un casiller
+                            icono = new ImageIcon(icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH));
+                            // la muestro
+                            JOptionPane.showMessageDialog(this, new JLabel(icono));
+
                         }
                     }
                 }

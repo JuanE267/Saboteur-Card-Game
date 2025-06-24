@@ -18,7 +18,6 @@ public class VentanaJuego extends JFrame {
     private PanelHerramientas panelHerramientas;
     private JPanel contenedorJugador;
     private JLabel turnoActual;
-    private String nombreJugadorActual = "";
 
     public VentanaJuego(ControladorJuego controlador) throws RemoteException {
 
@@ -30,11 +29,13 @@ public class VentanaJuego extends JFrame {
         setSize(1800, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
+        setBackground(Color.decode("#736d62"));
         setLayout(new BorderLayout());
 
         // label que muestra el turno actual
         turnoActual = new JLabel();
+        turnoActual.setForeground(Color.decode("#736d62"));
         // jugador del turno
         IJugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());

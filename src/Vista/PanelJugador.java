@@ -22,6 +22,7 @@ public class PanelJugador extends JPanel {
     public PanelJugador(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
+        setBackground(Color.decode("#736d62"));
         setLayout(new FlowLayout());
         dibujarManoDeCartas(jugadorCliente.getManoCartas());
     }

@@ -36,8 +36,8 @@ public class main {
             e.printStackTrace();
         }
         conectarCliente(ip, "1111", ip, port);
-        //conectarCliente(ip, "2222", ip, port);
-         conectarCliente(ip, "3333", ip, port);
+        conectarCliente(ip, "2222", ip, port);
+        conectarCliente(ip, "3333", ip, port);
 
     }
 

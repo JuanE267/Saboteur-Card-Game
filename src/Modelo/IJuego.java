@@ -1,10 +1,8 @@
 package Modelo;
 
-import Modelo.Cartas.Carta;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
 import java.rmi.RemoteException;
-import java.util.List;
 
 public interface IJuego extends IObservableRemoto {
     void iniciarPartida() throws RemoteException;
@@ -23,7 +21,7 @@ public interface IJuego extends IObservableRemoto {
 
     Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException;
 
-    void jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException;
+    boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException;
 
     void tomarCartaDeMazo() throws RemoteException;
 
@@ -47,4 +45,5 @@ public interface IJuego extends IObservableRemoto {
 
     String getGanador() throws RemoteException;
 
+    IJugador getJugadorPorId(int id) throws RemoteException;
 }

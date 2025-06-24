@@ -60,7 +60,7 @@ public class Jugador implements Serializable, IJugador {
         return manoCartas.remove(carta);
     }
 
-    private Boolean puedeConstruir() {
+    public Boolean puedeConstruir() {
         return (herramientasRotas.isEmpty());
     }
 

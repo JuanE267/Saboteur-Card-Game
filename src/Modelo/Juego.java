@@ -311,11 +311,13 @@ public class Juego extends ObservableRemoto implements IJuego {
         return pudoSerJugado;
     }
 
-    public void jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException {
+    public boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException {
 
         IJugador actual = getJugadorActual();
         Carta carta = actual.elegirCarta(posCarta);
-        if (actual.jugarCarta(objetivo, carta)) {
+        objetivo = getJugadorPorId(objetivo.getId());
+        boolean pudoSerJugada = actual.jugarCarta(objetivo, carta);
+        if (pudoSerJugada) {
             // despues de jugar elimino la carta de la mano
             actual.getManoCartas().remove(carta);
             // tomo una nueva si el mazo no esta vacio
@@ -324,9 +326,9 @@ public class Juego extends ObservableRemoto implements IJuego {
                 getJugadorActual().getManoCartas().add(nuevaCarta);
             }
         }
-        ;
 
         notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
+        return pudoSerJugada;
     }
 
     public void tomarCartaDeMazo() throws RemoteException {
@@ -353,6 +355,15 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public int getTurnoActual() {
         return turno;
+    }
+
+    public IJugador getJugadorPorId(int id) throws RemoteException{
+        for (int i = 0; i < jugadores.size(); i++) {
+            if(getJugadores()[i].getId() == id){
+                return getJugadores()[i];
+            }
+        }
+        return null;
     }
 
 

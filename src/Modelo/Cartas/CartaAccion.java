@@ -69,7 +69,6 @@ public class CartaAccion extends Carta {
     private Boolean romperHerramienta(IJugador afectado, TipoAccion tipoAccion) {
 
             Herramienta herramienta = null;
-
             switch (tipoAccion) {
                 case ROMPERPICO -> herramienta = Herramienta.PICO;
                 case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
@@ -85,7 +84,6 @@ public class CartaAccion extends Carta {
                 herramientasRotas.add(herramienta);
                 return true;
             } else {
-                System.out.println("la herramienta del jugador " + afectado.getNombre() + "ya esta rota");
                 return false;
             }
 
@@ -109,8 +107,6 @@ public class CartaAccion extends Carta {
         if (!yaEstaSana) {
             herramientasRotas.remove(herramienta);
             return true;
-        } else {
-            System.out.println("la herramienta del jugador " + afectado.getNombre() + " ya esta sana");
         }
         return false;
     }
@@ -120,8 +116,7 @@ public class CartaAccion extends Carta {
 
         if (destino != null) {
             if ((this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO) {
-
-                ((CartaDestino) destino).girar();
+                //((CartaDestino) destino).girar();
                 return true;
             }
         }

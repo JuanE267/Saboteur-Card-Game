@@ -20,6 +20,7 @@ public class PanelPuntosYAcciones extends JPanel {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
 
+        setBackground(Color.decode("#736d62"));
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(10, 0, 0, 0));
 
@@ -37,6 +38,8 @@ public class PanelPuntosYAcciones extends JPanel {
             puntaje.setText("PUNTAJE: " + jugadorCliente.getPuntaje());
         }
         JPanel contenedorBotones = new JPanel();
+        contenedorBotones.setBackground(Color.decode("#736d62"));
+
         contenedorBotones.setLayout(new FlowLayout());
         contenedorBotones.setBorder(new EmptyBorder(10, 100, 0, 0));
 
@@ -67,16 +70,9 @@ public class PanelPuntosYAcciones extends JPanel {
                     panelJugador.revalidate();
                     panelJugador.repaint();
                     panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
-                    try {
-                        controlador.verificarSiTerminoLaRonda();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                    try {
-                        controlador.pasarTurno();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
+
+                    controlador.pasarTurno();
+
                 } else {
                     mensajeNoEsTuTurno();
                 }
@@ -93,26 +89,17 @@ public class PanelPuntosYAcciones extends JPanel {
             // mediante el controlador tomo el jugador de esta ronda y elijo la carta seleccionada en el panel de la interfaz
             try {
                 if (controlador.esTurnoDe(jugadorCliente)) {
-                    try {
+
+                    if (panelJugador.getCartaSeleccionada() != -1) {
                         controlador.descartarCarta(panelJugador.getCartaSeleccionada());
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
+
+                        // reseteo  despues de descartar la carta
+                        panelJugador.resetCartaSeleccionada();
+                        panelJugador.revalidate();
+                        panelJugador.repaint();
+                        controlador.pasarTurno();
                     }
 
-                    // reseteo todo despues de descartar la carta
-                    panelJugador.resetCartaSeleccionada();
-                    panelJugador.revalidate();
-                    panelJugador.repaint();
-                    try {
-                        controlador.verificarSiTerminoLaRonda();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
-                    try {
-                        controlador.pasarTurno();
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
                 } else {
                     mensajeNoEsTuTurno();
                 }

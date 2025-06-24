@@ -1,7 +1,10 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.Cartas.Carta;
 import Modelo.Enums.Herramienta;
+import Modelo.Enums.TipoAccion;
+import Modelo.Enums.TipoCarta;
 import Modelo.IJugador;
 import Modelo.Juego;
 
@@ -14,7 +17,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class PanelTablaJugadores extends JPanel  {
+public class PanelTablaJugadores extends JPanel {
 
     private IJugador jugadorCliente;
     private IJugador[] jugadores;
@@ -26,6 +29,8 @@ public class PanelTablaJugadores extends JPanel  {
         this.panelJugador = panelJugador;
         this.jugadores = controlador.getJugadores();
         this.jugadorCliente = controlador.getJugadorActualizado();
+
+        setBackground(Color.decode("#736d62"));
         setLayout(new GridLayout(jugadores.length, 1));
         setBorder(new EmptyBorder(200, 100, 200, 0));
         dibujarListaJugadores(jugadores, jugadorCliente);
@@ -36,10 +41,11 @@ public class PanelTablaJugadores extends JPanel  {
         removeAll();
         jugadores = controlador.getJugadores();
         for (IJugador j : jugadores) {
-            if(j != jugadorCliente) {
+            if (j.getId() != jugadorCliente.getId()) {
                 JPanel jugadorTabla = new JPanel();
                 jugadorTabla.setLayout(new GridLayout(2, 1));
-                jugadorTabla.setBackground(Color.WHITE);
+                jugadorTabla.setBackground(Color.decode("#736d62"));
+
 
                 // nombre
                 JLabel nombre = new JLabel(j.getNombre());
@@ -163,20 +169,41 @@ public class PanelTablaJugadores extends JPanel  {
                 add(jugadorTabla);
             }
         }
-
     }
+
 
     private void herramientaEsPresionada(HerramientaTabla herr) throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
-        controlador.jugarHerramienta(posCarta, herr.getDueño());
+        if (posCarta != -1) {
 
-        actualizar(jugadores, jugadorCliente);
-        panelJugador.resetCartaSeleccionada();
-        panelJugador.revalidate();
-        panelJugador.repaint();
-        controlador.verificarSiTerminoLaRonda();
-        controlador.pasarTurno();
+            Carta carta = jugadorCliente.elegirCarta(posCarta);
+            if (carta.getTipo() == TipoCarta.ACCION) {
+                TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, herr.getDueño().getId());
+
+
+                if (tipoAccion != null) {
+                    if (tipoAccion.toString().startsWith("OBJETIVO_ROMPER")) {
+                        JOptionPane.showMessageDialog(this, "La herramienta ya esta rota!");
+                    } else if (tipoAccion.toString().startsWith("OBJETIVO_REPARAR")) {
+                        JOptionPane.showMessageDialog(this, "La herramienta ya esta sana!");
+                    }else if(tipoAccion.toString().startsWith("MAPA") || tipoAccion.toString().startsWith("DERRUMBAR")){
+                        JOptionPane.showMessageDialog(this, "Carta incorrecta!");
+                    }else{
+                        panelJugador.resetCartaSeleccionada();
+                        panelJugador.revalidate();
+                        panelJugador.repaint();
+                        controlador.pasarTurno();
+                    }
+                } else {
+                    panelJugador.resetCartaSeleccionada();
+                    panelJugador.revalidate();
+                    panelJugador.repaint();
+                    controlador.pasarTurno();
+                }
+            }
+        }
+
     }
 
 
@@ -202,4 +229,7 @@ public class PanelTablaJugadores extends JPanel  {
         revalidate();
         repaint();
     }
+
 }
+
+

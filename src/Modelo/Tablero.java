@@ -44,12 +44,16 @@ public class Tablero implements Serializable {
         inicio.setCaminos(true, true, true, true);
 
         CartaDestino oro = new CartaDestino(1, TipoCarta.DESTINO, "tuneles/DESTINO.png", "tuneles/DORSO TUNELES.png", true);
-        CartaDestino primerCarbon = new CartaDestino(2, TipoCarta.DESTINO, "tuneles/carbon2.png","tuneles/DORSO TUNELES.png", false);
-        CartaDestino segundoCarbon = new CartaDestino(3, TipoCarta.DESTINO, "tuneles/carbon.png","tuneles/DORSO TUNELES.png", false);
+        CartaDestino primerCarbon = new CartaDestino(2, TipoCarta.DESTINO, "tuneles/carbon2.png", "tuneles/DORSO TUNELES.png", false);
+        CartaDestino segundoCarbon = new CartaDestino(3, TipoCarta.DESTINO, "tuneles/carbon.png", "tuneles/DORSO TUNELES.png", false);
 
         // coloco inicio en el centro del tablero
-        xInicio = (int) Math.floor((double) alto / 2);
-        yInicio = 0;
+//        xInicio = (int) Math.floor((double) alto / 2);
+//        yInicio = 0;
+
+        //prueba para ver si gana la partida
+        xInicio = 6;
+        yInicio = 11;
         colocarCarta(inicio, xInicio, yInicio);
 
         // genero una posicion aleatoria donde coloco cada destino
@@ -98,30 +102,35 @@ public class Tablero implements Serializable {
         Boolean puedeConectarDerecha = false;
         Boolean puedeConectarIzquierda = false;
         Boolean puedeConectarAbajo = false;
-        Boolean puedeConectarArriba= false;
+        Boolean puedeConectarArriba = false;
         if (y < ancho - 1) {
             Carta vecinoDerecha = getCarta(x, y + 1);
-             puedeConectarDerecha = (vecinoDerecha instanceof CartaTunel)
-                    && carta.puedeConectar((CartaTunel) vecinoDerecha, Direccion.DERECHA);
+            puedeConectarDerecha = this.puedeConectar(vecinoDerecha, carta, Direccion.DERECHA);
         }
         if (y > 0) {
             Carta vecinoIzquierda = getCarta(x, y - 1);
-             puedeConectarIzquierda = (vecinoIzquierda instanceof CartaTunel)
-                    && carta.puedeConectar((CartaTunel) vecinoIzquierda, Direccion.IZQUIERDA);
+            puedeConectarIzquierda = this.puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA);
         }
         if (x < alto - 1) {
             Carta vecinoAbajo = getCarta(x + 1, y);
-             puedeConectarAbajo = (vecinoAbajo instanceof CartaTunel)
-                    && carta.puedeConectar((CartaTunel) vecinoAbajo, Direccion.ABAJO);
+            puedeConectarAbajo = this.puedeConectar(vecinoAbajo, carta, Direccion.ABAJO);
         }
         if (x > 0) {
             Carta vecinoArriba = getCarta(x - 1, y);
-             puedeConectarArriba = (vecinoArriba instanceof CartaTunel)
-                    && carta.puedeConectar((CartaTunel) vecinoArriba, Direccion.ARRIBA);
+            puedeConectarArriba = this.puedeConectar(vecinoArriba, carta, Direccion.ARRIBA);
         }
         if (carta.getEsInicio() || puedeConectarDerecha || puedeConectarIzquierda || puedeConectarAbajo || puedeConectarArriba) {
             cuadricula[x][y] = carta;  // coloco la carta en la posicion
             return true;
+        }
+        return false;
+    }
+
+    private Boolean puedeConectar(Carta vecino, CartaTunel carta, Direccion direccion) {
+        if(vecino instanceof CartaTunel){
+            return carta.puedeConectar((CartaTunel) vecino, direccion);
+        }else if(vecino instanceof CartaDestino){
+            return carta.puedeConectar((CartaDestino) vecino, direccion);
         }
         return false;
     }
@@ -138,7 +147,7 @@ public class Tablero implements Serializable {
     private boolean buscarOro(int x, int y, boolean[][] visitado) {
 
         // si la posicion no esta dentro del tablero
-        if (x < 0 || x >= alto || y < 0 || y >= ancho) return false;
+        if (x < 0 || x > alto - 1 || y < 0 || y > ancho - 1) return false;
 
         //si la posicion ya la visitamos, salimos
         if (visitado[x][y]) return false;
@@ -161,24 +170,31 @@ public class Tablero implements Serializable {
             // dependiendo la direccion modifico la coordenada
             switch (direccion) {
                 case ARRIBA -> {
-                    if(x > 0) nuevoX--;
+                    if (x > 0) nuevoX--;
                 }
                 case ABAJO -> {
-                    if(x<alto) nuevoX++;
+                    if (x < alto - 1) nuevoX++;
                 }
                 case IZQUIERDA -> {
-                    if(y > 0) nuevoY--;
+                    if (y > 0) nuevoY--;
                 }
                 case DERECHA -> {
-                    if(y < ancho) nuevoY++;
+                    if (y < ancho - 1) nuevoY++;
                 }
             }
 
             // compruebo si la carta vecina en cierta direccion esta conectada con la actual
-            CartaTunel cartaVecina = (CartaTunel) getCarta(nuevoX, nuevoY);
-            if (((CartaTunel) cartaActual).puedeConectar(cartaVecina, direccion)) {
-                // paso a recorrer la vecina
-                if (buscarOro(nuevoX, nuevoY, visitado)) return true;
+            Carta cartaVecina = getCarta(nuevoX, nuevoY);
+            if (cartaVecina  instanceof CartaDestino) {
+                if (((CartaTunel) cartaActual).puedeConectar((CartaDestino) cartaVecina, direccion)) {
+                    // paso a recorrer la vecina
+                    if (buscarOro(nuevoX, nuevoY, visitado)) return true;
+                }
+            }else if (cartaVecina  instanceof CartaTunel) {
+                if (((CartaTunel) cartaActual).puedeConectar((CartaTunel) cartaVecina, direccion)) {
+                    // paso a recorrer la vecina
+                    if (buscarOro(nuevoX, nuevoY, visitado)) return true;
+                }
             }
         }
 

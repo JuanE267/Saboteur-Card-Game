@@ -52,4 +52,6 @@ public interface IJugador {
     int getId();
 
     void setId(int id);
+
+    Boolean puedeConstruir();
 }

@@ -2,7 +2,7 @@ package Modelo.Cartas;
 
 import Modelo.Enums.TipoCarta;
 
-public class CartaDestino extends Carta {
+public class CartaDestino extends CartaTunel {
 
     private boolean esOro;
     private int oroX;
@@ -11,17 +11,18 @@ public class CartaDestino extends Carta {
     private String cara;
 
     public CartaDestino(int id, TipoCarta tipo, String img, String dorso, boolean esOro) {
-        super(id, tipo, img);
+        super(id, tipo, img, false);
         this.esOro = esOro;
         this.dorso = dorso;
+        setearCaminos();
         cara = this.getImg();
         this.setImg(dorso);
     }
 
-    public void girar(){
-        if(this.getImg().equals(dorso)) setImg(cara);
-        else setImg(dorso);
-    }
+//    public void girar(){
+//        if(this.getImg().equals(dorso)) setImg(cara);
+//        else setImg(dorso);
+//    }
 
     public boolean getEsOro() {
         return esOro;
@@ -49,5 +50,9 @@ public class CartaDestino extends Carta {
 
     public String getCara() {
         return cara;
+    }
+
+    public void setearCaminos(){
+        setCaminos(true,true,true,true);
     }
 }
