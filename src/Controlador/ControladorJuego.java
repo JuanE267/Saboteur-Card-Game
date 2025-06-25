@@ -10,8 +10,6 @@ import Vista.*;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
-import java.util.List;
-import java.awt.*;
 import java.rmi.RemoteException;
 
 public class ControladorJuego implements IControladorRemoto {
@@ -190,17 +188,26 @@ public class ControladorJuego implements IControladorRemoto {
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
-                case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA,
-                     NUEVA_RONDA -> {
+                case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
                     actualizarJugador();
                     vista.actualizar(juego.getTablero(), juego.getJugadores());
                 }
-                case FINALIZAR_PARTIDA -> {
+
+                case NUEVA_RONDA_GANADOR_MINEROS, NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                     actualizarJugador();
-                    vista.getVentanaJuego().mostrarGanador(juego.getGanador());
+                    vista.avisarGanadores(juego.getJugadores(), evento, null, getRonda());
+                    vista.actualizar(juego.getTablero(), juego.getJugadores());
+                }
+                case FINALIZAR_PARTIDA_SABOTEADORES, FINALIZAR_PARTIDA_MINEROS -> {
+                    actualizarJugador();
+                    vista.avisarGanadores(juego.getJugadores(), evento, getGanador(), getRonda());
                 }
             }
         }
+    }
+
+    private int getRonda() throws RemoteException {
+        return juego.getRonda();
     }
 
     private void iniciarVistaGrafica() throws RemoteException {
@@ -218,7 +225,7 @@ public class ControladorJuego implements IControladorRemoto {
         return juego.getMazo();
     }
 
-    public String getGanador() throws RemoteException {
+    public IJugador getGanador() throws RemoteException {
         return juego.getGanador();
     }
 

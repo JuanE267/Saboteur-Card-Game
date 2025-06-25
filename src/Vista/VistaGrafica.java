@@ -1,8 +1,8 @@
 package Vista;
 
 import Controlador.ControladorJuego;
+import Modelo.Enums.Evento;
 import Modelo.IJugador;
-import Modelo.Jugador;
 import Modelo.Tablero;
 
 import java.rmi.RemoteException;
@@ -50,6 +50,13 @@ public class VistaGrafica implements IVistaGrafica {
         // mostrar todos los elementos de la partida
         iniciarVentanaJuego();
     }
+
+
+    @Override
+    public void avisarGanadores(IJugador[] jugadores, Evento evento, IJugador ganador, int ronda) throws RemoteException {
+        ventanaJuego.avisarGanadores(jugadores, evento, ganador, ronda);
+    }
+
 
     public void actualizar(Tablero tablero, IJugador[] jugadores) throws RemoteException {
         IJugador actualizado = controlador.getJugadorActualizado();

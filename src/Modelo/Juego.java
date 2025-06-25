@@ -219,10 +219,10 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
-        String mensajeGanador;
+        //String mensajeGanador;
 
         if (ganaronLosMineros) {
-            mensajeGanador = "GANARON LOS MINEROS";
+            //mensajeGanador = "GANARON LOS MINEROS";
 
             jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.MINERO) {
@@ -232,7 +232,7 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             });
         } else {
-            mensajeGanador = "GANARON LOS SABOTEADORES";
+           // mensajeGanador = "GANARON LOS SABOTEADORES";
 
             jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.SABOTEADOR) {
@@ -243,18 +243,24 @@ public class Juego extends ObservableRemoto implements IJuego {
             });
         }
 
-        System.out.println(mensajeGanador);
-        System.out.println("Se revelan los roles..");
-        jugadores.forEach((id, j) -> {
-            System.out.println(j.getNombre() + " -> " + j.getRol());
-        });
+        //System.out.println(mensajeGanador);
+        //System.out.println("Se revelan los roles..");
+        //jugadores.forEach((id, j) -> {
+        //    System.out.println(j.getNombre() + " -> " + j.getRol());
+        //});
 
-        if (ronda <= 3) {
+        if (ronda <= 2) {
             // reinicio el estado logico
             reiniciarRonda(ronda);
-            //reinicio la vista
-            notificarObservadores(Evento.NUEVA_RONDA);
-            ronda++;
+            //reinicio la vista dependiendo el ganador
+            if(ganaronLosMineros){
+                notificarObservadores(Evento.NUEVA_RONDA_GANADOR_MINEROS);
+                ronda++;
+
+            }else{
+                notificarObservadores(Evento.NUEVA_RONDA_GANADOR_SABOTEADORES);
+                ronda++;
+            }
         } else {
 
             IJugador mayorPuntaje = jugadores.get(0);
@@ -264,10 +270,19 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             }
             ganador = mayorPuntaje;
-            notificarObservadores(Evento.FINALIZAR_PARTIDA);
+            if ((ganaronLosMineros)) {
+                notificarObservadores(Evento.FINALIZAR_PARTIDA_MINEROS);
+            } else {
+                notificarObservadores(Evento.FINALIZAR_PARTIDA_SABOTEADORES);
+            }
+            reiniciarPartida();
         }
     }
 
+    @Override
+    public int getRonda() throws RemoteException {
+        return ronda;
+    }
 
     public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
 
@@ -369,6 +384,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void reiniciarRonda(int ronda) {
 
+
         // reinicio el mazo
         mazo = new Mazo();
         mazo.barajarMazo();
@@ -383,9 +399,29 @@ public class Juego extends ObservableRemoto implements IJuego {
         //asigno roles de nuevo
         asignarRoles();
         for (IJugador j : getJugadores()) {
-            repartirCartas();
+            j.setManoCartas(repartirCartas());
         }
 
+    }
+
+    public void reiniciarPartida(){
+        // reinicio el mazo
+        mazo = new Mazo();
+        mazo.barajarMazo();
+        // reinicio el tablero
+        tablero = new Tablero();
+        // reinicio jugadores
+        for (IJugador j : jugadores.values()) {
+            j.reiniciarEstado();
+            j.setPuntaje(0);
+        }
+        ronda = 1;
+        asignoPrimerTurno(ronda);
+        //asigno roles de nuevo
+        asignarRoles();
+        for (IJugador j : getJugadores()) {
+            j.setManoCartas(repartirCartas());
+        }
     }
 
     public List<Carta> repartirCartas() {
@@ -439,8 +475,8 @@ public class Juego extends ObservableRemoto implements IJuego {
         notificarObservadores(Evento.DESCARTAR_CARTA);
     }
 
-    public String getGanador() {
-        return this.ganador.getNombre();
+    public IJugador getGanador() {
+        return this.ganador;
     }
 
 }

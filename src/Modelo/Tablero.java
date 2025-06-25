@@ -76,8 +76,8 @@ public class Tablero implements Serializable {
             cuadricula[posicionesDestino.get(indicePos)[0]][posicionesDestino.get(indicePos)[1]] = destino;
             if (destino.getEsOro()) {
                 destino.setOroX(posicionesDestino.get(indicePos)[0]);
-                destino.setOroX(posicionesDestino.get(indicePos)[1]);
-
+                destino.setOroY(posicionesDestino.get(indicePos)[1]);
+                System.out.println(destino.getOroX());
                 this.xOro = destino.getOroX();
                 this.yOro = destino.getOroY();
             }
@@ -130,6 +130,7 @@ public class Tablero implements Serializable {
         if(vecino instanceof CartaTunel){
             return carta.puedeConectar((CartaTunel) vecino, direccion);
         }else if(vecino instanceof CartaDestino){
+            ((CartaDestino)vecino).girar();
             return carta.puedeConectar((CartaDestino) vecino, direccion);
         }
         return false;
@@ -185,13 +186,13 @@ public class Tablero implements Serializable {
 
             // compruebo si la carta vecina en cierta direccion esta conectada con la actual
             Carta cartaVecina = getCarta(nuevoX, nuevoY);
-            if (cartaVecina  instanceof CartaDestino) {
-                if (((CartaTunel) cartaActual).puedeConectar((CartaDestino) cartaVecina, direccion)) {
+            if (cartaVecina  instanceof CartaDestino vecinoDestino) {
+                if (((CartaTunel) cartaActual).puedeConectar(vecinoDestino, direccion)) {
                     // paso a recorrer la vecina
                     if (buscarOro(nuevoX, nuevoY, visitado)) return true;
                 }
-            }else if (cartaVecina  instanceof CartaTunel) {
-                if (((CartaTunel) cartaActual).puedeConectar((CartaTunel) cartaVecina, direccion)) {
+            }else if (cartaVecina  instanceof CartaTunel vecinoTunel) {
+                if (((CartaTunel) cartaActual).puedeConectar(vecinoTunel, direccion)) {
                     // paso a recorrer la vecina
                     if (buscarOro(nuevoX, nuevoY, visitado)) return true;
                 }

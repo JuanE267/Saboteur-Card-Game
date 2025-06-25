@@ -86,7 +86,6 @@ public class PanelTablero extends JPanel {
 
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
         Boolean pudoSerJugado = false;
-        Boolean paseTurnoDespuesDeGirar = false;
 
 
         // si es una carta dentro del mazo
@@ -153,9 +152,8 @@ public class PanelTablero extends JPanel {
         // despues de actualizar todo en el jugador, paso el turno
         if (pudoSerJugado) {
             controlador.verificarSiTerminoLaRonda();
-            if (!paseTurnoDespuesDeGirar) {
                 controlador.pasarTurno();
-            }
+
         }
     }
 

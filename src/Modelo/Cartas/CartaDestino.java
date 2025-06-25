@@ -19,10 +19,10 @@ public class CartaDestino extends CartaTunel {
         this.setImg(dorso);
     }
 
-//    public void girar(){
-//        if(this.getImg().equals(dorso)) setImg(cara);
-//        else setImg(dorso);
-//    }
+    public void girar(){
+        if(this.getImg().equals(dorso)) setImg(cara);
+        else setImg(dorso);
+    }
 
     public boolean getEsOro() {
         return esOro;
