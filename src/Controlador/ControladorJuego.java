@@ -53,7 +53,7 @@ public class ControladorJuego implements IControladorRemoto {
 
     public void actualizarJugador() throws RemoteException {
         for (IJugador j : juego.getJugadores()) {
-            if (j.getId() == jugadorCliente.getId()) {
+            if (j.getNombre() == jugadorCliente.getNombre()) {
                 jugadorCliente = j;
             }
         }
@@ -188,7 +188,7 @@ public class ControladorJuego implements IControladorRemoto {
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
-                case SERVIDOR_NOTIFICA_CLIENTE -> juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre(), getJugadorActualizado().getId());
+                case SERVIDOR_NOTIFICA_CLIENTE -> juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
                     actualizarJugador();
                     vista.actualizar(getTablero(), juego.getJugadores());
@@ -206,6 +206,7 @@ public class ControladorJuego implements IControladorRemoto {
             }
         }
     }
+
 
     private int getRonda() throws RemoteException {
         return juego.getRonda();

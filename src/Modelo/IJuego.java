@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 public interface IJuego extends IObservableRemoto {
     void iniciarPartida() throws RemoteException;
     void iniciarPartidaCargadaDesdeServidor() throws RemoteException;
-    void iniciarPartidaCargadaDesdeCliente(String nombreCliente, int idCliente) throws RemoteException;
+    void iniciarPartidaCargadaDesdeCliente(String nombreCliente) throws RemoteException;
 
         IJugador agregarJugador(String nombre, int edad) throws RemoteException;
 

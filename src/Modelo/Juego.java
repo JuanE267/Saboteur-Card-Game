@@ -45,15 +45,26 @@ public class Juego extends ObservableRemoto implements IJuego {
         asignarRoles();
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
+
     public void iniciarPartidaCargadaDesdeServidor() throws RemoteException {
         notificarObservadores(Evento.SERVIDOR_NOTIFICA_CLIENTE);
     }
-    public void iniciarPartidaCargadaDesdeCliente(String nombreCliente, int idCliente) throws RemoteException {
-        jugadoresCargados.forEach((id, j) ->{
-            if(j.getNombre().equals(nombreCliente)){
-                getJugadores()[idCliente] = j;
+
+    public void iniciarPartidaCargadaDesdeCliente(String nombreCliente) throws RemoteException {
+        for (IJugador jc : getJugadoresCargados()) {
+            if (jc.getNombre().equals(nombreCliente)) {
+                for (IJugador j : getJugadores()) {
+                    if (j.getNombre().equals(nombreCliente)) {
+                        j.setPuntaje(jc.getPuntaje());
+                        j.setManoCartas(jc.getManoCartas());
+                        j.setHerramientasRotas(jc.getHerramientasRotas());
+                        j.setRol(jc.getRol());
+                        j.setId(jc.getId());
+                        j.setEdad(jc.getEdad());
+                    }
+                }
             }
-        });
+        }
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
@@ -524,7 +535,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
             fis = new FileInputStream("Data/ronda.dat");
             dis = new DataInputStream(fis);
-            this.ronda =  dis.readInt();
+            this.ronda = dis.readInt();
 
             fis = new FileInputStream("Data/ordenTurnos.dat");
             ois = new ObjectInputStream(fis);
