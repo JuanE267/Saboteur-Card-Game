@@ -48,4 +48,5 @@ public interface IJuego extends IObservableRemoto {
     IJugador getJugadorPorId(int id) throws RemoteException;
 
     int getRonda() throws RemoteException;
+
 }

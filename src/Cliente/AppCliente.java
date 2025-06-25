@@ -1,7 +1,6 @@
 package Cliente;
 
 import Controlador.ControladorJuego;
-import Vista.VentanaJuego;
 import Vista.VistaGrafica;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;

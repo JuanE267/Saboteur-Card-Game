@@ -1,4 +1,4 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Modelo.Cartas.Carta;
 

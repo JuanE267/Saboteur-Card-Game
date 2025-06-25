@@ -190,17 +190,17 @@ public class ControladorJuego implements IControladorRemoto {
                 }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
                     actualizarJugador();
-                    vista.actualizar(juego.getTablero(), juego.getJugadores());
+                    vista.actualizar(getTablero(), juego.getJugadores());
                 }
 
                 case NUEVA_RONDA_GANADOR_MINEROS, NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                     actualizarJugador();
                     vista.avisarGanadores(juego.getJugadores(), evento, null, getRonda());
-                    vista.actualizar(juego.getTablero(), juego.getJugadores());
+                    vista.actualizar(getTablero(), juego.getJugadores());
                 }
                 case FINALIZAR_PARTIDA_SABOTEADORES, FINALIZAR_PARTIDA_MINEROS -> {
                     actualizarJugador();
-                    vista.avisarGanadores(juego.getJugadores(), evento, getGanador(), getRonda());
+                    vista.avisarGanadores(getJugadores(), evento, getGanador(), getRonda());
                 }
             }
         }

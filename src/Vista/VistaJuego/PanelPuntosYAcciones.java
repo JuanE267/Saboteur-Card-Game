@@ -1,7 +1,6 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
-import Modelo.Cartas.Carta;
 import Modelo.IJugador;
 
 import javax.swing.*;
@@ -20,10 +19,9 @@ public class PanelPuntosYAcciones extends JPanel {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
 
-        setBackground(Color.decode("#736d62"));
-        setLayout(new FlowLayout());
+        setBackground(Color.decode("#4b3e2c"));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(10, 0, 0, 0));
-
         dibujarPanel(jugadorCliente);
     }
 
@@ -32,16 +30,18 @@ public class PanelPuntosYAcciones extends JPanel {
         removeAll();
 
         JLabel puntaje = new JLabel();
-        Font letra = new Font("Arial", Font.PLAIN, 27);
+        Font letra = new Font("Arial", Font.BOLD, 27);
         puntaje.setFont(letra);
+        puntaje.setForeground(Color.decode("#bba00b"));
         if (jugadorCliente != null) {
-            puntaje.setText("PUNTAJE: " + jugadorCliente.getPuntaje());
+            puntaje.setText("PEPITAS: " + jugadorCliente.getPuntaje());
         }
+        puntaje.setAlignmentX(Component.CENTER_ALIGNMENT);
         JPanel contenedorBotones = new JPanel();
-        contenedorBotones.setBackground(Color.decode("#736d62"));
+        contenedorBotones.setBackground(Color.decode("#4b3e2c"));
 
         contenedorBotones.setLayout(new FlowLayout());
-        contenedorBotones.setBorder(new EmptyBorder(10, 100, 0, 0));
+        contenedorBotones.setBorder(new EmptyBorder(10, 30, 0, 0));
 
         JButton descartar = new JButton();
         descartar.setPreferredSize(new Dimension(110, 40));

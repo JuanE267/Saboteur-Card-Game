@@ -1,9 +1,7 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.CartaTunel;
-import Modelo.IJugador;
-import Modelo.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +18,7 @@ public class PanelTomarCarta extends JPanel {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
 
-        setBackground(Color.decode("#736d62"));
+        setBackground(Color.decode("#4b3e2c"));
         dibujarPanel();
     }
 

@@ -55,4 +55,8 @@ public class CartaDestino extends CartaTunel {
     public void setearCaminos(){
         setCaminos(true,true,true,true);
     }
+
+    public void setDorso(String img) {
+        this.dorso = img;
+    }
 }

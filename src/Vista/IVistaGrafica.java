@@ -3,6 +3,7 @@ package Vista;
 import Modelo.Enums.Evento;
 import Modelo.IJugador;
 import Modelo.Tablero;
+import Vista.VistaJuego.VentanaJuego;
 
 import java.rmi.RemoteException;
 

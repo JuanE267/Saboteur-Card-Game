@@ -1,4 +1,4 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
@@ -10,7 +10,6 @@ import Modelo.IJugador;
 import Modelo.Tablero;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -34,10 +33,10 @@ public class PanelTablero extends JPanel {
         this.jugadorCliente = controlador.getJugadorActualizado();
         this.tablero = controlador.getTablero();
 
-        setBackground(Color.decode("#736d62"));
+        setBackground(Color.decode("#4b3e2c"));
         setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
         setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
-        setBorder(new EmptyBorder(0, 200, 0, 400));
+
         dibujarTablero(tablero);
     }
 

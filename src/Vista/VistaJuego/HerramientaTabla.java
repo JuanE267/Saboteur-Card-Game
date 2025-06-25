@@ -1,7 +1,6 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Modelo.IJugador;
-import Modelo.Jugador;
 
 import javax.swing.*;
 

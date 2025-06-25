@@ -9,22 +9,22 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 public class VentanaServidor extends JFrame implements IVistaServidor {
     private ControladorServer controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
+    private JButton btnCargarPartida;
     private JList listJugadores;
 
     public VentanaServidor(ControladorServer controlador){
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
         setTitle("Saboteur - Juan Espinosa");
-        setSize(230, 200);
+        setSize(230, 250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocation(100,500);
+        setLocation(500,500);
         setResizable(false);
         setLayout(new BorderLayout());
 
@@ -35,8 +35,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
 
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new MigLayout("wrap","[][]","[]"));
+        contentPane.setLayout(new MigLayout("wrap","[]","[]8[][]"));
 
 
         JScrollPane scrollPane = new JScrollPane();
@@ -44,6 +43,9 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
         btnIniciarPartida = new JButton("Iniciar Partida");
         contentPane.add(btnIniciarPartida, "cell 0 1, alignx center ");
+
+        btnCargarPartida = new JButton("Cargar Partida");
+        contentPane.add(btnCargarPartida, "cell 0 2, alignx center ");
 
         listJugadores = new JList();
         listJugadores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

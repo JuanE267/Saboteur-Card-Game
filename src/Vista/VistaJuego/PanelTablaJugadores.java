@@ -1,4 +1,4 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
@@ -6,7 +6,6 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 import Modelo.IJugador;
-import Modelo.Juego;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -30,9 +29,9 @@ public class PanelTablaJugadores extends JPanel {
         this.jugadores = controlador.getJugadores();
         this.jugadorCliente = controlador.getJugadorActualizado();
 
-        setBackground(Color.decode("#736d62"));
+        setBackground(Color.decode("#4b3e2c"));
         setLayout(new GridLayout(jugadores.length, 1));
-        setBorder(new EmptyBorder(200, 100, 200, 0));
+        setBorder(new EmptyBorder(200, 0, 200, 0));
         dibujarListaJugadores(jugadores, jugadorCliente);
     }
 
@@ -43,18 +42,19 @@ public class PanelTablaJugadores extends JPanel {
         for (IJugador j : jugadores) {
             if (j.getId() != jugadorCliente.getId()) {
                 JPanel jugadorTabla = new JPanel();
-                jugadorTabla.setLayout(new GridLayout(2, 1));
-                jugadorTabla.setBackground(Color.decode("#736d62"));
-
+                jugadorTabla.setLayout(new BoxLayout(jugadorTabla, BoxLayout.Y_AXIS));
+                jugadorTabla.setBackground(Color.decode("#4b3e2c"));
 
                 // nombre
                 JLabel nombre = new JLabel(j.getNombre());
-                nombre.setFont(new Font("Arial", Font.BOLD, 20));
+                nombre.setFont(new Font("Arial", Font.BOLD, 24));
                 nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+                nombre.setForeground(Color.white);
 
                 // listado de herramientas
                 JPanel herramientas = new JPanel();
                 herramientas.setLayout(new FlowLayout());
+                herramientas.setBackground(Color.decode("#4b3e2c"));
 
                 // label para cada herr
                 HerramientaTabla pico = new HerramientaTabla(j);

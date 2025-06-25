@@ -1,4 +1,4 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
@@ -6,7 +6,6 @@ import Modelo.Enums.TipoAccion;
 import Modelo.IJugador;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,9 +24,8 @@ public class PanelHerramientas extends JPanel {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
 
-        setBackground(Color.decode("#736d62"));
-        setLayout(new FlowLayout());
-        setBorder(new EmptyBorder(10, 0, 0, 0));
+        setBackground(Color.decode("#4b3e2c"));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         dibujarHerramientas(jugadorCliente);
     }
 
@@ -38,9 +36,9 @@ public class PanelHerramientas extends JPanel {
         JLabel vagoneta = new JLabel();
         JLabel linterna = new JLabel();
 
-        pico.setSize(new Dimension(100, 100));
-        vagoneta.setSize(new Dimension(100, 100));
-        linterna.setSize(new Dimension(100, 100));
+        pico.setSize(new Dimension(70, 70));
+        vagoneta.setSize(new Dimension(70, 70));
+        linterna.setSize(new Dimension(70, 70));
 
         String picoSano = "herramientas/PICO SANO.png";
         String vagonetaSana = "herramientas/VAGONETA SANA.png";

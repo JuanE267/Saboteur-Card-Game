@@ -1,4 +1,4 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Enums.Evento;
@@ -27,16 +27,16 @@ public class VentanaJuego extends JFrame {
         if (controlador.getJugadorActualizado() != null) {
             setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
         }
-        setSize(1800, 1000);
+        setSize(1220, 960);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
-        setBackground(Color.decode("#736d62"));
+        setBackground(Color.decode("#4b3e2c"));
         setLayout(new BorderLayout());
 
         // label que muestra el turno actual
         turnoActual = new JLabel();
-        turnoActual.setForeground(Color.decode("#736d62"));
+        turnoActual.setForeground(Color.decode("#4b3e2c"));
         // jugador del turno
         IJugador jugadorActual = controlador.getJugadorActual();
         turnoActual.setText("Es el Turno de: " + jugadorActual.getNombre());
@@ -57,6 +57,7 @@ public class VentanaJuego extends JFrame {
         // contiene las cartas, puntos y las herramientas del jugador
         contenedorJugador = new JPanel();
         contenedorJugador.setLayout(new BoxLayout(contenedorJugador, BoxLayout.LINE_AXIS));
+        contenedorJugador.setBackground(Color.decode("#4b3e2c"));
         add(contenedorJugador, BorderLayout.SOUTH);
 
 
@@ -68,11 +69,19 @@ public class VentanaJuego extends JFrame {
         panelPuntosYAcciones = new PanelPuntosYAcciones(panelJugador, controlador);
 
         panelHerramientas = new PanelHerramientas(panelJugador, controlador);
+        JPanel contenedorHerramientas = new JPanel();
+        contenedorHerramientas.setLayout(new BoxLayout(contenedorHerramientas, BoxLayout.Y_AXIS));
+        contenedorHerramientas.setBackground(Color.decode("#4b3e2c"));
+
+        contenedorHerramientas.add(Box.createVerticalGlue());
+        contenedorHerramientas.add(panelHerramientas);
+        contenedorHerramientas.add(Box.createVerticalGlue());
 
         contenedorJugador.add(panelPuntosYAcciones);
         contenedorJugador.add(panelJugador);
         contenedorJugador.add(panelTomarCarta);
-        contenedorJugador.add(panelHerramientas);
+        add(contenedorHerramientas, BorderLayout.EAST);
+        contenedorHerramientas.add(panelHerramientas);
 
 
         // contiene el mapa
@@ -121,49 +130,40 @@ public class VentanaJuego extends JFrame {
     }
 
 
-    public void mostrarGanador(String ganador) throws RemoteException {
-        JOptionPane.showMessageDialog(this, "El ganador es " + ganador);
-    }
-
     public void avisarGanadores(IJugador[] jugadores, Evento evento, IJugador ganador, int ronda) throws RemoteException {
-
         setVisible(false);
         StringBuilder sb = new StringBuilder("Se revelan los roles...\n\n");
         for (IJugador j : jugadores) {
-            sb.append(j.getNombre()).append(" ---> ").append(j.getRol()).append("\n\n");
+            sb.append(j.getNombre()).append(" ---> ").append(j.getRol()).append("\n");
         }
 
         final String mensaje = sb.toString();
         switch (evento) {
             case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
-                if (ronda <= 3) {
-                    mostrarAviso("GANARON LOS SABOTEADORES!!", 5000, () ->
+                    mostrarAviso("No hay mas cartas para jugar!!!" , 5000, () -> mostrarAviso("GANARON LOS SABOTEADORES!!", 5000, () ->
                             mostrarAviso(mensaje, 5000, () ->
                                     mostrarAviso("Iniciando nueva ronda...", 5000, null)
-                            ));
-                } else {
-                    mostrarAviso("GANARON LOS SABOTEADORES!!", 5000, () ->
-                            mostrarAviso(mensaje, 5000, null));
-                }
+                            )));
+
             }
             case NUEVA_RONDA_GANADOR_MINEROS -> {
-                mostrarAviso("GANARON LOS MINEROS!!", 5000, () ->
+                mostrarAviso(controlador.getJugadorActual().getNombre() + " encontro el oro!!", 5000, () -> mostrarAviso("GANARON LOS MINEROS!!", 5000, () ->
                         mostrarAviso(mensaje, 5000, () ->
                                 mostrarAviso("Iniciando nueva ronda...", 5000, null)
-                        ));
+                        )));
             }
             case FINALIZAR_PARTIDA_SABOTEADORES -> {
                 mostrarAviso("GANARON LOS SABOTEADORES!!", 5000, () ->
                         mostrarAviso(mensaje, 5000, () ->
                                 mostrarAviso("Partida Terminada!!\n El ganador es " + ganador.getNombre()
-                                        + " con " + ganador.getPuntaje() + " Puntos", 5000, () ->
+                                        + " con " + ganador.getPuntaje() + " Pepitas", 5000, () ->
                                         mostrarAviso("Reiniciando partida...", 3000, null))));
             }
             case FINALIZAR_PARTIDA_MINEROS -> {
                 mostrarAviso("GANARON LOS MINEROS!!", 5000, () ->
                         mostrarAviso(mensaje, 5000, () ->
                                 mostrarAviso("Partida Terminada!!\n El ganador es " + ganador.getNombre()
-                                        + " con " + ganador.getPuntaje() + " Puntos", 5000, () ->
+                                        + " con " + ganador.getPuntaje() + " Pepitas", 5000, () ->
                                         mostrarAviso("Reiniciando partida...", 3000, null))));
             }
         }
@@ -186,15 +186,15 @@ public class VentanaJuego extends JFrame {
         aviso.setBackground(Color.BLACK);
         aviso.setOpaque(true);
         aviso.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+        aviso.setEnabled(false);
         plantilla.getContentPane().add(aviso);
+        plantilla.getRootPane().setBorder(BorderFactory.createLineBorder(Color.yellow));
         plantilla.pack();
         plantilla.setLocationRelativeTo(this);
         plantilla.setVisible(true);
 
         // cada 5 seg la muestro y al terminar muestro la siguiente, si no hay siguiente muestro la ventana
         new Timer(tiempo, e -> {
-            new Timer(5000, ev -> {
-            }).start(); // espero 5 seg antes de mostrar los resultados
             plantilla.dispose();
             ((Timer) e.getSource()).stop();
             if (siguiente != null) {
@@ -205,6 +205,5 @@ public class VentanaJuego extends JFrame {
             }
         }).start();
     }
-
 
 }

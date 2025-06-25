@@ -1,9 +1,8 @@
-package Vista;
+package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
 import Modelo.IJugador;
-import Modelo.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,7 @@ public class PanelJugador extends JPanel {
     public PanelJugador(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
-        setBackground(Color.decode("#736d62"));
+        setBackground(Color.decode("#4b3e2c"));
         setLayout(new FlowLayout());
         dibujarManoDeCartas(jugadorCliente.getManoCartas());
     }
