@@ -14,7 +14,7 @@ import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, IJugador> jugadores;
-    private HashMap<Integer, IJugador> jugadoresCargados;
+    private HashMap<Integer, IJugador> jugadoresCargados = new HashMap<>();
     private Mazo mazo;
     private Tablero tablero;
     private List<Rol> roles;
@@ -65,7 +65,6 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             }
         }
-        notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
     public IJugador agregarJugador(String nombre, int edad) throws RemoteException {

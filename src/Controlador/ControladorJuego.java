@@ -188,7 +188,12 @@ public class ControladorJuego implements IControladorRemoto {
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
-                case SERVIDOR_NOTIFICA_CLIENTE -> juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
+                case SERVIDOR_NOTIFICA_CLIENTE -> {
+                    juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
+                    actualizarJugador();
+                    iniciarVistaGrafica();
+                    vista.mostrarPartida();
+                }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
                     actualizarJugador();
                     vista.actualizar(getTablero(), juego.getJugadores());
