@@ -188,6 +188,7 @@ public class ControladorJuego implements IControladorRemoto {
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
+                case SERVIDOR_NOTIFICA_CLIENTE -> juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre(), getJugadorActualizado().getId());
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
                     actualizarJugador();
                     vista.actualizar(getTablero(), juego.getJugadores());
@@ -213,7 +214,6 @@ public class ControladorJuego implements IControladorRemoto {
     private void iniciarVistaGrafica() throws RemoteException {
         this.vista = new VistaGrafica(this);
     }
-
 
     @Override
     public <T extends IObservableRemoto> void setModeloRemoto(T modelo) throws RemoteException {

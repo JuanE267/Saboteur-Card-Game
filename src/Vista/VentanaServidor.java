@@ -16,15 +16,16 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
     private JPanel contentPane;
     private JButton btnIniciarPartida;
     private JButton btnCargarPartida;
+    private JButton btnGuardarPartida;
     private JList listJugadores;
 
-    public VentanaServidor(ControladorServer controlador){
+    public VentanaServidor(ControladorServer controlador) {
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
         setTitle("Saboteur - Juan Espinosa");
-        setSize(230, 250);
+        setSize(230, 320);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocation(500,500);
+        setLocation(500, 500);
         setResizable(false);
         setLayout(new BorderLayout());
 
@@ -35,7 +36,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
 
         contentPane = new JPanel();
-        contentPane.setLayout(new MigLayout("wrap","[]","[]8[][]"));
+        contentPane.setLayout(new MigLayout("wrap", "[]", "[grow]8[][][]"));
 
 
         JScrollPane scrollPane = new JScrollPane();
@@ -47,6 +48,10 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
         btnCargarPartida = new JButton("Cargar Partida");
         contentPane.add(btnCargarPartida, "cell 0 2, alignx center ");
 
+        btnGuardarPartida = new JButton("Guardar Partida");
+        contentPane.add(btnGuardarPartida, "cell 0 3, alignx center ");
+
+
         listJugadores = new JList();
         listJugadores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         scrollPane.setViewportView(listJugadores);
@@ -54,9 +59,26 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
         // inicio la partida
         btnIniciarPartida.addActionListener(e -> {
             try {
-                if(controlador.iniciarPartida()){
-                ocultarVentanaServidor();
+                controlador.iniciarPartida();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
             }
+        });
+
+        //guardo la partida
+        btnGuardarPartida.addActionListener(e -> {
+            try {
+                controlador.guardarPartida();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        // cargo la partida
+
+        btnCargarPartida.addActionListener(e -> {
+            try {
+                controlador.cargarPartida();
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
@@ -76,12 +98,15 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
             public Object getElementAt(int arg0) {
                 return jugadores[arg0].getNombre();
             }
+
             @Override
             public int getSize() {
                 return jugadores.length;
             }
         });
     }
+
+
 
 
     public void iniciar() {

@@ -14,6 +14,7 @@ public class ControladorServer implements IControladorRemoto {
 
     private IJuego juego;
     private IVistaServidor vistaServidor;
+    private boolean esPartidaCargada = false;
 
     public <T extends IObservableRemoto> ControladorServer(T juego) {
             try {
@@ -45,13 +46,30 @@ public class ControladorServer implements IControladorRemoto {
     }
 
     public Boolean iniciarPartida () throws RemoteException {
+        if(esPartidaCargada){
+            if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 1) {
+                this.juego.iniciarPartidaCargadaDesdeServidor();
+                return true;
+            } else {
+                System.out.println("no hay jugadores suficientes");
+                return false;
+            }
+        }
         if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 1) {
-            juego.iniciarPartida();
+            this.juego.iniciarPartida();
             return true;
         } else {
             System.out.println("no hay jugadores suficientes");
             return false;
         }
+    }
 
+    public void guardarPartida() throws RemoteException {
+        this.juego.guardarPartida();
+    }
+
+    public void cargarPartida() throws RemoteException {
+        this.esPartidaCargada = true;
+        this.juego.cargarPartida();
     }
 }

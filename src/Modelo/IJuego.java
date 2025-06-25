@@ -6,8 +6,10 @@ import java.rmi.RemoteException;
 
 public interface IJuego extends IObservableRemoto {
     void iniciarPartida() throws RemoteException;
+    void iniciarPartidaCargadaDesdeServidor() throws RemoteException;
+    void iniciarPartidaCargadaDesdeCliente(String nombreCliente, int idCliente) throws RemoteException;
 
-    IJugador agregarJugador(String nombre, int edad) throws RemoteException;
+        IJugador agregarJugador(String nombre, int edad) throws RemoteException;
 
     void asignoPrimerTurno(int ronda) throws RemoteException;
 
@@ -49,4 +51,9 @@ public interface IJuego extends IObservableRemoto {
 
     int getRonda() throws RemoteException;
 
+    // PERSISTENCIA DE PARTIDAS
+
+    boolean cargarPartida() throws RemoteException;
+
+    boolean guardarPartida() throws RemoteException;
 }

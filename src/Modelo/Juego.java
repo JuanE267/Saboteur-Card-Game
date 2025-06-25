@@ -1,10 +1,8 @@
 package Modelo;
 
+import java.io.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
@@ -16,6 +14,7 @@ import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, IJugador> jugadores;
+    private HashMap<Integer, IJugador> jugadoresCargados;
     private Mazo mazo;
     private Tablero tablero;
     private List<Rol> roles;
@@ -44,6 +43,17 @@ public class Juego extends ObservableRemoto implements IJuego {
         turno = 0;
         asignoPrimerTurno(ronda);
         asignarRoles();
+        notificarObservadores(Evento.INICIAR_PARTIDA);
+    }
+    public void iniciarPartidaCargadaDesdeServidor() throws RemoteException {
+        notificarObservadores(Evento.SERVIDOR_NOTIFICA_CLIENTE);
+    }
+    public void iniciarPartidaCargadaDesdeCliente(String nombreCliente, int idCliente) throws RemoteException {
+        jugadoresCargados.forEach((id, j) ->{
+            if(j.getNombre().equals(nombreCliente)){
+                getJugadores()[idCliente] = j;
+            }
+        });
         notificarObservadores(Evento.INICIAR_PARTIDA);
     }
 
@@ -232,7 +242,7 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             });
         } else {
-           // mensajeGanador = "GANARON LOS SABOTEADORES";
+            // mensajeGanador = "GANARON LOS SABOTEADORES";
 
             jugadores.forEach((id, j) -> {
                 if (j.getRol() == Rol.SABOTEADOR) {
@@ -253,11 +263,11 @@ public class Juego extends ObservableRemoto implements IJuego {
             // reinicio el estado logico
             reiniciarRonda(ronda);
             //reinicio la vista dependiendo el ganador
-            if(ganaronLosMineros){
+            if (ganaronLosMineros) {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_MINEROS);
                 ronda++;
 
-            }else{
+            } else {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_SABOTEADORES);
                 ronda++;
             }
@@ -284,6 +294,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return ronda;
     }
 
+
     public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
 
         IJugador actual = getJugadorActual();
@@ -294,7 +305,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         if (carta instanceof CartaTunel) {
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
-            if(actual.getHerramientasRotas().isEmpty()) {
+            if (actual.getHerramientasRotas().isEmpty()) {
                 if (actual.jugarCarta(tablero, x, y, carta)) {
                     actual.getManoCartas().remove(posCarta);
                     pudoSerJugado = true;
@@ -360,6 +371,10 @@ public class Juego extends ObservableRemoto implements IJuego {
         return this.jugadores.values().toArray(new IJugador[0]);
     }
 
+    public IJugador[] getJugadoresCargados() {
+        return this.jugadoresCargados.values().toArray(new IJugador[0]);
+    }
+
     public IJugador getJugadorActual() {
         if (ordenTurnos.isEmpty()) return null;
         // tomo el id que corresponde al jugador de este turno
@@ -372,9 +387,9 @@ public class Juego extends ObservableRemoto implements IJuego {
         return turno;
     }
 
-    public IJugador getJugadorPorId(int id) throws RemoteException{
+    public IJugador getJugadorPorId(int id) throws RemoteException {
         for (int i = 0; i < jugadores.size(); i++) {
-            if(getJugadores()[i].getId() == id){
+            if (getJugadores()[i].getId() == id) {
                 return getJugadores()[i];
             }
         }
@@ -404,7 +419,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     }
 
-    public void reiniciarPartida(){
+    public void reiniciarPartida() {
         // reinicio el mazo
         mazo = new Mazo();
         mazo.barajarMazo();
@@ -477,6 +492,112 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public IJugador getGanador() {
         return this.ganador;
+    }
+
+    // PERSISTENCIA DE PARTIDAS
+
+    @Override
+    public boolean cargarPartida() throws RemoteException {
+        try {
+            FileInputStream fis = new FileInputStream("Data/jugadores.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            this.jugadoresCargados = (HashMap<Integer, IJugador>) ois.readObject();
+
+            fis = new FileInputStream("Data/mazo.dat");
+            ois = new ObjectInputStream(fis);
+            this.mazo = (Mazo) ois.readObject();
+
+
+            fis = new FileInputStream("Data/tablero.dat");
+            ois = new ObjectInputStream(fis);
+            this.tablero = (Tablero) ois.readObject();
+
+            fis = new FileInputStream("Data/roles.dat");
+            ois = new ObjectInputStream(fis);
+            this.roles = (List<Rol>) ois.readObject();
+
+
+            fis = new FileInputStream("Data/turnoInicial.dat");
+            DataInputStream dis = new DataInputStream(fis);
+            this.turnoInicial = dis.readInt();
+
+
+            fis = new FileInputStream("Data/ronda.dat");
+            dis = new DataInputStream(fis);
+            this.ronda =  dis.readInt();
+
+            fis = new FileInputStream("Data/ordenTurnos.dat");
+            ois = new ObjectInputStream(fis);
+            this.ordenTurnos = (List<Integer>) ois.readObject();
+
+            fis = new FileInputStream("Data/turno.dat");
+            dis = new DataInputStream(fis);
+            this.turno = dis.readInt();
+
+            fis = new FileInputStream("Data/ganador.dat");
+            ois = new ObjectInputStream(fis);
+            this.ganador = (IJugador) ois.readObject();
+
+            this.notificarObservadores(Evento.CARGAR_PARTIDA);
+            ois.close();
+            fis.close();
+
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    @Override
+    public boolean guardarPartida() throws RemoteException {
+        try {
+            FileOutputStream fos = new FileOutputStream("Data/jugadores.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.jugadores);
+
+            fos = new FileOutputStream("Data/tablero.dat");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.tablero);
+
+            fos = new FileOutputStream("Data/roles.dat");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.roles);
+
+            fos = new FileOutputStream("Data/mazo.dat");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.mazo);
+
+
+            fos = new FileOutputStream("Data/turnoInicial.dat");
+            DataOutputStream dos = new DataOutputStream(fos);
+            this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
+            dos.writeInt(this.turnoInicial);
+
+            fos = new FileOutputStream("Data/turno.dat");
+            dos = new DataOutputStream(fos);
+            dos.writeInt(this.turno);
+
+            fos = new FileOutputStream("Data/ronda.dat");
+            dos = new DataOutputStream(fos);
+            dos.writeInt(this.ronda);
+
+            fos = new FileOutputStream("Data/ganador.dat");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.ganador);
+
+            fos = new FileOutputStream("Data/ordenTurnos.dat");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.ordenTurnos);
+            oos.close();
+            dos.close();
+            fos.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
