@@ -193,9 +193,9 @@ public class PanelTablaJugadores extends JPanel {
                         panelJugador.repaint();
                         controlador.pasarTurno();
                     }
-                } else if (tipoAccion == null) {
-                    JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
                 }
+                JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
+
             }
 
         }

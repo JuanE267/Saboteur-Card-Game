@@ -76,7 +76,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada(pico);
+                            herramientaEsPresionada();
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -97,7 +97,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada(vagoneta);
+                            herramientaEsPresionada();
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -118,7 +118,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada(linterna);
+                            herramientaEsPresionada();
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -141,7 +141,7 @@ public class PanelHerramientas extends JPanel {
     }
 
 
-    private void herramientaEsPresionada(JLabel herr) throws RemoteException {
+    private void herramientaEsPresionada() throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
         if (posCarta != -1) {

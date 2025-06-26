@@ -16,7 +16,6 @@ public class ControladorJuego implements IControladorRemoto {
     private IJuego juego;
 
     private IVistaGrafica vista;
-    private IVistaServidor vistaServidor;
     private IJugador jugadorCliente;
 
     public <T extends IObservableRemoto> ControladorJuego(T juego) {

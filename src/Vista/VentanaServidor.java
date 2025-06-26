@@ -88,9 +88,6 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
     }
 
-    private void ocultarVentanaServidor() {
-        setVisible(false);
-    }
 
     public void actualizarListaJugadores(IJugador[] jugadores) {
         this.listJugadores.setModel(new AbstractListModel() {

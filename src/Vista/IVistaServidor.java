@@ -1,7 +1,6 @@
 package Vista;
 
 import Modelo.IJugador;
-import Modelo.Jugador;
 
 public interface IVistaServidor{
 
