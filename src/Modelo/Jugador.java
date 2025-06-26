@@ -21,7 +21,7 @@ public class Jugador implements Serializable, IJugador {
     private int id = 0;
     private int edad;
     private Rol rol;
-    private List<Carta> manoCartas;
+    private List<Carta> manoCartas = new ArrayList<>();
     private List<Herramienta> herramientasRotas = new ArrayList<>();
     private int puntaje;
 

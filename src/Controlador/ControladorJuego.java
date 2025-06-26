@@ -97,6 +97,7 @@ public class ControladorJuego implements IControladorRemoto {
     public TipoAccion jugarHerramienta(int posCarta, int idObjetivo) throws RemoteException {
 
         // valido desde el controlador si puedo usar la carta, despues la uso desde el modelo Juego
+        jugadorCliente = getJugadorActualizado();
         Carta carta = jugadorCliente.elegirCarta(posCarta);
 
 
@@ -108,10 +109,10 @@ public class ControladorJuego implements IControladorRemoto {
 
                 if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
                     // reviso si tiene cartas rotas
-                    if (!(objetivo.getHerramientasRotas().isEmpty())) {
-                        juego.jugarHerramienta(objetivo, posCarta);
-                    } else {
+                    if (objetivo.getHerramientasRotas().isEmpty()) {
                         return TipoAccion.OBJETIVO_REPARAR_PICO;
+                    } else {
+                        juego.jugarHerramienta(objetivo, posCarta);
                     }
                 } else {
                     for(Herramienta herr : objetivo.getHerramientasRotas()){
@@ -125,10 +126,10 @@ public class ControladorJuego implements IControladorRemoto {
             // es el mismo jugador pero la carta es de reparar
             else if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
                 // reviso si tiene cartas rotas
-                if (!(jugadorCliente.getHerramientasRotas().isEmpty())) {
-                    juego.jugarHerramienta(objetivo, posCarta);
-                } else {
+                if (jugadorCliente.getHerramientasRotas().isEmpty()) {
                     return TipoAccion.REPARARPICO;
+                } else {
+                    juego.jugarHerramienta(objetivo, posCarta);
                 }
             } else {
                 return TipoAccion.ROMPERPICO;

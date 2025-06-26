@@ -147,7 +147,7 @@ public class VentanaJuego extends JFrame {
 
             }
             case NUEVA_RONDA_GANADOR_MINEROS -> {
-                mostrarAviso(controlador.getJugadorActual().getNombre() + " encontro el oro!!", 5000, () -> mostrarAviso("GANARON LOS MINEROS!!", 5000, () ->
+                mostrarAviso(controlador.getJugadorActualizado().getNombre() + " encontro el oro!!", 5000, () -> mostrarAviso("GANARON LOS MINEROS!!", 5000, () ->
                         mostrarAviso(mensaje, 5000, () ->
                                 mostrarAviso("Iniciando nueva ronda...", 5000, null)
                         )));

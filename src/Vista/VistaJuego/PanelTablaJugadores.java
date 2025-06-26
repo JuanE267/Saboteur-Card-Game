@@ -177,33 +177,28 @@ public class PanelTablaJugadores extends JPanel {
         int posCarta = panelJugador.getCartaSeleccionada();
         if (posCarta != -1) {
 
+            jugadorCliente = controlador.getJugadorActualizado();
             Carta carta = jugadorCliente.elegirCarta(posCarta);
             if (carta.getTipo() == TipoCarta.ACCION) {
                 TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, herr.getDueño().getId());
-
 
                 if (tipoAccion != null) {
                     if (tipoAccion.toString().startsWith("OBJETIVO_ROMPER")) {
                         JOptionPane.showMessageDialog(this, "La herramienta ya esta rota!");
                     } else if (tipoAccion.toString().startsWith("OBJETIVO_REPARAR")) {
                         JOptionPane.showMessageDialog(this, "La herramienta ya esta sana!");
-                    }else if(tipoAccion.toString().startsWith("MAPA") || tipoAccion.toString().startsWith("DERRUMBAR")){
-                        JOptionPane.showMessageDialog(this, "Carta incorrecta!");
-                    }else{
+                    } else {
                         panelJugador.resetCartaSeleccionada();
                         panelJugador.revalidate();
                         panelJugador.repaint();
                         controlador.pasarTurno();
                     }
-                } else {
-                    panelJugador.resetCartaSeleccionada();
-                    panelJugador.revalidate();
-                    panelJugador.repaint();
-                    controlador.pasarTurno();
+                } else if (tipoAccion == null) {
+                    JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
                 }
             }
-        }
 
+        }
     }
 
 
