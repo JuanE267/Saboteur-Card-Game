@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 public class main {
     public static void main(String[] args) throws RMIMVCException, RemoteException {
 
-        String ip = "192.168.1.33";
+        String ip = "192.168.1.44";
         String port = "8888";
 
         Juego modelo = new Juego();
@@ -37,7 +37,6 @@ public class main {
         }
         conectarCliente(ip, "1111", ip, port);
         conectarCliente(ip, "2222", ip, port);
-        conectarCliente(ip, "3333", ip, port);
 
     }
 
