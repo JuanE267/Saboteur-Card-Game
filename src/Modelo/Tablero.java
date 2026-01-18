@@ -10,25 +10,21 @@ import Modelo.Enums.TipoCarta;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Tablero implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int ancho = 15;
-    private int alto = 9;
-    private final Carta[][] cuadricula = new Carta[alto][ancho];
+    private Map<Posicion, Carta> tablero;
+
     private int xInicio;
     private int yInicio;
     private int xOro;
     private int yOro;
 
     public Tablero() {
+        tablero = new HashMap<>();
         inicializarTablero();
     }
 
@@ -36,11 +32,6 @@ public class Tablero implements Serializable {
 
         // Creo las cartas iniciales
         CartaTunel inicio = new CartaTunel(0, TipoCarta.TUNEL, "tuneles/INICIO.png", true);
-        Map<Direccion, Boolean> caminosInicio = new HashMap<>();
-        caminosInicio.put(Direccion.ARRIBA, true);
-        caminosInicio.put(Direccion.ABAJO, true);
-        caminosInicio.put(Direccion.IZQUIERDA, true);
-        caminosInicio.put(Direccion.DERECHA, true);
         inicio.setCaminos(true, true, true, true);
 
         CartaDestino oro = new CartaDestino(1, TipoCarta.DESTINO, "tuneles/DESTINO.png", "tuneles/DORSO TUNELES.png", true);
@@ -52,8 +43,8 @@ public class Tablero implements Serializable {
 //        yInicio = 0;
 
         //prueba para ver si gana la partida
-        xInicio = 6;
-        yInicio = 11;
+        xInicio = 0;
+        yInicio = 0;
         colocarCarta(inicio, xInicio, yInicio);
 
         // genero una posicion aleatoria donde coloco cada destino
@@ -62,10 +53,10 @@ public class Tablero implements Serializable {
         destinos.add(primerCarbon);
         destinos.add(segundoCarbon);
 
-        List<int[]> posicionesDestino = new ArrayList<>();
-        posicionesDestino.add(new int[]{(int) Math.floor((double) alto / 2), ancho - 1});
-        posicionesDestino.add(new int[]{((int) Math.floor((double) alto / 2) - 2), ancho - 1});
-        posicionesDestino.add(new int[]{(int) Math.floor((double) alto / 2) + 2, ancho - 1});
+        List<Posicion> posicionesDestino = new ArrayList<>();
+        posicionesDestino.add(new Posicion(0, 7));
+        posicionesDestino.add(new Posicion(-2, 7));
+        posicionesDestino.add(new Posicion(2, 7));
 
         // mientras que haya cartas destino y posiciones las coloco aleatoriamente
         while (!(destinos.isEmpty()) && !(posicionesDestino.isEmpty())) {
@@ -73,10 +64,10 @@ public class Tablero implements Serializable {
             int indiceDestinos = (int) (Math.random() * destinos.size());
 
             CartaDestino destino = destinos.get(indiceDestinos);
-            cuadricula[posicionesDestino.get(indicePos)[0]][posicionesDestino.get(indicePos)[1]] = destino;
+            setCarta( destino, posicionesDestino.get(indicePos).getX(), posicionesDestino.get(indicePos).getY());
             if (destino.getEsOro()) {
-                destino.setOroX(posicionesDestino.get(indicePos)[0]);
-                destino.setOroY(posicionesDestino.get(indicePos)[1]);
+                destino.setOroX(posicionesDestino.get(indicePos).getX());
+                destino.setOroY(posicionesDestino.get(indicePos).getY());
                 System.out.println(destino.getOroX());
                 this.xOro = destino.getOroX();
                 this.yOro = destino.getOroY();
@@ -89,58 +80,53 @@ public class Tablero implements Serializable {
 
 
     public boolean colocarCarta(CartaTunel carta, int x, int y) {
-        // compruebo que este dentro de los limites del tablero
-        if (x < 0 || x >= alto || y < 0 || y >= ancho) {
-            System.out.println("Posicion fuera del tablero");
-            return false;
-        }
+
         // si la posicion esta ocupada
-        if (cuadricula[x][y] != null) return false;
+        if (getCarta(x, y) != null) return false;
 
         // comprobar si la carta puede conectarse (el vecino es tunel y los tuneles coinciden)
-
         Boolean puedeConectarDerecha = false;
         Boolean puedeConectarIzquierda = false;
         Boolean puedeConectarAbajo = false;
         Boolean puedeConectarArriba = false;
-        if (y < ancho - 1) {
-            Carta vecinoDerecha = getCarta(x, y + 1);
-            puedeConectarDerecha = this.puedeConectar(vecinoDerecha, carta, Direccion.DERECHA);
-            if (vecinoDerecha instanceof CartaDestino) {
-                ((CartaDestino) vecinoDerecha).girar();
-                ((CartaDestino) vecinoDerecha).setDorso(vecinoDerecha.getImg());
-                cuadricula[x][y + 1] = vecinoDerecha;
-            }
+        // DERECHA
+        Carta vecinoDerecha = getCarta(x, y + 1);
+        puedeConectarDerecha = this.puedeConectar(vecinoDerecha, carta, Direccion.DERECHA);
+        if (vecinoDerecha instanceof CartaDestino) {
+            ((CartaDestino) vecinoDerecha).girar();
+            ((CartaDestino) vecinoDerecha).setDorso(vecinoDerecha.getImg());
+            //cuadricula[x][y + 1] = vecinoDerecha;
+            setCarta(vecinoDerecha, x, y + 1);
         }
-        if (y > 0) {
-            Carta vecinoIzquierda = getCarta(x, y - 1);
-            puedeConectarIzquierda = this.puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA);
-            if (vecinoIzquierda instanceof CartaDestino) {
-                ((CartaDestino) vecinoIzquierda).girar();
-                ((CartaDestino) vecinoIzquierda).setDorso(vecinoIzquierda.getImg());
-                cuadricula[x][y - 1] = vecinoIzquierda;
-            }
+        // IZQUIERDA
+        Carta vecinoIzquierda = getCarta(x, y - 1);
+        puedeConectarIzquierda = this.puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA);
+        if (vecinoIzquierda instanceof CartaDestino) {
+            ((CartaDestino) vecinoIzquierda).girar();
+            ((CartaDestino) vecinoIzquierda).setDorso(vecinoIzquierda.getImg());
+            //cuadricula[x][y - 1] = vecinoIzquierda;
+            setCarta(vecinoIzquierda, x, y - 1);
         }
-        if (x < alto - 1) {
-            Carta vecinoAbajo = getCarta(x + 1, y);
-            puedeConectarAbajo = this.puedeConectar(vecinoAbajo, carta, Direccion.ABAJO);
-            if (vecinoAbajo instanceof CartaDestino) {
-                ((CartaDestino) vecinoAbajo).girar();
-                ((CartaDestino) vecinoAbajo).setDorso(vecinoAbajo.getImg());
-                cuadricula[x + 1][y] = vecinoAbajo;
-            }
+        // ABAJO
+        Carta vecinoAbajo = getCarta(x + 1, y);
+        puedeConectarAbajo = this.puedeConectar(vecinoAbajo, carta, Direccion.ABAJO);
+        if (vecinoAbajo instanceof CartaDestino) {
+            ((CartaDestino) vecinoAbajo).girar();
+            ((CartaDestino) vecinoAbajo).setDorso(vecinoAbajo.getImg());
+            //cuadricula[x + 1][y] = vecinoAbajo;
+            setCarta(vecinoAbajo, x + 1, y);
         }
-        if (x > 0) {
-            Carta vecinoArriba = getCarta(x - 1, y);
-            puedeConectarArriba = this.puedeConectar(vecinoArriba, carta, Direccion.ARRIBA);
-            if (vecinoArriba instanceof CartaDestino) {
-                ((CartaDestino) vecinoArriba).girar();
-                ((CartaDestino) vecinoArriba).setDorso(vecinoArriba.getImg());
-                cuadricula[x - 1][y] = vecinoArriba;
-            }
+        // ARRIBA
+        Carta vecinoArriba = getCarta(x - 1, y);
+        puedeConectarArriba = this.puedeConectar(vecinoArriba, carta, Direccion.ARRIBA);
+        if (vecinoArriba instanceof CartaDestino) {
+            ((CartaDestino) vecinoArriba).girar();
+            ((CartaDestino) vecinoArriba).setDorso(vecinoArriba.getImg());
+            //cuadricula[x - 1][y] = vecinoArriba;
+            setCarta(vecinoArriba, x - 1, y);
         }
         if (carta.getEsInicio() || puedeConectarDerecha || puedeConectarIzquierda || puedeConectarAbajo || puedeConectarArriba) {
-            cuadricula[x][y] = carta;  // coloco la carta en la posicion
+            setCarta(carta, x, y);// coloco la carta en la posicion
             return true;
         }
         return false;
@@ -158,26 +144,26 @@ public class Tablero implements Serializable {
     public boolean hayCaminoHastaOro() {
 
         // llevo una lista de las posiciones del tablero que ya visite
-        boolean[][] visitado = new boolean[alto][ancho];
+        Set<Posicion> visitado = new HashSet<>();
 
         return buscarOro(this.xInicio, this.yInicio, visitado);
 
     }
 
-    private boolean buscarOro(int x, int y, boolean[][] visitado) {
+    private boolean buscarOro(int x, int y, Set<Posicion> visitado) {
 
-        // si la posicion no esta dentro del tablero
-        if (x < 0 || x > alto - 1 || y < 0 || y > ancho - 1) return false;
+        // posicion actual
+        Posicion actual = new Posicion(x, y);
 
         //si la posicion ya la visitamos, salimos
-        if (visitado[x][y]) return false;
+        if (visitado.contains(actual)) return false;
 
         //si la posicion no es una carta, salgo de la busqueda
         Carta cartaActual = getCarta(x, y);
         if (!((cartaActual instanceof CartaTunel) || (cartaActual instanceof CartaDestino))) return false;
 
         // marco la posicion como visitada
-        visitado[x][y] = true;
+        visitado.add(actual);
 
         // me fijo si la carta es el oro
         if (x == xOro && y == yOro) return true;
@@ -189,18 +175,11 @@ public class Tablero implements Serializable {
 
             // dependiendo la direccion modifico la coordenada
             switch (direccion) {
-                case ARRIBA -> {
-                    if (x > 0) nuevoX--;
-                }
-                case ABAJO -> {
-                    if (x < alto - 1) nuevoX++;
-                }
-                case IZQUIERDA -> {
-                    if (y > 0) nuevoY--;
-                }
-                case DERECHA -> {
-                    if (y < ancho - 1) nuevoY++;
-                }
+                case ARRIBA -> nuevoX--;
+                case ABAJO -> nuevoX++;
+                case IZQUIERDA -> nuevoY--;
+                case DERECHA -> nuevoY++;
+
             }
 
             // compruebo si la carta vecina en cierta direccion esta conectada con la actual
@@ -222,22 +201,13 @@ public class Tablero implements Serializable {
 
     }
 
-
-    public int getAncho() {
-        return ancho;
-    }
-
-
-    public int getAlto() {
-        return alto;
-    }
-
-    public Carta[][] getCuadricula() {
-        return cuadricula;
-    }
-
     public Carta getCarta(int x, int y) {
-        return cuadricula[x][y];
+        return tablero.get(new Posicion(x, y));
     }
 
+    public void setCarta(Carta c, int x, int y) {
+        tablero.put(new Posicion(x, y), c);
+    }
+
+    public Map<Posicion, Carta> getCartas(){ return tablero;}
 }

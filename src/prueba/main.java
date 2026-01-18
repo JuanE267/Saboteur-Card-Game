@@ -30,7 +30,7 @@ public class main {
             System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace();    
         } catch (RMIMVCException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

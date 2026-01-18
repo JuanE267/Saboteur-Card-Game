@@ -7,12 +7,14 @@ import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.TipoAccion;
 import Modelo.IJugador;
+import Modelo.Posicion;
 import Modelo.Tablero;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +24,24 @@ public class PanelTablero extends JPanel {
     private ControladorJuego controlador;
     private PanelJugador panelJugador;
     private Tablero tablero;
-    List<Casillero> listaCasilleros = new ArrayList<>();
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
     private IJugador jugadorCliente;
+
+    private int lastMouseX;
+    private int lastMouseY;
+
+    // Offset para desplazamiento (en píxeles de pantalla)
+    private double offsetX = 0;
+    private double offsetY = 0;
+
+    // Zoom (escala)
+    private double zoom = 1.0;
+    private final double MIN_ZOOM = 0.3;
+    private final double MAX_ZOOM = 3.0;
+
+    // Flag para saber si es la primera vez que se dibuja
+    private boolean primerDibujado = true;
 
     public PanelTablero(PanelJugador jugador, ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
@@ -34,141 +50,227 @@ public class PanelTablero extends JPanel {
         this.tablero = controlador.getTablero();
 
         setBackground(Color.decode("#4b3e2c"));
-        setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
-        setPreferredSize(new Dimension(tablero.getAncho(), tablero.getAlto()));
+        setLayout(null);
+        setPreferredSize(new Dimension(800, 600));
 
-        dibujarTablero(tablero);
-    }
-
-    public void dibujarTablero(Tablero tablero) {
-        this.removeAll();
-        setLayout(new GridLayout(tablero.getAlto(), tablero.getAncho()));
-        for (int i = 0; i < tablero.getAlto(); i++) {
-            for (int j = 0; j < tablero.getAncho(); j++) {
-
-                Casillero casillero = new Casillero(i, j);
-                casillero.setPreferredSize(new Dimension(ANCHO_CASILLERO, ALTO_CASILLERO));
-                casillero.setBorder(BorderFactory.createDashedBorder(new Color(212, 210, 210, 128)));
-                setImagenCasillero(casillero);
-                listaCasilleros.add(casillero);
-                add(casillero);
+        // Mouse listener para arrastrar
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                lastMouseX = e.getX();
+                lastMouseY = e.getY();
             }
-        }
 
-        for (Casillero c : listaCasilleros) {
-            c.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    try {
-                        if (controlador.esTurnoDe(jugadorCliente)) {
-                            super.mouseClicked(e);
-                            try {
-                                casilleroEsPresionado(c);
-                            } catch (RemoteException ex) {
-                                ex.printStackTrace();
-                            }
-                        } else {
-                            mensajeNoEsTuTurno();
-                        }
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    manejarClick(e.getX(), e.getY());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
                 }
-            });
-        }
+            }
+        });
 
-        revalidate();
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // Actualizar el offset basado en el desplazamiento del mouse
+                offsetX += e.getX() - lastMouseX;
+                offsetY += e.getY() - lastMouseY;
+                lastMouseX = e.getX();
+                lastMouseY = e.getY();
+                repaint();
+            }
+        });
+
+        // Mouse wheel listener para zoom
+        addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                // Guardar zoom anterior
+                double oldZoom = zoom;
+
+                // Calcular nuevo zoom
+                if (e.getWheelRotation() < 0) {
+                    zoom *= 1.1; // Zoom in
+                } else {
+                    zoom /= 1.1; // Zoom out
+                }
+
+                // Limitar zoom
+                zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
+
+                // Ajustar offset para que el zoom sea hacia el cursor
+                Point mousePos = e.getPoint();
+                offsetX = mousePos.x - (mousePos.x - offsetX) * (zoom / oldZoom);
+                offsetY = mousePos.y - (mousePos.y - offsetY) * (zoom / oldZoom);
+
+                repaint();
+            }
+        });
+
         repaint();
     }
 
-    private void casilleroEsPresionado(Casillero casillero) throws RemoteException {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        int cartaSeleccionada = panelJugador.getCartaSeleccionada();
-        Boolean pudoSerJugado = false;
+        Graphics2D g2 = (Graphics2D) g;
 
+        // Activar antialiasing para mejor calidad visual
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        // si es una carta dentro del mazo
-        if (cartaSeleccionada != -1 && cartaSeleccionada >= 0) {
-            Carta cartaAJugar = jugadorCliente.elegirCarta(cartaSeleccionada);
-            //si es de tipo tunel
-            if (cartaAJugar instanceof CartaTunel) {
-                pudoSerJugado = controlador.jugarUnaCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
-                if (!pudoSerJugado) {
-                    if (jugadorCliente.puedeConstruir()) {
-                        JOptionPane.showMessageDialog(this, "La carta no coincide con ninguno de los tuneles!!");
-                    }else{
-                        JOptionPane.showMessageDialog(this, "Tenes una herramienta rota, NO podes construir!!");
-                    }
-                }
-            }
-            //si es de tipo accion
-            else if (cartaAJugar instanceof CartaAccion) {
-                // juego la carta si es derrumbre o mapa
-
-                if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA || ((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.DERRUMBAR) {
-                    pudoSerJugado = controlador.jugarUnaCarta(casillero.posX(), casillero.posY(), cartaSeleccionada, null);
-                    if (!pudoSerJugado) {
-                        JOptionPane.showMessageDialog(this, "No puede jugar sobre esta carta!");
-                    }
-                    // si es el mapa muestro la carta destino dada vuelta
-                    if (((CartaAccion) cartaAJugar).getTipoAccion().getFirst() == TipoAccion.MAPA && pudoSerJugado) {
-                        Carta destino = tablero.getCarta(casillero.posX(), casillero.posY());
-                        if (destino instanceof CartaDestino) {
-                            //intento de girar (no funciona)
-                            /*
-                            javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
-                                ((CartaDestino) destino).girar();
-                                setImagenCasillero(casillero);
-                                try {
-                                    controlador.pasarTurno();
-                                } catch (RemoteException ex) {
-                                    ex.printStackTrace();
-                                }
-
-                            });
-                            paseTurnoDespuesDeGirar = true;
-                            timer.setRepeats(false);
-                            timer.start();
-                            */
-                            // guardo la imagen de la cara del destino
-                            ImageIcon icono = new ImageIcon(destino.getClass().getResource("/" + ((CartaDestino) destino).getCara()));
-                            // la escalo al tamaño de un casiller
-                            icono = new ImageIcon(icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH));
-                            // la muestro
-                            JOptionPane.showMessageDialog(this, new JLabel(icono));
-
-                        }
-                    }
-                }
-
-
-            }
-
+        // Solo centrar el tablero la primera vez
+        if (primerDibujado && !tablero.getCartas().isEmpty()) {
+            centrarTablero();
+            primerDibujado = false;
         }
-        // reseteo todo despues de jugar la carta
-        panelJugador.resetCartaSeleccionada();
 
-        // despues de actualizar todo en el jugador, paso el turno
-        if (pudoSerJugado) {
-            controlador.verificarSiTerminoLaRonda();
-                controlador.pasarTurno();
+        // Dibujar una grilla de fondo (opcional, ayuda a visualizar)
+        dibujarGrilla(g2);
 
+        // Dibujar todas las cartas
+        for (var entry : tablero.getCartas().entrySet()) {
+            Posicion p = entry.getKey();
+            Carta carta = entry.getValue();
+
+            // Convertir coordenadas del mundo a coordenadas de pantalla
+            int xPantalla = (int) (p.getY() * ANCHO_CASILLERO * zoom + offsetX);
+            int yPantalla = (int) (p.getX() * ALTO_CASILLERO * zoom + offsetY);
+
+            try {
+                // Cargar y escalar la imagen
+                ImageIcon icono = new ImageIcon(
+                        carta.getClass().getResource("/" + carta.getImg())
+                );
+
+                Image img = icono.getImage().getScaledInstance(
+                        (int) (ANCHO_CASILLERO * zoom),
+                        (int) (ALTO_CASILLERO * zoom),
+                        Image.SCALE_SMOOTH
+                );
+
+                g2.drawImage(img, xPantalla, yPantalla, null);
+
+                // Dibujar borde para debug (opcional)
+                g2.setColor(Color.YELLOW);
+                g2.drawRect(xPantalla, yPantalla,
+                        (int)(ANCHO_CASILLERO * zoom),
+                        (int)(ALTO_CASILLERO * zoom));
+
+            } catch (Exception e) {
+                // Si falla la carga de imagen, dibujar un rectángulo de placeholder
+                g2.setColor(Color.RED);
+                g2.fillRect(xPantalla, yPantalla,
+                        (int)(ANCHO_CASILLERO * zoom),
+                        (int)(ALTO_CASILLERO * zoom));
+                g2.setColor(Color.WHITE);
+                g2.drawString("Error", xPantalla + 5, yPantalla + 15);
+            }
+        }
+
+        // Mostrar información de debug
+        g2.setColor(Color.WHITE);
+        g2.drawString("Cartas: " + tablero.getCartas().size(), 10, 20);
+        g2.drawString("Zoom: " + String.format("%.2f", zoom), 10, 40);
+        g2.drawString("Offset: " + String.format("%.0f, %.0f", offsetX, offsetY), 10, 60);
+    }
+
+    private void dibujarGrilla(Graphics2D g2) {
+        g2.setColor(new Color(100, 80, 60, 50)); // Color semi-transparente
+
+        int spacing = (int)(ANCHO_CASILLERO * zoom);
+
+        // Líneas verticales
+        for (int x = (int)offsetX % spacing; x < getWidth(); x += spacing) {
+            g2.drawLine(x, 0, x, getHeight());
+        }
+
+        // Líneas horizontales
+        spacing = (int)(ALTO_CASILLERO * zoom);
+        for (int y = (int)offsetY % spacing; y < getHeight(); y += spacing) {
+            g2.drawLine(0, y, getWidth(), y);
         }
     }
 
-    public void setImagenCasillero(Casillero casillero) {
+    private void centrarTablero() {
+        if (tablero.getCartas().isEmpty()) return;
 
-        Carta carta = tablero.getCarta(casillero.posX(), casillero.posY());
+        // Calcular bounds en coordenadas del MUNDO (no píxeles)
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
 
-        // si la carta no esta vacia (inicio o destinos)
-        if (carta != null) {
-            // cargo y escalo la imagen
-            ImageIcon icono = new ImageIcon(carta.getClass().getResource("/" + carta.getImg()));
-            casillero.setIcon(new ImageIcon(icono.getImage().getScaledInstance(ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH)));
-        } else {
-            casillero.setIcon(null);
+        for (Posicion p : tablero.getCartas().keySet()) {
+            minX = Math.min(minX, p.getX());
+            minY = Math.min(minY, p.getY());
+            maxX = Math.max(maxX, p.getX());
+            maxY = Math.max(maxY, p.getY());
         }
 
+        // Calcular el centro del tablero en coordenadas del mundo
+        double centroMundoX = (minX + maxX) / 2.0;
+        double centroMundoY = (minY + maxY) / 2.0;
+
+        // Convertir a píxeles y centrar en la pantalla
+        offsetX = getWidth() / 2.0 - centroMundoY * ANCHO_CASILLERO * zoom;
+        offsetY = getHeight() / 2.0 - centroMundoX * ALTO_CASILLERO * zoom;
+    }
+
+    private void manejarClick(int mouseX, int mouseY) throws RemoteException {
+        // Convertir de coordenadas de pantalla a coordenadas del mundo
+        int y = (int) Math.floor((mouseX - offsetX) / (ANCHO_CASILLERO * zoom));
+        int x = (int) Math.floor((mouseY - offsetY) / (ALTO_CASILLERO * zoom));
+
+        System.out.println("Click en pantalla: (" + mouseX + ", " + mouseY + ")");
+        System.out.println("Click en mundo: (" + x + ", " + y + ")");
+
+        jugarEnPosicion(x, y);
+    }
+
+    private void jugarEnPosicion(int x, int y) throws RemoteException {
+        int cartaSeleccionada = panelJugador.getCartaSeleccionada();
+        boolean pudoSerJugado = false;
+
+        if (cartaSeleccionada != -1) {
+            Carta carta = jugadorCliente.elegirCarta(cartaSeleccionada);
+
+            pudoSerJugado = controlador.jugarUnaCarta(x, y, cartaSeleccionada, null);
+
+            if (!pudoSerJugado) {
+                JOptionPane.showMessageDialog(this, "No se puede jugar ahí");
+            } else {
+                // Manejar cartas especiales
+                Carta cartaJugada = tablero.getCarta(x, y);
+                if (carta instanceof CartaAccion) {
+                    CartaAccion accion = (CartaAccion) carta;
+                    if (accion.getTipoAccion().getFirst() == TipoAccion.MAPA) {
+                        if (cartaJugada instanceof CartaDestino) {
+                            CartaDestino destino = (CartaDestino) cartaJugada;
+                            ImageIcon icono = new ImageIcon(
+                                    destino.getClass().getResource("/" + destino.getCara())
+                            );
+                            icono = new ImageIcon(icono.getImage().getScaledInstance(
+                                    ANCHO_CASILLERO, ALTO_CASILLERO, Image.SCALE_SMOOTH
+                            ));
+                            JOptionPane.showMessageDialog(this, new JLabel(icono));
+                        }
+                    }
+                }
+            }
+        }
+
+        panelJugador.resetCartaSeleccionada();
+
+        if (pudoSerJugado) {
+            controlador.verificarSiTerminoLaRonda();
+            controlador.pasarTurno();
+        }
+
+        repaint();
     }
 
     public void mensajeNoEsTuTurno() {
@@ -178,7 +280,6 @@ public class PanelTablero extends JPanel {
     public void actualizar(Tablero tablero, IJugador jugadorCliente) {
         this.jugadorCliente = jugadorCliente;
         this.tablero = tablero;
-        dibujarTablero(tablero);
         revalidate();
         repaint();
     }
