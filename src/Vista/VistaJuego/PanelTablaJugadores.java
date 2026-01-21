@@ -187,15 +187,16 @@ public class PanelTablaJugadores extends JPanel {
                         JOptionPane.showMessageDialog(this, "La herramienta ya esta rota!");
                     } else if (tipoAccion.toString().startsWith("OBJETIVO_REPARAR")) {
                         JOptionPane.showMessageDialog(this, "La herramienta ya esta sana!");
+
                     } else {
                         panelJugador.resetCartaSeleccionada();
                         panelJugador.revalidate();
                         panelJugador.repaint();
                         controlador.pasarTurno();
                     }
+                }else {
+                    JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
                 }
-                JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
-
             }
 
         }

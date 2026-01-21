@@ -10,14 +10,19 @@ import Modelo.IJugador;
 import Modelo.Posicion;
 import Modelo.Tablero;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PanelTablero extends JPanel {
 
@@ -27,6 +32,8 @@ public class PanelTablero extends JPanel {
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
     private IJugador jugadorCliente;
+
+    private Map<String, BufferedImage> cacheImagenes = new HashMap<>();
 
     private int lastMouseX;
     private int lastMouseY;
@@ -48,6 +55,7 @@ public class PanelTablero extends JPanel {
         this.panelJugador = jugador;
         this.jugadorCliente = controlador.getJugadorActualizado();
         this.tablero = controlador.getTablero();
+
 
         setBackground(Color.decode("#4b3e2c"));
         setLayout(null);
@@ -112,6 +120,23 @@ public class PanelTablero extends JPanel {
         repaint();
     }
 
+    private BufferedImage obtenerImagen(String ruta, Class<?> claseRef) {
+        if (!cacheImagenes.containsKey(ruta)) {
+            try {
+                URL url = claseRef.getResource("/" + ruta);
+                if (url != null) {
+                    BufferedImage img = ImageIO.read(url);
+                    cacheImagenes.put(ruta, img);
+                }
+            } catch (Exception e) {
+                System.err.println("Error cargando: " + ruta);
+                e.printStackTrace();
+            }
+        }
+        return cacheImagenes.get(ruta);
+    }
+
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -128,46 +153,45 @@ public class PanelTablero extends JPanel {
             primerDibujado = false;
         }
 
-        // Dibujar una grilla de fondo (opcional, ayuda a visualizar)
+        // Dibujar una grilla de fondo
         dibujarGrilla(g2);
 
-        // Dibujar todas las cartas
+        // dibujar la cartas
         for (var entry : tablero.getCartas().entrySet()) {
             Posicion p = entry.getKey();
             Carta carta = entry.getValue();
 
-            // Convertir coordenadas del mundo a coordenadas de pantalla
             int xPantalla = (int) (p.getY() * ANCHO_CASILLERO * zoom + offsetX);
             int yPantalla = (int) (p.getX() * ALTO_CASILLERO * zoom + offsetY);
 
             try {
-                // Cargar y escalar la imagen
-                ImageIcon icono = new ImageIcon(
-                        carta.getClass().getResource("/" + carta.getImg())
-                );
+                BufferedImage imgOriginal = null;
+                try {
+                    imgOriginal = obtenerImagen(carta.getImg(), carta.getClass());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                Image img = icono.getImage().getScaledInstance(
-                        (int) (ANCHO_CASILLERO * zoom),
-                        (int) (ALTO_CASILLERO * zoom),
-                        Image.SCALE_SMOOTH
-                );
+                if (imgOriginal != null) {
+                    int anchoEscalado = (int) (ANCHO_CASILLERO * zoom);
+                    int altoEscalado = (int) (ALTO_CASILLERO * zoom);
 
-                g2.drawImage(img, xPantalla, yPantalla, null);
+                    // Crear imagen escalada
+                    BufferedImage imgEscalada = new BufferedImage(
+                            anchoEscalado, altoEscalado, BufferedImage.TYPE_INT_ARGB
+                    );
 
-                // Dibujar borde para debug (opcional)
-                g2.setColor(Color.YELLOW);
-                g2.drawRect(xPantalla, yPantalla,
-                        (int)(ANCHO_CASILLERO * zoom),
-                        (int)(ALTO_CASILLERO * zoom));
+                    Graphics2D g2d = imgEscalada.createGraphics();
+                    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    g2d.drawImage(imgOriginal, 0, 0, anchoEscalado, altoEscalado, null);
+                    g2d.dispose();
+
+                    g2.drawImage(imgEscalada, xPantalla, yPantalla, null);
+                }
 
             } catch (Exception e) {
-                // Si falla la carga de imagen, dibujar un rectángulo de placeholder
-                g2.setColor(Color.RED);
-                g2.fillRect(xPantalla, yPantalla,
-                        (int)(ANCHO_CASILLERO * zoom),
-                        (int)(ALTO_CASILLERO * zoom));
-                g2.setColor(Color.WHITE);
-                g2.drawString("Error", xPantalla + 5, yPantalla + 15);
+                e.printStackTrace();
             }
         }
 

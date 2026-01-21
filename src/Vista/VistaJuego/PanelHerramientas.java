@@ -150,17 +150,16 @@ public class PanelHerramientas extends JPanel {
             if (tipoAccion != null) {
                 if (tipoAccion.toString().startsWith("ROMPER")) {
                     JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
-                } else if (controlador.jugarHerramienta(posCarta, jugadorCliente.getId()).toString().startsWith("REPARAR")) {
+                } else if (tipoAccion.toString().startsWith("REPARAR")) {
                     JOptionPane.showMessageDialog(this, "La herramienta ya esta sana!");
+                }else{
+                    panelJugador.resetCartaSeleccionada();
+                    panelJugador.revalidate();
+                    panelJugador.repaint();
+                    controlador.pasarTurno();
                 }
-            } else if (tipoAccion == null){
+            } else{
                 JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
-            }else{
-                panelJugador.resetCartaSeleccionada();
-                panelJugador.revalidate();
-                panelJugador.repaint();
-                controlador.pasarTurno();
-
             }
         }
 

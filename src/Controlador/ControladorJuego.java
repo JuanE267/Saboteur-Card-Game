@@ -11,6 +11,7 @@ import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
 import java.rmi.RemoteException;
+import java.util.IllegalFormatCodePointException;
 
 public class ControladorJuego implements IControladorRemoto {
     private IJuego juego;
@@ -98,40 +99,31 @@ public class ControladorJuego implements IControladorRemoto {
         // valido desde el controlador si puedo usar la carta, despues la uso desde el modelo Juego
         jugadorCliente = getJugadorActualizado();
         Carta carta = jugadorCliente.elegirCarta(posCarta);
+        boolean pudoSerJugada = false;
 
 
         IJugador objetivo = getJugadorPorId(idObjetivo);
 
+        // DEVUELVO SOLO UN TIPOACCION PORQUE SOLO ME INTERESA COMO INICIA
         if (carta instanceof CartaAccion) {
-            // si el objetivo no es el mismo jugador
-            if (objetivo.getId() != jugadorCliente.getId()) {
 
-                if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
-                    // reviso si tiene cartas rotas
-                    if (objetivo.getHerramientasRotas().isEmpty()) {
-                        return TipoAccion.OBJETIVO_REPARAR_PICO;
+            pudoSerJugada = juego.jugarHerramienta(objetivo, posCarta);
+
+            if (!pudoSerJugada) {
+                if (objetivo.getId() != jugadorCliente.getId()) {
+                    if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
+                        return TipoAccion.OBJETIVO_REPARAR;
                     } else {
-                        juego.jugarHerramienta(objetivo, posCarta);
+                        return TipoAccion.OBJETIVO_ROMPER;
                     }
                 } else {
-                    for(Herramienta herr : objetivo.getHerramientasRotas()){
-                        if(((CartaAccion) carta).getTipoAccion().toString().endsWith(herr.toString())){
-                            return TipoAccion.OBJETIVO_ROMPER_PICO;
-                        }
+                    if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
+                        return TipoAccion.REPARARPICO;
+                    } else {
+                        return TipoAccion.ROMPERPICO;
                     }
-                    juego.jugarHerramienta(objetivo,posCarta);
                 }
-            }
-            // es el mismo jugador pero la carta es de reparar
-            else if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
-                // reviso si tiene cartas rotas
-                if (jugadorCliente.getHerramientasRotas().isEmpty()) {
-                    return TipoAccion.REPARARPICO;
-                } else {
-                    juego.jugarHerramienta(objetivo, posCarta);
-                }
-            } else {
-                return TipoAccion.ROMPERPICO;
+
             }
 
             return ((CartaAccion) carta).getTipoAccion().getFirst();
@@ -194,7 +186,7 @@ public class ControladorJuego implements IControladorRemoto {
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
                 }
-                case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA-> {
+                case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA -> {
                     actualizarJugador();
                     vista.actualizar(getTablero(), juego.getJugadores());
                 }

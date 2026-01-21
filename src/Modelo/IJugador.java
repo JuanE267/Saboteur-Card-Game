@@ -29,7 +29,7 @@ public interface IJugador {
 
     List<Carta> getManoCartas();
 
-    void setManoCartas(List<Modelo.Cartas.Carta> manoCartas);
+    void setManoCartas(List<Carta> manoCartas);
 
     List<Herramienta> getHerramientasRotas();
 

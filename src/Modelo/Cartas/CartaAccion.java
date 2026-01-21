@@ -30,17 +30,21 @@ public class CartaAccion extends Carta {
 
     // Acción para romper/reparar herramienta a un jugador
     public Boolean jugarCarta(IJugador afectado) {
+
+        boolean sePudoArreglar = false;
         for (TipoAccion tipoAccion : tipo) {
             switch (tipoAccion) {
                 case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
-                   return  romperHerramienta(afectado, tipoAccion);
+                    if(!sePudoArreglar) sePudoArreglar = romperHerramienta(afectado, tipoAccion);
+                    else romperHerramienta(afectado, tipoAccion);
                 }
                 case REPARARLINTERNA, REPARARVAGONETA, REPARARPICO -> {
-                    return repararHerramienta(afectado, tipoAccion);
+                    if(!sePudoArreglar) sePudoArreglar = repararHerramienta(afectado, tipoAccion);
+                    else repararHerramienta(afectado, tipoAccion);
                 }
             }
         }
-        return false;
+        return sePudoArreglar;
     }
 
     // Acción para ver un destino del tablero o derrumbar
@@ -57,8 +61,8 @@ public class CartaAccion extends Carta {
     private Boolean DerrumbarTunel(int x, int y, Tablero tablero) {
         Carta cartaADerrumbar = tablero.getCarta(x, y);
         if (cartaADerrumbar instanceof CartaTunel) {
-            if (!(((CartaTunel) cartaADerrumbar).getEsInicio())) {
-                tablero.getCuadricula()[x][y] = null;
+            if (!(((CartaTunel) cartaADerrumbar).getEsInicio()) && !(cartaADerrumbar.esDestino())) {
+                tablero.setCarta(null, x, y);
                 return true;
             }
         }
@@ -91,6 +95,7 @@ public class CartaAccion extends Carta {
 
     //reparar herramienta
     private Boolean repararHerramienta(IJugador afectado, TipoAccion tipoAccion) {
+
         Herramienta herramienta = null;
 
         switch (tipoAccion) {
