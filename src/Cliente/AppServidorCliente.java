@@ -13,9 +13,9 @@ import java.util.ArrayList;
 public class AppServidorCliente {
     public void iniciar(){
         ArrayList<String> ips = Util.getIpDisponibles();
-        String ip = "192.168.1.42";
+        String ip = "192.168.1.44";
         String port = "1099";
-        String ipServidor = "192.168.1.42";
+        String ipServidor = "192.168.1.44";
         String portServidor = "8888";
 
 

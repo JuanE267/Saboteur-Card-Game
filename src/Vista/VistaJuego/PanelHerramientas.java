@@ -35,10 +35,24 @@ public class PanelHerramientas extends JPanel {
         JLabel pico = new JLabel();
         JLabel vagoneta = new JLabel();
         JLabel linterna = new JLabel();
+        JLabel rol = new JLabel();
 
+
+        rol.setSize(new Dimension(70,70));
         pico.setSize(new Dimension(70, 70));
         vagoneta.setSize(new Dimension(70, 70));
         linterna.setSize(new Dimension(70, 70));
+
+        String rolSaboteador = "ROL/Saboteador.png";
+        String rolMinero = "ROL/Minero.png";
+
+        if (jugadorCliente.getRol().toString().equals("SABOTEADOR")) {
+            URL urlRol = getClass().getClassLoader().getResource(rolSaboteador);
+            setImagen(rol, urlRol);
+        } else {
+            URL urlRol = getClass().getClassLoader().getResource(rolMinero);
+            setImagen(rol, urlRol);
+        }
 
         String picoSano = "herramientas/PICO SANO.png";
         String vagonetaSana = "herramientas/VAGONETA SANA.png";
@@ -135,6 +149,7 @@ public class PanelHerramientas extends JPanel {
         setImagen(vagoneta, urlVagoneta);
         setImagen(linterna, urlLinterna);
 
+        add(rol);
         add(pico);
         add(vagoneta);
         add(linterna);

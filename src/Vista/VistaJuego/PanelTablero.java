@@ -5,6 +5,7 @@ import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
+import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Modelo.IJugador;
 import Modelo.Posicion;
@@ -167,7 +168,9 @@ public class PanelTablero extends JPanel {
             try {
                 BufferedImage imgOriginal = null;
                 try {
-                    imgOriginal = obtenerImagen(carta.getImg(), carta.getClass());
+                    if (carta != null) {
+                        imgOriginal = obtenerImagen(carta.getImg(), carta.getClass());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -205,16 +208,16 @@ public class PanelTablero extends JPanel {
     private void dibujarGrilla(Graphics2D g2) {
         g2.setColor(new Color(100, 80, 60, 50)); // Color semi-transparente
 
-        int spacing = (int)(ANCHO_CASILLERO * zoom);
+        int spacing = (int) (ANCHO_CASILLERO * zoom);
 
         // Líneas verticales
-        for (int x = (int)offsetX % spacing; x < getWidth(); x += spacing) {
+        for (int x = (int) offsetX % spacing; x < getWidth(); x += spacing) {
             g2.drawLine(x, 0, x, getHeight());
         }
 
         // Líneas horizontales
-        spacing = (int)(ALTO_CASILLERO * zoom);
-        for (int y = (int)offsetY % spacing; y < getHeight(); y += spacing) {
+        spacing = (int) (ALTO_CASILLERO * zoom);
+        for (int y = (int) offsetY % spacing; y < getHeight(); y += spacing) {
             g2.drawLine(0, y, getWidth(), y);
         }
     }
@@ -265,7 +268,13 @@ public class PanelTablero extends JPanel {
             pudoSerJugado = controlador.jugarUnaCarta(x, y, cartaSeleccionada, null);
 
             if (!pudoSerJugado) {
-                JOptionPane.showMessageDialog(this, "No se puede jugar ahí");
+                List<Herramienta> tieneHerramientasRotas = jugadorCliente.getHerramientasRotas();
+
+                if (tablero.getCarta(x, y) instanceof CartaTunel) {
+                    JOptionPane.showMessageDialog(this, "No se puede jugar ahí");
+                } else if (!tieneHerramientasRotas.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No se puede construir con herramientas rotas");
+                }
             } else {
                 // Manejar cartas especiales
                 Carta cartaJugada = tablero.getCarta(x, y);
