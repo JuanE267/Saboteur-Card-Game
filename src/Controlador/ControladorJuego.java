@@ -126,7 +126,7 @@ public class ControladorJuego implements IControladorRemoto {
 
             }
 
-            return ((CartaAccion) carta).getTipoAccion().getFirst();
+            return TipoAccion.JUGADA;
         }
         return null;
     }

@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 public class main {
     public static void main(String[] args) throws RMIMVCException, RemoteException {
 
-        String ip = "192.168.1.44";
+        String ip = "192.168.1.42";
         String port = "8888";
 
         Juego modelo = new Juego();
