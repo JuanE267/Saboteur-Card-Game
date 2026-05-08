@@ -19,5 +19,5 @@ public interface IVistaGrafica {
 
     void mostrarPartida() throws RemoteException;
 
-    void avisarGanadores(IJugador[] jugadores, Evento evento, IJugador ganador, int ronda) throws RemoteException;
+    void ocultarPartida();
 }

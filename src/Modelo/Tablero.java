@@ -48,7 +48,7 @@ public class Tablero implements Serializable {
 
         //prueba para ver si gana la partida
         xInicio = 0;
-        yInicio = 0;
+        yInicio = 5;
         colocarCarta(inicio, xInicio, yInicio);
 
         // genero una posicion aleatoria donde coloco cada destino

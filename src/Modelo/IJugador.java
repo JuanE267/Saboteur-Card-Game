@@ -53,5 +53,6 @@ public interface IJugador {
 
     void setId(int id);
 
+
     Boolean puedeConstruir();
 }

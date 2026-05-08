@@ -1,7 +1,7 @@
 package Servidor;
 
-import Cliente.AppServidorCliente;
 import Controlador.ControladorJuego;
+import Modelo.IJuego;
 import Modelo.Juego;
 import Vista.VentanaServidor;
 import ar.edu.unlu.rmimvc.RMIMVCException;
@@ -15,33 +15,37 @@ import java.util.ArrayList;
 public class AppServidor {
     public static void main(String[] args) {
         ArrayList<String> ips = Util.getIpDisponibles();
-        String ip = (String) JOptionPane.showInputDialog(
-                null,
-                "Seleccione la IP en la que escuchara peticiones el servidor", "IP del servidor",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                ips.toArray(),
-                null
-        );
-        String port = (String) JOptionPane.showInputDialog(
-                null,
-                "Seleccione el puerto en el que escuchar� peticiones el servidor", "Puerto del servidor",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                null,
-                8888
-        );
 
-        Juego modelo = new Juego();
+//        String ip = (String) JOptionPane.showInputDialog(
+//                null,
+//                "Seleccione la IP en la que escuchara peticiones el servidor", "IP del servidor",
+//                JOptionPane.QUESTION_MESSAGE,
+//                null,
+//                ips.toArray(),
+//                null
+//        );
+//        String port = (String) JOptionPane.showInputDialog(
+//                null,
+//                "Seleccione el puerto en el que escuchar� peticiones el servidor", "Puerto del servidor",
+//                JOptionPane.QUESTION_MESSAGE,
+//                null,
+//                null,
+//                8888
+//        );
+
+        String ip = "127.0.0.1";
+        String port = "8888";
+
+        IJuego modelo = new Juego();
         Servidor servidor = new Servidor(ip, Integer.parseInt(port));
 
         try {
             servidor.iniciar(modelo);
 
-            AppServidorCliente appServidorCliente = new AppServidorCliente();
-            appServidorCliente.iniciar();
+            //AppServidorCliente appServidorCliente = new AppServidorCliente();
+            //appServidorCliente.iniciar();
 
-            System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
+
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -49,6 +53,8 @@ public class AppServidor {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        System.out.println("Servidor corriendo en ip: " + ip + " port: " + port);
 
     }
 

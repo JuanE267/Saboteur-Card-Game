@@ -13,17 +13,22 @@ public class VistaGrafica implements IVistaGrafica {
     private VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
     private ControladorJuego controlador;
+    private Lobby lobby;
+
 
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.controlador.setVistaGrafica(this);
         this.ventanaInicioSesion = new VentanaInicioSesion();
+        this.lobby = new Lobby(controlador);
 
         // agrego jugadores
         this.ventanaInicioSesion.onClickEntrar(e -> {
             IJugador jugador = controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
             controlador.setJugadorCliente(jugador);
             ocultarInicioSesion();
+            lobby.iniciar();
+
         });
 
 
@@ -52,10 +57,9 @@ public class VistaGrafica implements IVistaGrafica {
         iniciarVentanaJuego();
     }
 
-
     @Override
-    public void avisarGanadores(IJugador[] jugadores, Evento evento, IJugador ganador, int ronda) throws RemoteException {
-        ventanaJuego.avisarGanadores(jugadores, evento, ganador, ronda);
+    public void ocultarPartida() {
+        ventanaJuego.setVisible(false);
     }
 
 

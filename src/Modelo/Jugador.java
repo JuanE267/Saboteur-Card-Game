@@ -128,6 +128,8 @@ public class Jugador implements Serializable, IJugador {
     public void setId(int id) {
         this.id = id;
     }
+
+
 }
 
 

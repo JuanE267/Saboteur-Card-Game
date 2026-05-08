@@ -2,6 +2,7 @@ package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Enums.Herramienta;
+import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
 import Modelo.IJugador;
 
@@ -46,7 +47,7 @@ public class PanelHerramientas extends JPanel {
         String rolSaboteador = "ROL/Saboteador.png";
         String rolMinero = "ROL/Minero.png";
 
-        if (jugadorCliente.getRol().toString().equals("SABOTEADOR")) {
+        if (jugadorCliente.getRol() == Rol.SABOTEADOR) {
             URL urlRol = getClass().getClassLoader().getResource(rolSaboteador);
             setImagen(rol, urlRol);
         } else {

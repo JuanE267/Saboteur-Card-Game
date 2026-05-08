@@ -10,14 +10,19 @@ import Vista.*;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
+import javax.swing.*;
 import java.rmi.RemoteException;
 import java.util.IllegalFormatCodePointException;
 
 public class ControladorJuego implements IControladorRemoto {
     private IJuego juego;
+    private boolean esPartidaCargada = false;
+    private VentanaGanador ventanaGanador;
 
+    private IVistaServidor vistaServidor;
     private IVistaGrafica vista;
     private IJugador jugadorCliente;
+    private boolean esHost = false;
 
     public <T extends IObservableRemoto> ControladorJuego(T juego) {
         try {
@@ -31,6 +36,12 @@ public class ControladorJuego implements IControladorRemoto {
     public ControladorJuego() {
 
     }
+
+    // indica si el juego ya ha sido creado
+    public boolean esJuegoCreado() throws RemoteException {
+        return (juego.getJugadores().length != 0);
+    }
+
 
     public IJugador conectarUsuario(String nombre, int edad) {
         try {
@@ -193,15 +204,94 @@ public class ControladorJuego implements IControladorRemoto {
 
                 case NUEVA_RONDA_GANADOR_MINEROS, NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                     actualizarJugador();
-                    vista.avisarGanadores(juego.getJugadores(), evento, null, getRonda());
+                    vista.ocultarPartida();
+                    avisarGanadores(evento, null, juego.getGanadorRonda());
                     vista.actualizar(getTablero(), juego.getJugadores());
+                    new Timer(10000, e -> {
+                        ((Timer) e.getSource()).stop();
+                        try {
+                            ventanaGanador.setVisible(false);
+                            vista.mostrarPartida();
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+
                 }
                 case FINALIZAR_PARTIDA_SABOTEADORES, FINALIZAR_PARTIDA_MINEROS -> {
                     actualizarJugador();
-                    vista.avisarGanadores(getJugadores(), evento, getGanador(), getRonda());
+                    avisarGanadores(evento, getGanador(), juego.getGanadorRonda());
+                }
+                case NUEVO_USUARIO -> {
+                    IJugador[] jugadores = this.juego.getJugadores();
+                    if (vistaServidor != null) {
+                        vistaServidor.actualizarListaJugadores(jugadores);
+                    }
                 }
             }
         }
+    }
+
+    public Boolean iniciarPartida() throws RemoteException {
+        if (esPartidaCargada) {
+            if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 2) {
+                this.juego.iniciarPartidaCargadaDesdeServidor();
+                return true;
+            } else {
+                System.out.println("no hay jugadores suficientes");
+                return false;
+            }
+        }
+        if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 2) {
+            this.juego.iniciarPartida();
+            return true;
+        } else {
+            System.out.println("no hay jugadores suficientes");
+            return false;
+        }
+    }
+
+    public void avisarGanadores(Evento evento, IJugador ganador, IJugador ganadorRonda) throws RemoteException {
+
+        if (ventanaGanador == null) {
+            ventanaGanador = new VentanaGanador(this);
+        }
+
+        switch (evento) {
+            case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
+                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
+
+            }
+            case NUEVA_RONDA_GANADOR_MINEROS -> {
+                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
+            }
+            case FINALIZAR_PARTIDA_SABOTEADORES -> {
+                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
+            }
+            case FINALIZAR_PARTIDA_MINEROS -> {
+                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
+            }
+        }
+
+
+    }
+
+    public IJugador getGanadorRonda() throws RemoteException {
+        return juego.getGanadorRonda();
+    }
+
+
+    public void setVistaServidor(VentanaServidor vistaServidor) {
+        this.vistaServidor = vistaServidor;
+    }
+
+    public void guardarPartida() throws RemoteException {
+        this.juego.guardarPartida();
+    }
+
+    public void cargarPartida() throws RemoteException {
+        this.esPartidaCargada = true;
+        this.juego.cargarPartida();
     }
 
 
@@ -229,5 +319,9 @@ public class ControladorJuego implements IControladorRemoto {
 
     public void setJugadorCliente(IJugador jugador) {
         this.jugadorCliente = jugador;
+    }
+
+    public void setEsHost() {
+        esHost = true;
     }
 }

@@ -1,7 +1,6 @@
 package Vista;
 
 import Controlador.ControladorJuego;
-import Controlador.ControladorServer;
 import Modelo.IJugador;
 import Modelo.Jugador;
 import net.miginfocom.swing.MigLayout;
@@ -12,14 +11,14 @@ import java.awt.*;
 import java.rmi.RemoteException;
 
 public class VentanaServidor extends JFrame implements IVistaServidor {
-    private ControladorServer controlador;
+    private ControladorJuego controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
     private JButton btnCargarPartida;
     private JButton btnGuardarPartida;
     private JList listJugadores;
 
-    public VentanaServidor(ControladorServer controlador) {
+    public VentanaServidor(ControladorJuego controlador) {
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
         setTitle("Saboteur - Juan Espinosa");

@@ -23,6 +23,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     private List<Integer> ordenTurnos = new ArrayList<>();
     private int turno;
     private IJugador ganador;
+    private IJugador ganadorRonda;
 
     public Juego() {
         this.tablero = new Tablero();
@@ -480,7 +481,14 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public boolean hayCaminoHastaOro() {
-        return tablero.hayCaminoHastaOro();
+        Boolean hayCamino = tablero.hayCaminoHastaOro();
+        if(hayCamino){ ganadorRonda = getJugadorActual(); }
+        return hayCamino;
+    }
+
+
+    public IJugador getGanadorRonda(){
+        return ganadorRonda;
     }
 
     public boolean noHayCartas() {
