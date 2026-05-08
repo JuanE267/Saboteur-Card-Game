@@ -1,6 +1,7 @@
 package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
+import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaTunel;
 
 import javax.swing.*;
@@ -8,79 +9,62 @@ import java.awt.*;
 import java.net.URL;
 import java.rmi.RemoteException;
 
+import static javax.swing.text.StyleConstants.setBackground;
+
 public class PanelTomarCarta extends JPanel {
 
     private ControladorJuego controlador;
-    private PanelJugador panelJugador;
     private final int TAM_CARTA = 75;
 
-    public PanelTomarCarta(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
+    public PanelTomarCarta(ControladorJuego controlador) {
         this.controlador = controlador;
-        this.panelJugador = panelJugador;
-
         setBackground(Color.decode("#4b3e2c"));
         dibujarPanel();
     }
 
-    public void dibujarPanel() throws RemoteException {
+    public void dibujarPanel() {
         removeAll();
 
-        JButton tomarCarta = new JButton();
+        JLabel cartaVisual = new JLabel(); // ← JLabel en lugar de JButton
 
-        String rutaImagen = "";
-        if (controlador.getMazo().getPrimerCarta() instanceof CartaTunel) {
-            rutaImagen = "dorsos/dorso tunel.png";
-        } else {
-            rutaImagen = "dorsos/dorso accion.png";
+        String rutaImagen;
+        try {
+            Carta primera = controlador.getMazo().getPrimerCarta();
+            if (primera == null) {
+                // mazo vacío — mostrar texto discreto
+                JLabel vacio = new JLabel("Sin cartas");
+                vacio.setForeground(Color.WHITE);
+                add(vacio);
+                revalidate();
+                repaint();
+                return;
+            }
+            rutaImagen = primera instanceof CartaTunel
+                    ? "dorsos/dorso tunel.png"
+                    : "dorsos/dorso accion.png";
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return;
         }
 
         URL url = getClass().getClassLoader().getResource(rutaImagen);
-
         if (url != null) {
-
             ImageIcon icono = new ImageIcon(url);
-            Image imagen = icono.getImage().getScaledInstance(TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH);
-            tomarCarta.setIcon(new ImageIcon(imagen));
-        } else {
-            System.err.println("Imagen no encontrada: " + url);
+            Image imagen = icono.getImage().getScaledInstance(
+                    TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH
+            );
+            cartaVisual.setIcon(new ImageIcon(imagen));
         }
 
-        tomarCarta.setPreferredSize(new Dimension(TAM_CARTA, TAM_CARTA + 30));
-        comportamientoTomarCarta(tomarCarta);
-        add(tomarCarta);
-    }
-
-    private void comportamientoTomarCarta(JButton tomarCarta) {
-        tomarCarta.addActionListener(e -> {
-            try {
-                if (controlador.esTurnoDe(controlador.getJugadorActualizado())) {
-                    if (!controlador.tomarCartaDeMazo()) {
-                        JOptionPane.showMessageDialog(this, "Tenes el maximo de cartas!");
-                    } else {
-                        panelJugador.revalidate();
-                        panelJugador.repaint();
-                        panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
-                        dibujarPanel();
-                        controlador.pasarTurno();
-                    }
-
-                } else {
-                    mensajeNoEsTuTurno();
-                }
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
-
-    public void actualizar() throws RemoteException {
-        dibujarPanel();
+        cartaVisual.setPreferredSize(new Dimension(TAM_CARTA, TAM_CARTA + 30));
+        add(cartaVisual);
         revalidate();
         repaint();
     }
 
-    public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
+    public void actualizar() {
+        dibujarPanel();
+        revalidate();
+        repaint();
     }
-
 }

@@ -25,7 +25,7 @@ public class VentanaGanador extends JFrame {
         setTitle("");
         setSize(600, 500);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         setLayout(new BorderLayout());
 

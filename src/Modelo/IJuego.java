@@ -27,8 +27,6 @@ public interface IJuego extends IObservableRemoto {
 
     boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException;
 
-    void tomarCartaDeMazo() throws RemoteException;
-
     Mazo getMazo() throws RemoteException;
 
     IJugador[] getJugadores() throws RemoteException;

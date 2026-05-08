@@ -197,12 +197,6 @@ public class PanelTablero extends JPanel {
                 e.printStackTrace();
             }
         }
-
-        // Mostrar información de debug
-        g2.setColor(Color.WHITE);
-        g2.drawString("Cartas: " + tablero.getCartas().size(), 10, 20);
-        g2.drawString("Zoom: " + String.format("%.2f", zoom), 10, 40);
-        g2.drawString("Offset: " + String.format("%.0f, %.0f", offsetX, offsetY), 10, 60);
     }
 
     private void dibujarGrilla(Graphics2D g2) {

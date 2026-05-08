@@ -63,9 +63,11 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
     public void actualizarJugador() throws RemoteException {
+        if(jugadorCliente == null) return;
         for (IJugador j : juego.getJugadores()) {
-            if (j.getNombre() == jugadorCliente.getNombre()) {
+            if (j.getId() == jugadorCliente.getId()) {
                 jugadorCliente = j;
+                return;
             }
         }
     }
@@ -156,15 +158,6 @@ public class ControladorJuego implements IControladorRemoto {
         }
     }
 
-    public Boolean tomarCartaDeMazo() throws RemoteException {
-        if (jugadorCliente.getManoCartas().size() < 8) {
-            juego.tomarCartaDeMazo();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public Boolean esTurnoDe(IJugador jugador) throws RemoteException {
         if (jugador == null) return false;
         juego.getJugadorActual();
@@ -196,6 +189,16 @@ public class ControladorJuego implements IControladorRemoto {
                     actualizarJugador();
                     iniciarVistaGrafica();
                     vista.mostrarPartida();
+                }
+                case CARGAR_PARTIDA -> {
+                    juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
+                    actualizarJugador();
+                    if(vista == null) {
+                        iniciarVistaGrafica();
+                        vista.mostrarPartida();
+                    }else {
+                        vista.actualizar(getTablero(), juego.getJugadores());
+                    }
                 }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA -> {
                     actualizarJugador();
@@ -233,22 +236,24 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
     public Boolean iniciarPartida() throws RemoteException {
-        if (esPartidaCargada) {
-            if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 2) {
-                this.juego.iniciarPartidaCargadaDesdeServidor();
-                return true;
-            } else {
-                System.out.println("no hay jugadores suficientes");
-                return false;
-            }
-        }
-        if (juego.getJugadores().length <= 10 && juego.getJugadores().length >= 2) {
-            this.juego.iniciarPartida();
-            return true;
-        } else {
-            System.out.println("no hay jugadores suficientes");
+        int cantJugadores = juego.getJugadores().length;
+
+        // ✅ validación una sola vez
+        if (cantJugadores < 2 || cantJugadores > 10) {
+            JOptionPane.showMessageDialog(null,
+                    "Se necesitan entre 2 y 10 jugadores para iniciar.",
+                    "Error", JOptionPane.WARNING_MESSAGE);
             return false;
         }
+
+        // ✅ lógica separada y clara
+        if (esPartidaCargada) {
+            this.juego.iniciarPartidaCargadaDesdeServidor();
+        } else {
+            this.juego.iniciarPartida();
+        }
+
+        return true;
     }
 
     public void avisarGanadores(Evento evento, IJugador ganador, IJugador ganadorRonda) throws RemoteException {

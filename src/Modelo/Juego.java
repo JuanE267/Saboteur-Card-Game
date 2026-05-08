@@ -35,6 +35,16 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public void iniciarPartida() throws RemoteException {
+
+        Jugador.resetID();
+
+        int cantJugadores = getJugadores().length;
+        if (cantJugadores < 2 || cantJugadores > 10) {
+            throw new IllegalStateException(
+                    "No se puede iniciar la partida con " + cantJugadores + " jugadores."
+            );
+        }
+
         for (IJugador j : getJugadores()) {
             j.setManoCartas(repartirCartas());
         }
@@ -284,7 +294,9 @@ public class Juego extends ObservableRemoto implements IJuego {
             }
         } else {
 
-            IJugador mayorPuntaje = jugadores.get(0);
+            if(jugadores.isEmpty()) return;
+
+            IJugador mayorPuntaje = jugadores.values().iterator().next();
             for (IJugador j : jugadores.values()) {
                 if (j.getPuntaje() > mayorPuntaje.getPuntaje()) {
                     mayorPuntaje = j;
@@ -319,12 +331,8 @@ public class Juego extends ObservableRemoto implements IJuego {
             if (actual.getHerramientasRotas().isEmpty()) {
                 if (actual.jugarCarta(tablero, x, y, carta)) {
                     actual.getManoCartas().remove(posCarta);
+                    robarCartaAuto(actual);
                     pudoSerJugado = true;
-                    // tomo una nueva si el mazo no esta vacio
-                    if (!mazo.noHayCartas()) {
-                        Carta nuevaCarta = mazo.tomarCarta();
-                        actual.getManoCartas().add(nuevaCarta);
-                    }
                 }
             }
 
@@ -333,14 +341,9 @@ public class Juego extends ObservableRemoto implements IJuego {
                 if (actual.jugarCartaMapaDerrumbe(tablero, x, y, carta)) {
                     // despues de jugar elimino la carta de la mano
                     actual.getManoCartas().remove(posCarta);
+                    robarCartaAuto(actual);
                     pudoSerJugado = true;
-                    // tomo una nueva si el mazo no esta vacio
-                    if (!mazo.noHayCartas()) {
-                        Carta nuevaCarta = mazo.tomarCarta();
-                        actual.getManoCartas().add(nuevaCarta);
-                    }
                 }
-
             }
 
         }
@@ -357,21 +360,11 @@ public class Juego extends ObservableRemoto implements IJuego {
         if (pudoSerJugada) {
             // despues de jugar elimino la carta de la mano
             actual.getManoCartas().remove(carta);
-            // tomo una nueva si el mazo no esta vacio
-            if (!mazo.noHayCartas()) {
-                Carta nuevaCarta = mazo.tomarCarta();
-                getJugadorActual().getManoCartas().add(nuevaCarta);
-            }
+            robarCartaAuto(actual);
         }
 
         notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
         return pudoSerJugada;
-    }
-
-    public void tomarCartaDeMazo() throws RemoteException {
-        Carta nuevaCarta = mazo.tomarCarta();
-        getJugadorActual().getManoCartas().add(nuevaCarta);
-        notificarObservadores(Evento.TOMAR_CARTA);
     }
 
     public Mazo getMazo() {
@@ -410,6 +403,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void reiniciarRonda(int ronda) {
 
+        Jugador.resetID();
 
         // reinicio el mazo
         mazo = new Mazo();
@@ -431,6 +425,8 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public void reiniciarPartida() {
+        Jugador.resetID();
+
         // reinicio el mazo
         mazo = new Mazo();
         mazo.barajarMazo();
@@ -453,10 +449,12 @@ public class Juego extends ObservableRemoto implements IJuego {
     public List<Carta> repartirCartas() {
 
         //por cada jugador genero una mano y se la doy
-        switch (getJugadores().length) {
+        int cantJugadores = getJugadores().length;
+        switch (cantJugadores) {
             case 2, 3, 4, 5 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 6; i++) {
+                    if(mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
@@ -464,6 +462,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             case 6, 7 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 5; i++) {
+                    if(mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
@@ -471,13 +470,16 @@ public class Juego extends ObservableRemoto implements IJuego {
             case 8, 9, 10 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 4; i++) {
+                    if(mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
             }
-            default -> System.out.println("Minimo 3 jugadores y Maximo 10");
+            default ->  throw new IllegalStateException(
+                    "Cantidad de jugadores inválida: " + cantJugadores +
+                            ". Debe ser entre 2 y 10."
+            );
         }
-        return null;
     }
 
     public boolean hayCaminoHastaOro() {
@@ -505,7 +507,15 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void descartarCarta(int posCarta) throws RemoteException {
         getJugadorActual().descartarCarta(posCarta);
+        robarCartaAuto(getJugadorActual());
         notificarObservadores(Evento.DESCARTAR_CARTA);
+    }
+
+    // metodo para automatizar el robo de carta
+    private void robarCartaAuto(IJugador jugador){
+        if(!mazo.noHayCartas()){
+            jugador.getManoCartas().add(mazo.tomarCarta());
+        }
     }
 
     public IJugador getGanador() {
@@ -517,105 +527,115 @@ public class Juego extends ObservableRemoto implements IJuego {
     @Override
     public boolean cargarPartida() throws RemoteException {
         try {
-            FileInputStream fis = new FileInputStream("Data/jugadores.dat");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            this.jugadoresCargados = (HashMap<Integer, IJugador>) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/jugadores.dat"))) {
+                this.jugadoresCargados = (HashMap<Integer, IJugador>) ois.readObject();
+            }
 
-            fis = new FileInputStream("Data/mazo.dat");
-            ois = new ObjectInputStream(fis);
-            this.mazo = (Mazo) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/mazo.dat"))) {
+                this.mazo = (Mazo) ois.readObject();
+            }
 
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/tablero.dat"))) {
+                this.tablero = (Tablero) ois.readObject();
+            }
 
-            fis = new FileInputStream("Data/tablero.dat");
-            ois = new ObjectInputStream(fis);
-            this.tablero = (Tablero) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/roles.dat"))) {
+                this.roles = (List<Rol>) ois.readObject();
+            }
 
-            fis = new FileInputStream("Data/roles.dat");
-            ois = new ObjectInputStream(fis);
-            this.roles = (List<Rol>) ois.readObject();
+            try (DataInputStream dis = new DataInputStream(
+                    new FileInputStream("Data/turnoInicial.dat"))) {
+                this.turnoInicial = dis.readInt();
+            }
 
+            try (DataInputStream dis = new DataInputStream(
+                    new FileInputStream("Data/ronda.dat"))) {
+                this.ronda = dis.readInt();
+            }
 
-            fis = new FileInputStream("Data/turnoInicial.dat");
-            DataInputStream dis = new DataInputStream(fis);
-            this.turnoInicial = dis.readInt();
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/ordenTurnos.dat"))) {
+                this.ordenTurnos = (List<Integer>) ois.readObject();
+            }
 
+            try (DataInputStream dis = new DataInputStream(
+                    new FileInputStream("Data/turno.dat"))) {
+                this.turno = dis.readInt();
+            }
 
-            fis = new FileInputStream("Data/ronda.dat");
-            dis = new DataInputStream(fis);
-            this.ronda = dis.readInt();
-
-            fis = new FileInputStream("Data/ordenTurnos.dat");
-            ois = new ObjectInputStream(fis);
-            this.ordenTurnos = (List<Integer>) ois.readObject();
-
-            fis = new FileInputStream("Data/turno.dat");
-            dis = new DataInputStream(fis);
-            this.turno = dis.readInt();
-
-            fis = new FileInputStream("Data/ganador.dat");
-            ois = new ObjectInputStream(fis);
-            this.ganador = (IJugador) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/ganador.dat"))) {
+                this.ganador = (IJugador) ois.readObject();
+            }
 
             this.notificarObservadores(Evento.CARGAR_PARTIDA);
-            ois.close();
-            fis.close();
-
             return true;
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
-
     }
 
     @Override
     public boolean guardarPartida() throws RemoteException {
         try {
-            FileOutputStream fos = new FileOutputStream("Data/jugadores.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.jugadores);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/jugadores.dat"))) {
+                oos.writeObject(this.jugadores);
+            }
 
-            fos = new FileOutputStream("Data/tablero.dat");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.tablero);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/tablero.dat"))) {
+                oos.writeObject(this.tablero);
+            }
 
-            fos = new FileOutputStream("Data/roles.dat");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.roles);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/roles.dat"))) {
+                oos.writeObject(this.roles);
+            }
 
-            fos = new FileOutputStream("Data/mazo.dat");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.mazo);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/mazo.dat"))) {
+                oos.writeObject(this.mazo);
+            }
 
+            try (DataOutputStream dos = new DataOutputStream(
+                    new FileOutputStream("Data/turnoInicial.dat"))) {
+                this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
+                dos.writeInt(this.turnoInicial);
+            }
 
-            fos = new FileOutputStream("Data/turnoInicial.dat");
-            DataOutputStream dos = new DataOutputStream(fos);
-            this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
-            dos.writeInt(this.turnoInicial);
+            try (DataOutputStream dos = new DataOutputStream(
+                    new FileOutputStream("Data/turno.dat"))) {
+                dos.writeInt(this.turno);
+            }
 
-            fos = new FileOutputStream("Data/turno.dat");
-            dos = new DataOutputStream(fos);
-            dos.writeInt(this.turno);
+            try (DataOutputStream dos = new DataOutputStream(
+                    new FileOutputStream("Data/ronda.dat"))) {
+                dos.writeInt(this.ronda);
+            }
 
-            fos = new FileOutputStream("Data/ronda.dat");
-            dos = new DataOutputStream(fos);
-            dos.writeInt(this.ronda);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/ganador.dat"))) {
+                oos.writeObject(this.ganador);
+            }
 
-            fos = new FileOutputStream("Data/ganador.dat");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.ganador);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/ordenTurnos.dat"))) {
+                oos.writeObject(this.ordenTurnos);
+            }
 
-            fos = new FileOutputStream("Data/ordenTurnos.dat");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this.ordenTurnos);
-            oos.close();
-            dos.close();
-            fos.close();
             return true;
+
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
 }

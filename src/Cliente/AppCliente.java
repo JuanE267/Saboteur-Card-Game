@@ -69,14 +69,17 @@ public class AppCliente {
 
         try {
             c.iniciar(controlador);
-
             VistaGrafica vistaGrafica = new VistaGrafica(controlador);
             vistaGrafica.iniciar();
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null,
+                    "Error de conexión con el servidor.\nVerificá que el servidor esté corriendo y la IP sea correcta.\n\n" + e.getMessage(),
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (RMIMVCException e) {
-            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null,
+                    "Error al iniciar el cliente.\n\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 

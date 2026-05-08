@@ -3,7 +3,6 @@ package Modelo;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
-import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 
@@ -64,7 +63,7 @@ public class Mazo implements Serializable {
         // tunel abajo, izquierda y derecha
         for (i = 0; i < 6; i++) {
             cantCartas++;
-            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "tuneles/ABAJO IZQUIEDA DERECHA.png", false);
+            CartaTunel carta = new CartaTunel(cantCartas, TipoCarta.TUNEL, "tuneles/ABAJO IZQUIERDA DERECHA.png", false);
             carta.setCaminos(false, true, true, true);
             agregarCartaAlMazo(carta);
         }
@@ -126,8 +125,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/ROMPER VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.ROMPERVAGONETA);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // derrumbar
@@ -136,8 +135,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/DERRUMBE.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.DERRUMBAR);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar pico
@@ -146,8 +145,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/ARREGLAR PICO.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARPICO);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar linterna
@@ -156,8 +155,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/ARREGLAR LINTERNA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar vagoneta
@@ -166,8 +165,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/ARREGLAR VAGONETA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar pico y linterna
@@ -177,8 +176,8 @@ public class Mazo implements Serializable {
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARLINTERNA);
             tipos.add(TipoAccion.REPARARPICO);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar pico y vagoneta
@@ -188,8 +187,8 @@ public class Mazo implements Serializable {
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARPICO);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // reparar linterna y vagoneta
@@ -199,8 +198,8 @@ public class Mazo implements Serializable {
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.REPARARVAGONETA);
             tipos.add(TipoAccion.REPARARLINTERNA);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
         // mapa
@@ -209,8 +208,8 @@ public class Mazo implements Serializable {
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/MAPA.png");
             List<TipoAccion> tipos = new ArrayList<>();
             tipos.add(TipoAccion.MAPA);
-            agregarCartaAlMazo(cartaAccion);
             cartaAccion.setTipo(tipos);
+            agregarCartaAlMazo(cartaAccion);
         }
 
     }

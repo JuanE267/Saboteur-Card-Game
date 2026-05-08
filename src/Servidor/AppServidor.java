@@ -16,6 +16,8 @@ public class AppServidor {
     public static void main(String[] args) {
         ArrayList<String> ips = Util.getIpDisponibles();
 
+        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+
 //        String ip = (String) JOptionPane.showInputDialog(
 //                null,
 //                "Seleccione la IP en la que escuchara peticiones el servidor", "IP del servidor",

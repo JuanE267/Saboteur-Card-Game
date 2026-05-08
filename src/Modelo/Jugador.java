@@ -129,6 +129,10 @@ public class Jugador implements Serializable, IJugador {
         this.id = id;
     }
 
+    public static void resetID() {
+        Jugador.ID = -1;
+    }
+
 
 }
 

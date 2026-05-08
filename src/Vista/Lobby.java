@@ -42,8 +42,8 @@ public class Lobby extends JFrame {
         botonUnirse.setPreferredSize(new Dimension(300, 80));
 
         botonUnirse.addActionListener(e -> {
-            System.out.println("espere que el creador inicie la partida");
             dispose();
+            mostrarPantallaEspera();
         });
 
         if(controladorJuego.esJuegoCreado()) panelPrincipal.add(botonUnirse);
@@ -51,6 +51,27 @@ public class Lobby extends JFrame {
 
         add(panelPrincipal);
         setVisible(false);
+    }
+
+    private void mostrarPantallaEspera() {
+        JFrame espera = new JFrame("Saboteur");
+        espera.setSize(400, 200);
+        espera.setLocationRelativeTo(null);
+        espera.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        espera.setLayout(new BorderLayout());
+
+        JLabel mensaje = new JLabel(
+                "Esperando que el host inicie la partida...",
+                SwingConstants.CENTER
+        );
+        mensaje.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JProgressBar barra = new JProgressBar();
+        barra.setIndeterminate(true); // animación de carga
+
+        espera.add(mensaje, BorderLayout.CENTER);
+        espera.add(barra, BorderLayout.SOUTH);
+        espera.setVisible(true);
     }
 
     public void iniciar(){

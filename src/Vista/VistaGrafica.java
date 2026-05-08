@@ -71,6 +71,7 @@ public class VistaGrafica implements IVistaGrafica {
             ventanaJuego.getPanelPuntosYAcciones().actualizar(actualizado);
             ventanaJuego.getPanelTablaJugadores().actualizar(jugadores, actualizado);
             ventanaJuego.getPanelTablero().actualizar(tablero, actualizado);
+            ventanaJuego.getPanelTomarCarta().actualizar();
             ventanaJuego.actualizarVentana();
 
         }
