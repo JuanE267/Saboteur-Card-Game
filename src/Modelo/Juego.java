@@ -97,7 +97,11 @@ public class Juego extends ObservableRemoto implements IJuego {
             turnoInicial = ordenTurnos.indexOf(mayorEdad.getId());
 
             this.turno = turnoInicial;
+        }else{
+            // si no es la ronda 1, inicia el jugador a la izquierda
+            turnoInicial = (turnoInicial + 1) % ordenTurnos.size();
         }
+        this.turno = turnoInicial;
     }
 
     public Tablero getTablero() {
@@ -250,50 +254,70 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
-        //String mensajeGanador;
+//        if (ganaronLosMineros) {
+//            jugadores.forEach((id, j) -> {
+//                if (j.getRol() == Rol.MINERO) {
+//                    j.sumarPuntos(4);
+//                } else {
+//                    j.sumarPuntos(3);
+//                }
+//            });
+//        } else {
+//            jugadores.forEach((id, j) -> {
+//                if (j.getRol() == Rol.SABOTEADOR) {
+//                    j.sumarPuntos(4);
+//                } else {
+//                    j.sumarPuntos(3);
+//                }
+//            });
+//        }
 
-        if (ganaronLosMineros) {
-            //mensajeGanador = "GANARON LOS MINEROS";
+        if(ganaronLosMineros){
+            // obtengo las pepitas de los mineors
+            List<Integer> pepitas = pepitasMineros();
 
-            jugadores.forEach((id, j) -> {
-                if (j.getRol() == Rol.MINERO) {
-                    j.sumarPuntos(4);
-                } else {
-                    j.sumarPuntos(3);
+            // le doy la primera pepita al que encontro el oro
+            if(ganadorRonda != null && ganadorRonda.getRol() == Rol.MINERO){
+                ganadorRonda.sumarPuntos(pepitas.removeFirst());
+            }
+
+            // el resto recibe las pepitas en orden x turno
+            for(int idTurno : ordenTurnos){
+                IJugador j = jugadores.get(idTurno);
+                if(j != null && j.getRol() == Rol.MINERO
+                    && (ganadorRonda == null || j.getId() != ganadorRonda.getId())){
+                    if(!pepitas.isEmpty()){
+                        j.sumarPuntos(pepitas.removeFirst());
+                    }
                 }
-            });
-        } else {
-            // mensajeGanador = "GANARON LOS SABOTEADORES";
+            }
+        }else{
+            // si ganan los saboteadores
+            // obtengo las pepitas
+            int pepitas = pepitasSaboteadores();
 
-            jugadores.forEach((id, j) -> {
-                if (j.getRol() == Rol.SABOTEADOR) {
-                    j.sumarPuntos(4);
-                } else {
-                    j.sumarPuntos(3);
+            // y se las reparto a cada saboteador
+            for(IJugador j : jugadores.values()){
+                if(j != null && j.getRol() == Rol.SABOTEADOR){
+                    j.sumarPuntos(pepitas);
                 }
-            });
+            }
         }
-
-        //System.out.println(mensajeGanador);
-        //System.out.println("Se revelan los roles..");
-        //jugadores.forEach((id, j) -> {
-        //    System.out.println(j.getNombre() + " -> " + j.getRol());
-        //});
 
         if (ronda <= 2) {
             // reinicio el estado logico
             reiniciarRonda(ronda);
+            ronda++;
             //reinicio la vista dependiendo el ganador
             if (ganaronLosMineros) {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_MINEROS);
-                ronda++;
 
             } else {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_SABOTEADORES);
-                ronda++;
             }
         } else {
 
+            // finalizar partida
             if(jugadores.isEmpty()) return;
 
             IJugador mayorPuntaje = jugadores.values().iterator().next();
@@ -309,6 +333,40 @@ public class Juego extends ObservableRemoto implements IJuego {
                 notificarObservadores(Evento.FINALIZAR_PARTIDA_SABOTEADORES);
             }
             reiniciarPartida();
+        }
+    }
+
+    private List<Integer> pepitasMineros(){
+        int cantMineros = 0;
+        for(IJugador j : jugadores.values()) {
+            if (j.getRol() == Rol.MINERO) cantMineros++;
+        }
+
+        switch (cantMineros){
+            case 1 -> { return new ArrayList<>(List.of(4));}
+            case 2 -> { return new ArrayList<>(List.of(4, 3));}
+            case 3 -> { return new ArrayList<>(List.of(4, 3, 2));}
+            case 4 -> { return new ArrayList<>(List.of(4, 3, 2, 1));}
+            case 5 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1));}
+            case 6 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1));}
+            case 7 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1, 1));}
+            default -> { return new ArrayList<>(List.of(4)); }
+        }
+    }
+
+    private int pepitasSaboteadores(){
+        int cantMineros = 0;
+        for(IJugador j : jugadores.values()) {
+            if (j.getRol() == Rol.MINERO) cantMineros++;
+        }
+
+        switch (cantMineros){
+            case 3 -> { return 4;}
+            case 4 -> { return 3;}
+            case 5 -> { return 3;}
+            case 6 -> { return 2;}
+            case 7 -> { return 2;}
+            default -> { return 4; }
         }
     }
 
@@ -497,12 +555,22 @@ public class Juego extends ObservableRemoto implements IJuego {
         return mazo.noHayCartas();
     }
 
-    public void verificarSiTerminoLaRonda() throws RemoteException {
+    public boolean verificarSiTerminoLaRonda() throws RemoteException {
         if (hayCaminoHastaOro()) {
             finalizarRonda(true);
-        } else if (noHayCartas()) {
+            return true;
+        } else if (noHayCartas() && todosLosJugadoresSinCartas()) {
             finalizarRonda(false);
+            return true;
         }
+        return false;
+    }
+
+    private boolean todosLosJugadoresSinCartas(){
+        for(IJugador j : jugadores.values()){
+            if(!j.getManoCartas().isEmpty()) return false;
+        }
+        return true;
     }
 
     public void descartarCarta(int posCarta) throws RemoteException {

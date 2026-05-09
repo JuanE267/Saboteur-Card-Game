@@ -7,7 +7,9 @@ import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Mazo implements Serializable {
 
@@ -225,11 +227,11 @@ public class Mazo implements Serializable {
     }
 
     public Carta tomarCarta() {
-        Carta carta = cartas.removeFirst();
-        return carta;
+        return cartas.removeFirst();
     }
 
     public Carta getPrimerCarta(){
+        if(cartas.isEmpty()) return null;
         return cartas.getFirst();
     }
 

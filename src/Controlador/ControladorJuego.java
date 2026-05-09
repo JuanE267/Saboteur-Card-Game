@@ -86,8 +86,8 @@ public class ControladorJuego implements IControladorRemoto {
         juego.pasarTurno();
     }
 
-    public void verificarSiTerminoLaRonda() throws RemoteException {
-        juego.verificarSiTerminoLaRonda();
+    public boolean verificarSiTerminoLaRonda() throws RemoteException {
+        return juego.verificarSiTerminoLaRonda();
     }
 
     public Boolean jugarUnaCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
@@ -160,8 +160,9 @@ public class ControladorJuego implements IControladorRemoto {
 
     public Boolean esTurnoDe(IJugador jugador) throws RemoteException {
         if (jugador == null) return false;
+        IJugador jugadorActual = juego.getJugadorActual();
         juego.getJugadorActual();
-        return getTurnoActual() == jugador.getId();
+        return jugadorActual.getId() == jugador.getId();
     }
 
     public Tablero getTablero() throws RemoteException {

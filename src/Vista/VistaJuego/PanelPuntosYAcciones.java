@@ -92,12 +92,14 @@ public class PanelPuntosYAcciones extends JPanel {
 
                     if (panelJugador.getCartaSeleccionada() != -1) {
                         controlador.descartarCarta(panelJugador.getCartaSeleccionada());
-
-                        // reseteo  despues de descartar la carta
                         panelJugador.resetCartaSeleccionada();
+                        boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
+                        if(!terminoLaRonda){
+                            controlador.pasarTurno();
+                        }
+                        // reseteo  despues de descartar la carta
                         panelJugador.revalidate();
                         panelJugador.repaint();
-                        controlador.pasarTurno();
                     }
 
                 } else {

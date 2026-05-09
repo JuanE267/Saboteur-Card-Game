@@ -41,7 +41,7 @@ public interface IJuego extends IObservableRemoto {
 
     boolean noHayCartas() throws RemoteException;
 
-    void verificarSiTerminoLaRonda() throws RemoteException;
+    boolean verificarSiTerminoLaRonda() throws RemoteException;
 
     void descartarCarta(int posCarta) throws RemoteException;
 

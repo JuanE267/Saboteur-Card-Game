@@ -293,8 +293,10 @@ public class PanelTablero extends JPanel {
         panelJugador.resetCartaSeleccionada();
 
         if (pudoSerJugado) {
-            controlador.verificarSiTerminoLaRonda();
-            controlador.pasarTurno();
+            boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
+            if(!terminoLaRonda){
+                controlador.pasarTurno();
+            }
         }
 
         repaint();
