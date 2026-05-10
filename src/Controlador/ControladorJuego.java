@@ -4,7 +4,6 @@ import Modelo.*;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Enums.Evento;
-import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Vista.*;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
@@ -12,7 +11,6 @@ import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
-import java.util.IllegalFormatCodePointException;
 
 public class ControladorJuego implements IControladorRemoto {
     private IJuego juego;
@@ -178,59 +176,95 @@ public class ControladorJuego implements IControladorRemoto {
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
         if (o instanceof Evento evento) {
-
             switch (evento) {
                 case INICIAR_PARTIDA -> {
                     actualizarJugador();
-                    iniciarVistaGrafica();
-                    vista.mostrarPartida();
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            iniciarVistaGrafica();
+                            vista.mostrarPartida();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 case SERVIDOR_NOTIFICA_CLIENTE -> {
                     juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
                     actualizarJugador();
-                    iniciarVistaGrafica();
-                    vista.mostrarPartida();
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            iniciarVistaGrafica();
+                            vista.mostrarPartida();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 case CARGAR_PARTIDA -> {
                     juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
                     actualizarJugador();
-                    if(vista == null) {
-                        iniciarVistaGrafica();
-                        vista.mostrarPartida();
-                    }else {
-                        vista.actualizar(getTablero(), juego.getJugadores());
-                    }
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            if (vista == null) {
+                                iniciarVistaGrafica();
+                                vista.mostrarPartida();
+                            } else {
+                                vista.actualizar(getTablero(), juego.getJugadores());
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 case PASAR_TURNO, JUGAR_CARTA_TABLERO, ACTUALIZAR_HERRAMIENTAS, TOMAR_CARTA, DESCARTAR_CARTA -> {
                     actualizarJugador();
-                    vista.actualizar(getTablero(), juego.getJugadores());
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            vista.actualizar(getTablero(), juego.getJugadores());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
-
                 case NUEVA_RONDA_GANADOR_MINEROS, NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                     actualizarJugador();
-                    vista.ocultarPartida();
-                    avisarGanadores(evento, null, juego.getGanadorRonda());
-                    vista.actualizar(getTablero(), juego.getJugadores());
-                    new Timer(10000, e -> {
-                        ((Timer) e.getSource()).stop();
+                    SwingUtilities.invokeLater(() -> {
                         try {
-                            ventanaGanador.setVisible(false);
-                            vista.mostrarPartida();
-                        } catch (RemoteException ex) {
-                            throw new RuntimeException(ex);
+                            vista.ocultarPartida();
+                            avisarGanadores(evento, juego.getGanadorRonda());
+                            vista.actualizar(getTablero(), juego.getJugadores());
+                            new Timer(10000, e -> {
+                                ((Timer) e.getSource()).stop();
+                                try {
+                                    ventanaGanador.setVisible(false);
+                                    vista.mostrarPartida();
+                                } catch (RemoteException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }).start();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
                         }
-                    }).start();
-
+                    });
                 }
                 case FINALIZAR_PARTIDA_SABOTEADORES, FINALIZAR_PARTIDA_MINEROS -> {
                     actualizarJugador();
-                    avisarGanadores(evento, getGanador(), juego.getGanadorRonda());
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            vista.ocultarPartida();
+                            avisarGanadores(evento, juego.getGanadorRonda());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 case NUEVO_USUARIO -> {
                     IJugador[] jugadores = this.juego.getJugadores();
-                    if (vistaServidor != null) {
-                        vistaServidor.actualizarListaJugadores(jugadores);
-                    }
+                    SwingUtilities.invokeLater(() -> {
+                        if (vistaServidor != null) {
+                            vistaServidor.actualizarListaJugadores(jugadores);
+                        }
+                    });
                 }
             }
         }
@@ -257,29 +291,21 @@ public class ControladorJuego implements IControladorRemoto {
         return true;
     }
 
-    public void avisarGanadores(Evento evento, IJugador ganador, IJugador ganadorRonda) throws RemoteException {
+    public void avisarGanadores(Evento evento, IJugador ganadorRonda) throws RemoteException {
 
         if (ventanaGanador == null) {
             ventanaGanador = new VentanaGanador(this);
         }
 
-        switch (evento) {
-            case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
-                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
-
-            }
-            case NUEVA_RONDA_GANADOR_MINEROS -> {
-                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
-            }
-            case FINALIZAR_PARTIDA_SABOTEADORES -> {
-                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
-            }
-            case FINALIZAR_PARTIDA_MINEROS -> {
-                ventanaGanador.mostrarVentana(evento, ganador, ganadorRonda);
+        IJugador ganadorActualizado = null;
+        int maxPuntos = -1;
+        for (IJugador j : juego.getJugadores()) {
+            if (j.getPuntaje() > maxPuntos) {
+                maxPuntos = j.getPuntaje();
+                ganadorActualizado = j;
             }
         }
-
-
+        ventanaGanador.mostrarVentana(evento, ganadorActualizado, ganadorRonda);
     }
 
     public IJugador getGanadorRonda() throws RemoteException {

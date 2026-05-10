@@ -99,26 +99,24 @@ public class VentanaGanador extends JFrame {
     public void mostrarVentana(Evento evento, IJugador ganador, IJugador ganadorRonda) throws RemoteException {
         switch (evento) {
             case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
-                labelMensaje.setText("No hay mas cartas para jugar!\n GANARON LOS SABOTEDORES!");
+                labelMensaje.setText("<html>No hay mas cartas para jugar!<br>GANARON LOS SABOTEADORES!</html>");
             }
             case NUEVA_RONDA_GANADOR_MINEROS -> {
                 System.out.println(controladorJuego.getGanadorRonda());
-                    labelMensaje.setText(
-                            ganadorRonda.getNombre() + " encontró el oro!!\nGANARON LOS MINEROS!"
-                    );
-
+                labelMensaje.setText(
+                        "<html>" + ganadorRonda.getNombre() + " encontró el oro!!<br>GANARON LOS MINEROS!</html>"
+                );
             }
             case FINALIZAR_PARTIDA_SABOTEADORES -> {
-                    labelMensaje.setText(
-                            ganadorRonda.getNombre() + " encontró el oro!!\nGANARON LOS SABOTEADORES!"
-                    );
-
+                labelMensaje.setText(
+                        "<html>" + ganadorRonda.getNombre() + " encontró el oro!!<br>GANARON LOS SABOTEADORES!</html>"
+                );
             }
             case FINALIZAR_PARTIDA_MINEROS -> {
-                labelMensaje.setText("GANARON LOS MINEROS!! \n Partida Terminada! \n El ganador es " + ganador.getNombre() + " con " + ganador.getPuntaje() + " Pepitas");
+                labelMensaje.setText(
+                        "<html>GANARON LOS MINEROS!!<br>Partida Terminada!<br>El ganador es " + ganador.getNombre() + " con " + ganador.getPuntaje() + " Pepitas</html>"
+                );
             }
-
-
         }
         setVisible(true);
     }

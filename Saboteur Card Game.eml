@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component jdk="25" jdk_type="JavaSDK">
-	<contentEntry url="file://$MODULE_DIR$"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/test"/>
+	</contentEntry>
+	<lib name="JUnit5" scope="TEST"/>
 	<levels>
 		<level name="LibreriaRMIMVC (3)" value="project"/>
 		<level name="miglayout15-swing (3)" value="project"/>
