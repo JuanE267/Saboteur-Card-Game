@@ -15,6 +15,7 @@ public class VentanaGanador extends JFrame {
     private JLabel labelMensaje;
     private JLabel labelTitulo;
     private JLabel labelCuenta;
+    private JPanel panelJugadores;
 
     private ControladorJuego controladorJuego;
 
@@ -29,7 +30,6 @@ public class VentanaGanador extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // PANEL SUPERIOR
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
 
@@ -48,47 +48,13 @@ public class VentanaGanador extends JFrame {
 
         add(panelSuperior, BorderLayout.NORTH);
 
-        // PANEL CENTRAL (jugadores)
-        JPanel panelJugadores = new JPanel();
-        panelJugadores.setLayout(new GridLayout(1, 4, 20, 20));
+        panelJugadores = new JPanel();
         panelJugadores.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-
-        IJugador[] jugadores = controladorJuego.getJugadores();
-
-        for (int i = 0; i < jugadores.length; i++) {
-
-            JPanel jugadorPanel = new JPanel();
-            jugadorPanel.setLayout(new BorderLayout());
-
-            JLabel imagen = new JLabel();
-            imagen.setHorizontalAlignment(SwingConstants.CENTER);
-            String ruta = "";
-            if(jugadores[i].getRol() == Rol.SABOTEADOR){
-                ruta = "ROL/Saboteador.png";
-            }else if(jugadores[i].getRol() == Rol.MINERO){
-                ruta = "ROL/Minero.png";
-            }
-            System.out.println(ruta);
-            URL url = getClass().getClassLoader().getResource(ruta);
-            System.out.println(url);
-            ImageIcon icon = new ImageIcon(url);
-            Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-            imagen.setIcon(new ImageIcon(img));
-
-            JLabel nombre = new JLabel(jugadores[i].getNombre(), SwingConstants.CENTER);
-
-            jugadorPanel.add(imagen, BorderLayout.CENTER);
-            jugadorPanel.add(nombre, BorderLayout.SOUTH);
-
-            panelJugadores.add(jugadorPanel);
-        }
-
         add(panelJugadores, BorderLayout.CENTER);
 
-        // PANEL INFERIOR
         JPanel panelInferior = new JPanel();
 
-        labelCuenta = new JLabel("La siguiente ronda empezará en 5 segundos");
+        labelCuenta = new JLabel("La siguiente ronda empezará en 10 segundos");
         labelCuenta.setFont(new Font("Arial", Font.BOLD, 14));
 
         panelInferior.add(labelCuenta);
@@ -100,25 +66,79 @@ public class VentanaGanador extends JFrame {
         switch (evento) {
             case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                 labelMensaje.setText("<html>No hay mas cartas para jugar!<br>GANARON LOS SABOTEADORES!</html>");
+                labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
             }
             case NUEVA_RONDA_GANADOR_MINEROS -> {
-                System.out.println(controladorJuego.getGanadorRonda());
+                String nombre = ganadorRonda != null ? ganadorRonda.getNombre() : "Alguien";
                 labelMensaje.setText(
-                        "<html>" + ganadorRonda.getNombre() + " encontró el oro!!<br>GANARON LOS MINEROS!</html>"
+                        "<html>" + nombre + " encontró el oro!!<br>GANARON LOS MINEROS!</html>"
                 );
+                labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
             }
             case FINALIZAR_PARTIDA_SABOTEADORES -> {
-                labelMensaje.setText(
-                        "<html>" + ganadorRonda.getNombre() + " encontró el oro!!<br>GANARON LOS SABOTEADORES!</html>"
-                );
+                if (ganadorRonda != null) {
+                    labelMensaje.setText(
+                            "<html>" + ganadorRonda.getNombre() + " encontró el oro...<br>" +
+                                    "¡Pero era una trampa! GANARON LOS SABOTEADORES!</html>"
+                    );
+                } else {
+                    labelMensaje.setText(
+                            "<html>¡No hay más cartas!<br>GANARON LOS SABOTEADORES!</html>"
+                    );
+                }
+                labelCuenta.setText("Partida terminada");
             }
             case FINALIZAR_PARTIDA_MINEROS -> {
+                String nombreGanador = ganador != null ? ganador.getNombre() : "?";
+                int puntaje = ganador != null ? ganador.getPuntaje() : 0;
                 labelMensaje.setText(
-                        "<html>GANARON LOS MINEROS!!<br>Partida Terminada!<br>El ganador es " + ganador.getNombre() + " con " + ganador.getPuntaje() + " Pepitas</html>"
+                        "<html>GANARON LOS MINEROS!!<br>Partida Terminada!<br>" +
+                                "El ganador es " + nombreGanador + " con " + puntaje + " Pepitas</html>"
                 );
+                labelCuenta.setText("Partida terminada");
             }
         }
+
+        actualizarPanelRoles();
         setVisible(true);
     }
 
+    private void actualizarPanelRoles() throws RemoteException {
+        panelJugadores.removeAll();
+
+        IJugador[] jugadores = controladorJuego.getJugadores();
+        panelJugadores.setLayout(new GridLayout(1, jugadores.length, 20, 20));
+
+        for (IJugador j : jugadores) {
+            JPanel jugadorPanel = new JPanel();
+            jugadorPanel.setLayout(new BorderLayout());
+
+            JLabel imagen = new JLabel();
+            imagen.setHorizontalAlignment(SwingConstants.CENTER);
+
+            String ruta = "";
+            if (j.getRol() == Rol.SABOTEADOR) {
+                ruta = "ROL/Saboteador.png";
+            } else if (j.getRol() == Rol.MINERO) {
+                ruta = "ROL/Minero.png";
+            }
+
+            URL url = getClass().getClassLoader().getResource(ruta);
+            if (url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                imagen.setIcon(new ImageIcon(img));
+            }
+
+            JLabel nombre = new JLabel(j.getNombre(), SwingConstants.CENTER);
+
+            jugadorPanel.add(imagen, BorderLayout.CENTER);
+            jugadorPanel.add(nombre, BorderLayout.SOUTH);
+
+            panelJugadores.add(jugadorPanel);
+        }
+
+        panelJugadores.revalidate();
+        panelJugadores.repaint();
+    }
 }

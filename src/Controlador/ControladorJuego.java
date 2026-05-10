@@ -159,7 +159,6 @@ public class ControladorJuego implements IControladorRemoto {
     public Boolean esTurnoDe(IJugador jugador) throws RemoteException {
         if (jugador == null) return false;
         IJugador jugadorActual = juego.getJugadorActual();
-        juego.getJugadorActual();
         return jugadorActual.getId() == jugador.getId();
     }
 

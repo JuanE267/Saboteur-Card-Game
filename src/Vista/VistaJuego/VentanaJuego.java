@@ -29,7 +29,7 @@ public class VentanaJuego extends JFrame {
             setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
         }
         setSize(1220, 960);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
         setBackground(Color.decode("#4b3e2c"));

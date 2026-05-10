@@ -38,6 +38,11 @@ public class Juego extends ObservableRemoto implements IJuego {
 
         Jugador.resetID();
 
+        // pongo todos los puntajes en 0
+        for(IJugador j : jugadores.values()){
+            j.setPuntaje(0);
+        }
+
         int cantJugadores = getJugadores().length;
         if (cantJugadores < 2 || cantJugadores > 10) {
             throw new IllegalStateException(
@@ -461,8 +466,6 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void reiniciarRonda(int ronda) {
 
-        Jugador.resetID();
-
         // reinicio el mazo
         mazo = new Mazo();
         mazo.barajarMazo();
@@ -493,7 +496,6 @@ public class Juego extends ObservableRemoto implements IJuego {
         // reinicio jugadores
         for (IJugador j : jugadores.values()) {
             j.reiniciarEstado();
-            j.setPuntaje(0);
         }
         ronda = 1;
         asignoPrimerTurno(ronda);

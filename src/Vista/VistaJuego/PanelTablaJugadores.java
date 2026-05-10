@@ -192,7 +192,11 @@ public class PanelTablaJugadores extends JPanel {
                         panelJugador.resetCartaSeleccionada();
                         panelJugador.revalidate();
                         panelJugador.repaint();
-                        controlador.pasarTurno();
+
+                        boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
+                        if(!terminoLaRonda){
+                            controlador.pasarTurno();
+                        }
                     }
                 }else {
                     JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
