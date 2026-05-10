@@ -40,7 +40,7 @@ public class VentanaInicioSesion extends JFrame {
 
         textEdad = new JTextField();
         contentPane.add(textEdad, "cell 1 1, growx");
-        textUsuario.setColumns(10);
+        textEdad.setColumns(10);
 
         btnEntrar = new JButton("Entrar");
         contentPane.add(btnEntrar, "cell 0 2,alignx center");

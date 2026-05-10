@@ -455,12 +455,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public IJugador getJugadorPorId(int id) throws RemoteException {
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (getJugadores()[i].getId() == id) {
-                return getJugadores()[i];
-            }
-        }
-        return null;
+        return jugadores.get(id);
     }
 
 

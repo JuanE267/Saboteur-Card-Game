@@ -2,11 +2,9 @@ package Vista;
 
 import Controlador.ControladorJuego;
 import Modelo.IJugador;
-import Modelo.Jugador;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.rmi.RemoteException;
 
@@ -16,7 +14,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
     private JButton btnIniciarPartida;
     private JButton btnCargarPartida;
     private JButton btnGuardarPartida;
-    private JList listJugadores;
+    private JList listaJugadores;
 
     public VentanaServidor(ControladorJuego controlador) {
         this.controlador = controlador;
@@ -51,9 +49,9 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
         contentPane.add(btnGuardarPartida, "cell 0 3, alignx center ");
 
 
-        listJugadores = new JList();
-        listJugadores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        scrollPane.setViewportView(listJugadores);
+        listaJugadores = new JList();
+        listaJugadores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        scrollPane.setViewportView(listaJugadores);
 
         // inicio la partida
         btnIniciarPartida.addActionListener(e -> {
@@ -89,17 +87,12 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
 
     public void actualizarListaJugadores(IJugador[] jugadores) {
-        this.listJugadores.setModel(new AbstractListModel() {
-            @Override
-            public Object getElementAt(int arg0) {
-                return jugadores[arg0].getNombre();
-            }
-
-            @Override
-            public int getSize() {
-                return jugadores.length;
-            }
-        });
+        if(listaJugadores == null) return;
+        DefaultListModel<String> modelo = new DefaultListModel<>();
+        for (IJugador j : jugadores) {
+            modelo.addElement(j.getNombre());
+        }
+        this.listaJugadores.setModel(modelo);
     }
 
 
