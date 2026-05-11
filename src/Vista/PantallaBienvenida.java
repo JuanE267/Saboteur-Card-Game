@@ -25,7 +25,6 @@ public class PantallaBienvenida extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setVisible(true);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -50,6 +49,16 @@ public class PantallaBienvenida extends JFrame {
         btnUnirse.setPreferredSize(new Dimension(160, 50));
         gbc.gridx = 1;
         panel.add(btnUnirse, gbc);
+
+        btnCrear.addActionListener(e -> crearPartida());
+        btnUnirse.addActionListener(e -> {
+            try {
+                unirsePartida();
+            } catch (RMIMVCException | RemoteException ex) {
+                JOptionPane.showMessageDialog(this, "Error al unirse a la partida"
+                        + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         add(panel);
         setVisible(true);
@@ -78,9 +87,8 @@ public class PantallaBienvenida extends JFrame {
             // si pasa de aca la partida ya existe
             JOptionPane.showMessageDialog(this, "La partida ya fue creada en esa ipServidor, usa Unirse a Partida para jugar", "Partida existente", JOptionPane.WARNING_MESSAGE);
         } catch (RMIMVCException e) {
-            e.printStackTrace();
+            // sigo porque la partida no existe
         } catch (RemoteException e) {
-            e.printStackTrace();
         }
 
         // Creo el servidor
@@ -120,6 +128,7 @@ public class PantallaBienvenida extends JFrame {
         try {
             c.iniciar(controlador);
             VistaGrafica vistaGrafica = new VistaGrafica(controlador);
+            vistaGrafica.iniciar();
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null,
                     "Error de conexión con el servidor.\nVerificá que el servidor esté corriendo y la IP sea correcta.\n\n" + e.getMessage(),
@@ -161,6 +170,7 @@ public class PantallaBienvenida extends JFrame {
         try {
             c.iniciar(controlador);
             VistaGrafica vistaGrafica = new VistaGrafica(controlador);
+            vistaGrafica.iniciar();
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null,
                     "Error de conexión con el servidor.\nVerificá que el servidor esté corriendo y la IP sea correcta.\n\n" + e.getMessage(),

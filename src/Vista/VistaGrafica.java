@@ -21,6 +21,11 @@ public class VistaGrafica implements IVistaGrafica {
         this.controlador.setVistaGrafica(this);
     }
 
+    public void iniciar() {
+        this.mostrarInicioSesion();
+    }
+
+
     private void mostrarInicioSesion() {
         this.ventanaInicioSesion.setVisible(true);
     }
