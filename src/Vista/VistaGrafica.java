@@ -1,12 +1,12 @@
 package Vista;
 
 import Controlador.ControladorJuego;
-import Modelo.Enums.Evento;
 import Modelo.IJugador;
 import Modelo.Tablero;
 import Vista.VistaJuego.VentanaJuego;
 
 import javax.swing.*;
+import java.awt.*;
 import java.rmi.RemoteException;
 
 
@@ -34,7 +34,18 @@ public class VistaGrafica implements IVistaGrafica {
             IJugador jugador = controlador.conectarUsuario(nombre, edad);
             controlador.setJugadorCliente(jugador);
             ocultarInicioSesion();
-            lobby.iniciar();
+            if(controlador.esHost()){
+                VentanaServidor ventanaServidor = new VentanaServidor(controlador);
+                controlador.setVistaServidor(ventanaServidor);
+                ventanaServidor.iniciar();
+                try {
+                    ventanaServidor.actualizarListaJugadores(controlador.getJugadores());
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }else{
+                mostrarPantallaEspera();
+            }
 
         });
 
@@ -57,6 +68,28 @@ public class VistaGrafica implements IVistaGrafica {
     public VentanaJuego getVentanaJuego() {
         return this.ventanaJuego;
     }
+
+    public void mostrarPantallaEspera() {
+        JFrame espera = new JFrame("Saboteur");
+        espera.setSize(400, 200);
+        espera.setLocationRelativeTo(null);
+        espera.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        espera.setLayout(new BorderLayout());
+
+        JLabel mensaje = new JLabel(
+                "Esperando que el host inicie la partida...",
+                SwingConstants.CENTER
+        );
+        mensaje.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JProgressBar barra = new JProgressBar();
+        barra.setIndeterminate(true); // animación de carga
+
+        espera.add(mensaje, BorderLayout.CENTER);
+        espera.add(barra, BorderLayout.SOUTH);
+        espera.setVisible(true);
+    }
+
 
     @Override
     public void mostrarPartida() throws RemoteException {

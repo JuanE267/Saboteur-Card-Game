@@ -355,4 +355,8 @@ public class ControladorJuego implements IControladorRemoto {
     public void setEsHost() {
         esHost = true;
     }
+
+    public boolean esHost() {
+        return esHost;
+    }
 }

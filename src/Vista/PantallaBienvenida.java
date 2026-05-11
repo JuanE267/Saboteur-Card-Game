@@ -11,12 +11,15 @@ import ar.edu.unlu.rmimvc.servidor.Servidor;
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 public class PantallaBienvenida extends JFrame {
     private static final int PORTSERVIDOR = 8888;
-    private static final String IPCLIENTE = "127.0.0.1";
     ArrayList<String> ips = Util.getIpDisponibles();
+
+    private Image fondo;
 
 
     public PantallaBienvenida() {
@@ -26,17 +29,33 @@ public class PantallaBienvenida extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImageIcon iconoFondo = new ImageIcon(
+                getClass().getResource("/INICIO/fondo-inicio.png")
+        );
+        fondo = iconoFondo.getImage();
+
+        JPanel panel = new JPanel(new GridBagLayout()) {
+
+            @Override
+            protected void paintComponent(Graphics g) {
+
+                super.paintComponent(g);
+
+                g.drawImage(
+                        fondo,
+                        0,
+                        0,
+                        getWidth(),
+                        getHeight(),
+                        this
+                );
+            }
+        };
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(12, 20, 12, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
-
-        JLabel titulo = new JLabel("Saboteur", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 34));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(titulo, gbc);
 
         JButton btnCrear = new JButton("Crear partida");
         btnCrear.setPreferredSize(new Dimension(160, 50));
@@ -79,17 +98,16 @@ public class PantallaBienvenida extends JFrame {
         );
 
         try {
-            // Prueba para ver si la partida ya existe
-            ControladorJuego prueba = new ControladorJuego();
-            Cliente clientePrueba = new Cliente(ipServidor, 19999, ipServidor, PORTSERVIDOR);
-            clientePrueba.iniciar(prueba);
-
-            // si pasa de aca la partida ya existe
-            JOptionPane.showMessageDialog(this, "La partida ya fue creada en esa ipServidor, usa Unirse a Partida para jugar", "Partida existente", JOptionPane.WARNING_MESSAGE);
-            return;
-        } catch (RMIMVCException e) {
-            // sigo porque la partida no existe
-        } catch (RemoteException e) {
+            Registry registry = LocateRegistry.getRegistry(ipServidor, PORTSERVIDOR);
+            String[] servicios = registry.list(); // lanza excepción si no hay nada
+            if (servicios != null && servicios.length > 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Ya existe una partida en esa IP. Usá 'Unirse a partida'.",
+                        "Partida existente", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        } catch (Exception e) {
+            // No hay registro RMI en esa IP/puerto → no existe servidor → continuar
         }
 
         // Creo el servidor
@@ -148,12 +166,19 @@ public class PantallaBienvenida extends JFrame {
     private void unirsePartida() throws RMIMVCException, RemoteException {
 
         // Seleccion de ipServidor servidor
-        String ipServidor = (String) JOptionPane.showInputDialog(
+        String ipServidor = JOptionPane.showInputDialog(
                 null,
-                "Seleccione la IP en la que escuchara peticiones el servidor", "IP del servidor",
+                "Ingrese la IP del servidor (PC donde se creó la partida)",
+                "192.168.1.33"  // valor por defecto como sugerencia
+        );
+
+        // IP del CLIENTE (la propia máquina Linux que se está conectando)
+        String ipCliente = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione su propia IP (la de esta máquina)", "IP del cliente",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                ips.toArray(),
+                ips.toArray(),   // muestra las IPs disponibles en esta máquina
                 null
         );
 
@@ -168,7 +193,7 @@ public class PantallaBienvenida extends JFrame {
         );
 
         ControladorJuego controlador = new ControladorJuego();
-        Cliente c = new Cliente(IPCLIENTE, Integer.parseInt(port), ipServidor, PORTSERVIDOR);
+        Cliente c = new Cliente(ipCliente, Integer.parseInt(port), ipServidor, PORTSERVIDOR);
 
         try {
             c.iniciar(controlador);
@@ -187,4 +212,6 @@ public class PantallaBienvenida extends JFrame {
         }
         setVisible(false);
     }
+
+
 }
