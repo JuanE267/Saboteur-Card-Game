@@ -86,6 +86,7 @@ public class PantallaBienvenida extends JFrame {
 
             // si pasa de aca la partida ya existe
             JOptionPane.showMessageDialog(this, "La partida ya fue creada en esa ipServidor, usa Unirse a Partida para jugar", "Partida existente", JOptionPane.WARNING_MESSAGE);
+            return;
         } catch (RMIMVCException e) {
             // sigo porque la partida no existe
         } catch (RemoteException e) {
@@ -105,7 +106,7 @@ public class PantallaBienvenida extends JFrame {
                 9999
         );
 
-        Servidor servidor = new Servidor(IPCLIENTE, Integer.parseInt(port));
+        Servidor servidor = new Servidor(ipServidor, PORTSERVIDOR);
 
 
         try {
@@ -127,6 +128,7 @@ public class PantallaBienvenida extends JFrame {
 
         try {
             c.iniciar(controlador);
+            controlador.setEsHost();
             VistaGrafica vistaGrafica = new VistaGrafica(controlador);
             vistaGrafica.iniciar();
         } catch (RemoteException e) {
@@ -140,6 +142,7 @@ public class PantallaBienvenida extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+    setVisible(false);
     }
 
     private void unirsePartida() throws RMIMVCException, RemoteException {
@@ -182,5 +185,6 @@ public class PantallaBienvenida extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+        setVisible(false);
     }
 }

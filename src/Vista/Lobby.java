@@ -36,8 +36,7 @@ public class Lobby extends JFrame {
             dispose();
         });
 
-        if(!controladorJuego.esJuegoCreado()) panelPrincipal.add(botonCrear);
-
+        panelPrincipal.add(botonCrear);
         JButton botonUnirse = new JButton("Unirse a partida");
         botonUnirse.setPreferredSize(new Dimension(300, 80));
 
@@ -45,9 +44,7 @@ public class Lobby extends JFrame {
             dispose();
             mostrarPantallaEspera();
         });
-
-        if(controladorJuego.esJuegoCreado()) panelPrincipal.add(botonUnirse);
-
+        panelPrincipal.add(botonUnirse);
 
         add(panelPrincipal);
         setVisible(false);

@@ -6,6 +6,7 @@ import Modelo.IJugador;
 import Modelo.Tablero;
 import Vista.VistaJuego.VentanaJuego;
 
+import javax.swing.*;
 import java.rmi.RemoteException;
 
 
@@ -19,6 +20,25 @@ public class VistaGrafica implements IVistaGrafica {
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.controlador.setVistaGrafica(this);
+        this.ventanaInicioSesion = new VentanaInicioSesion();
+        this.lobby = new Lobby(controlador);
+
+        // agrego jugadores
+        this.ventanaInicioSesion.onClickEntrar(e -> {
+            String nombre = ventanaInicioSesion.getNombreJugador();
+            int edad = ventanaInicioSesion.getEdadJugador();
+            if(nombre == null || nombre.isEmpty() || edad <= 0){
+                JOptionPane.showMessageDialog(null,"Por favor, ingrese un nombre/edad valido", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            IJugador jugador = controlador.conectarUsuario(nombre, edad);
+            controlador.setJugadorCliente(jugador);
+            ocultarInicioSesion();
+            lobby.iniciar();
+
+        });
+
+
     }
 
     public void iniciar() {

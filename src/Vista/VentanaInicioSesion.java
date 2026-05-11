@@ -45,8 +45,13 @@ public class VentanaInicioSesion extends JFrame {
         btnEntrar = new JButton("Entrar");
         contentPane.add(btnEntrar, "cell 0 2,alignx center");
 
-        SwingUtilities.getRootPane(btnEntrar).setDefaultButton(btnEntrar);
+        //SwingUtilities.getRootPane(btnEntrar).setDefaultButton(btnEntrar);
 
+    }
+
+    public void iniciar() {
+        setVisible(true);
+        getRootPane().setDefaultButton(btnEntrar);
     }
 
     public void onClickEntrar(ActionListener listener) {
