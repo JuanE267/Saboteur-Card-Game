@@ -19,25 +19,7 @@ public class VistaGrafica implements IVistaGrafica {
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.controlador.setVistaGrafica(this);
-        this.ventanaInicioSesion = new VentanaInicioSesion();
-        this.lobby = new Lobby(controlador);
-
-        // agrego jugadores
-        this.ventanaInicioSesion.onClickEntrar(e -> {
-            IJugador jugador = controlador.conectarUsuario(ventanaInicioSesion.getNombreJugador(), ventanaInicioSesion.getEdadJugador());
-            controlador.setJugadorCliente(jugador);
-            ocultarInicioSesion();
-            lobby.iniciar();
-
-        });
-
-
     }
-
-    public void iniciar() {
-        this.mostrarInicioSesion();
-    }
-
 
     private void mostrarInicioSesion() {
         this.ventanaInicioSesion.setVisible(true);
