@@ -2,10 +2,14 @@ package Vista.VistaJuego;
 
 import Controlador.ControladorJuego;
 import Modelo.Cartas.Carta;
+import Modelo.Cartas.CartaTunel;
 import Modelo.IJugador;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -14,6 +18,8 @@ import java.util.List;
 public class PanelJugador extends JPanel {
     private IJugador jugadorCliente;
     private ControladorJuego controlador;
+    private boolean cartaRotada = false;
+
     List<BotonCarta> vistaManoActual = new ArrayList<>();
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
@@ -37,6 +43,7 @@ public class PanelJugador extends JPanel {
 
     public void resetCartaSeleccionada() {
         cartaSeleccionada = -1;
+        cartaRotada = false;
     }
 
     public void dibujarManoDeCartas(List<Carta> mano) throws RemoteException {
@@ -75,11 +82,66 @@ public class PanelJugador extends JPanel {
                 }
             });
         }
+
+        for (BotonCarta boton : vistaManoActual) {
+            boton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    try {
+                        if (SwingUtilities.isRightMouseButton(e)) {
+                            // Click derecho: rotar la carta
+                            rotarCartaSeleccionada(boton);
+                        } else {
+                            // Click izquierdo: seleccionar
+                            cartaEnMazoPresionada(boton);
+                        }
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
         revalidate();
         repaint();
 
     }
 
+    private void rotarCartaSeleccionada(BotonCarta boton) throws RemoteException {
+        if(!controlador.esTurnoDe(jugadorCliente)){
+            mensajeNoEsTuTurno();
+            return;
+        }
+
+        Carta carta = boton.getCartaAsociada();
+
+        if(carta instanceof CartaTunel tunel){
+            tunel.rotar();
+            carta.setRotada(!carta.isRotada());
+            actualizarIconoBoton(boton, carta);
+            cartaSeleccionada = jugadorCliente.getManoCartas().indexOf(carta);
+        }
+
+    }
+
+
+    private void actualizarIconoBoton(BotonCarta boton, Carta carta) {
+        URL url = carta.getClass().getResource("/" + carta.getImg());
+        if (url != null) {
+            ImageIcon icono = new ImageIcon(url);
+            Image img = icono.getImage().getScaledInstance(TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH);
+            // rotar la imagen 180°
+            if (carta.isRotada()) {
+                BufferedImage bi = new BufferedImage(TAM_CARTA, TAM_CARTA + 30, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2 = bi.createGraphics();
+                g2.rotate(Math.PI, TAM_CARTA / 2.0, (TAM_CARTA + 30) / 2.0);
+                g2.drawImage(img, 0, 0, null);
+                g2.dispose();
+                img = bi;
+            }
+            boton.setIcon(new ImageIcon(img));
+        }
+    }
     public int getCartaSeleccionada() {
         return cartaSeleccionada;
     }

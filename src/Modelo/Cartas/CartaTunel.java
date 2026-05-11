@@ -11,6 +11,8 @@ public class CartaTunel extends Carta {
 
     private Map<Direccion, Boolean> caminos = new HashMap<>();
     private boolean esInicio;
+    private int rotacion;
+
 
     public CartaTunel(int id, TipoCarta tipo, String img, boolean esInicio) {
         super(id, tipo, img);
@@ -57,10 +59,30 @@ public class CartaTunel extends Carta {
 
     public void setCaminos(boolean arriba, boolean abajo,
                            boolean izquierda, boolean derecha) {
+
         this.caminos.put(Direccion.ARRIBA, arriba);
         this.caminos.put(Direccion.ABAJO, abajo);
         this.caminos.put(Direccion.IZQUIERDA, izquierda);
         this.caminos.put(Direccion.DERECHA, derecha);
+
+        rotacion = 0;
+    }
+
+    public void rotar(){
+        // rota los caminos en el sentido de las agujas del reloj
+        boolean arriba = caminos.get(Direccion.ARRIBA);
+        boolean derecha = caminos.get(Direccion.DERECHA);
+        boolean abajo = caminos.get(Direccion.ABAJO);
+        boolean izquierda = caminos.get(Direccion.IZQUIERDA);
+
+        setCaminos(izquierda, derecha, abajo, arriba);
+
+        // aumenta la rotacion en 90 grados y la mantiene entre 0 y 360
+        rotacion = (rotacion + 90) % 360;
+    }
+
+    public int getRotacion() {
+        return rotacion;
     }
 
     public boolean getEsInicio(){

@@ -13,11 +13,20 @@ public abstract class Carta implements Serializable {
     private TipoCarta tipo;
     private String img;
     private boolean esDestino = false;
+    private boolean rotada = false;
 
     public Carta(int id, TipoCarta tipo, String img) {
         this.id = id;
         this.tipo = tipo;
         this.img = img;
+    }
+
+    public boolean isRotada() {
+        return rotada;
+    }
+
+    public void setRotada(boolean rotada) {
+        this.rotada = rotada;
     }
 
     public boolean esDestino() {

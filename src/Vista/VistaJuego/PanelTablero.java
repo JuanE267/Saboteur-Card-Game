@@ -72,10 +72,12 @@ public class PanelTablero extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                try {
-                    manejarClick(e.getX(), e.getY());
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
+                if(SwingUtilities.isLeftMouseButton(e)) {
+                    try {
+                        manejarClick(e.getX(), e.getY());
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
@@ -187,6 +189,12 @@ public class PanelTablero extends JPanel {
                     Graphics2D g2d = imgEscalada.createGraphics();
                     g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+                    // Si la carta está rotada, aplicar rotación 180° al dibujarla
+                    if (carta.isRotada()) {
+                        g2d.rotate(Math.PI, anchoEscalado / 2.0, altoEscalado / 2.0);
+                    }
+
                     g2d.drawImage(imgOriginal, 0, 0, anchoEscalado, altoEscalado, null);
                     g2d.dispose();
 
