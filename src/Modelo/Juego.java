@@ -381,7 +381,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
-    public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
+    public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException {
 
         IJugador actual = getJugadorActual();
         Carta carta = actual.elegirCarta(posCarta);
@@ -392,6 +392,10 @@ public class Juego extends ObservableRemoto implements IJuego {
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
             if (actual.getHerramientasRotas().isEmpty()) {
+                if(rotada){
+                    ((CartaTunel) carta).rotar();
+                    carta.setRotada(true);
+                }
                 if (actual.jugarCarta(tablero, x, y, carta)) {
                     actual.getManoCartas().remove(posCarta);
                     robarCartaAuto(actual);

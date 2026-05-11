@@ -262,12 +262,13 @@ public class PanelTablero extends JPanel {
 
     private void jugarEnPosicion(int x, int y) throws RemoteException {
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
+        boolean rotada = panelJugador.isCartaRotada();
         boolean pudoSerJugado = false;
 
         if (cartaSeleccionada != -1) {
             Carta carta = jugadorCliente.elegirCarta(cartaSeleccionada);
 
-            pudoSerJugado = controlador.jugarUnaCarta(x, y, cartaSeleccionada, null);
+            pudoSerJugado = controlador.jugarUnaCarta(x, y, cartaSeleccionada, null, rotada);
 
             if (!pudoSerJugado) {
                 List<Herramienta> tieneHerramientasRotas = jugadorCliente.getHerramientasRotas();

@@ -88,7 +88,7 @@ public class ControladorJuego implements IControladorRemoto {
         return juego.verificarSiTerminoLaRonda();
     }
 
-    public Boolean jugarUnaCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException {
+    public Boolean jugarUnaCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException {
 
         // tomo el jugador objetivo actualizado
         if (objetivo != null) {
@@ -98,7 +98,7 @@ public class ControladorJuego implements IControladorRemoto {
                 }
             }
         }
-        return juego.jugarCarta(x, y, posCarta, objetivo);
+        return juego.jugarCarta(x, y, posCarta, objetivo, rotada);
     }
 
     public IJugador getJugadorPorId(int id) throws RemoteException {

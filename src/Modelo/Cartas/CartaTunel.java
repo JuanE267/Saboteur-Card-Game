@@ -68,17 +68,15 @@ public class CartaTunel extends Carta {
         rotacion = 0;
     }
 
-    public void rotar(){
-        // rota los caminos en el sentido de las agujas del reloj
-        boolean arriba = caminos.get(Direccion.ARRIBA);
-        boolean derecha = caminos.get(Direccion.DERECHA);
-        boolean abajo = caminos.get(Direccion.ABAJO);
+    public void rotar() {
+        boolean arriba    = caminos.get(Direccion.ARRIBA);
+        boolean abajo     = caminos.get(Direccion.ABAJO);
         boolean izquierda = caminos.get(Direccion.IZQUIERDA);
+        boolean derecha   = caminos.get(Direccion.DERECHA);
 
-        setCaminos(izquierda, derecha, abajo, arriba);
+        setCaminos(abajo, arriba, derecha, izquierda);
 
-        // aumenta la rotacion en 90 grados y la mantiene entre 0 y 360
-        rotacion = (rotacion + 90) % 360;
+        rotacion = (rotacion + 180) % 360;
     }
 
     public int getRotacion() {

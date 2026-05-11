@@ -23,7 +23,7 @@ public interface IJuego extends IObservableRemoto {
 
     void finalizarRonda(boolean ganaronLosMineros) throws RemoteException;
 
-    Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo) throws RemoteException;
+    Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException;
 
     boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException;
 
