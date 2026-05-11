@@ -120,6 +120,7 @@ public class PanelJugador extends JPanel {
             carta.setRotada(!carta.isRotada());
             actualizarIconoBoton(boton, carta);
             cartaSeleccionada = jugadorCliente.getManoCartas().indexOf(carta);
+            cartaRotada = carta.isRotada();
         }
 
     }
