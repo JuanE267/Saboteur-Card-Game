@@ -272,7 +272,6 @@ public class ControladorJuego implements IControladorRemoto {
     public Boolean iniciarPartida() throws RemoteException {
         int cantJugadores = juego.getJugadores().length;
 
-        // ✅ validación una sola vez
         if (cantJugadores < 2 || cantJugadores > 10) {
             JOptionPane.showMessageDialog(null,
                     "Se necesitan entre 2 y 10 jugadores para iniciar.",
@@ -280,7 +279,6 @@ public class ControladorJuego implements IControladorRemoto {
             return false;
         }
 
-        // ✅ lógica separada y clara
         if (esPartidaCargada) {
             this.juego.iniciarPartidaCargadaDesdeServidor();
         } else {
