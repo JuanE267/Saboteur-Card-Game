@@ -22,6 +22,7 @@ public class Tablero implements Serializable {
     private int yInicio;
     private int xOro = -1;
     private int yOro = -1;
+
     public Tablero() {
         tablero = new HashMap<>();
         inicializarTablero();
@@ -103,16 +104,16 @@ public class Tablero implements Serializable {
         boolean puedeColocar = false;
 
         // si tiene el vecino, no es destino y puede colocar
-        if (vecinoArriba != null && !vecinoArriba.esDestino() && puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
+        if (vecinoArriba != null  && puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
             puedeColocar = true;
         }
-        if (vecinoAbajo != null && !vecinoAbajo.esDestino() && puedeConectar(vecinoAbajo, carta, Direccion.ABAJO)) {
+        if (vecinoAbajo != null && puedeConectar(vecinoAbajo, carta, Direccion.ABAJO)) {
             puedeColocar = true;
         }
-        if (vecinoIzquierda != null && !vecinoIzquierda.esDestino() && puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
+        if (vecinoIzquierda != null &&  puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
             puedeColocar = true;
         }
-        if (vecinoDerecha != null && !vecinoDerecha.esDestino() && puedeConectar(vecinoDerecha, carta, Direccion.DERECHA)) {
+        if (vecinoDerecha != null && puedeConectar(vecinoDerecha, carta, Direccion.DERECHA)) {
             puedeColocar = true;
         }
 
@@ -121,6 +122,14 @@ public class Tablero implements Serializable {
 
         // coloco la carta
         setCarta(carta, x, y);
+
+        Set<Posicion> visitado = new HashSet<>();
+        boolean conectaInicio = buscarPos(this.xInicio, this.yInicio, visitado, x, y);
+
+        if (!conectaInicio){
+            tablero.remove(new Posicion(x, y));
+            return false;
+        }
 
         // giro las carta destino si hay que hacerlo
         girarDestino(vecinoArriba, carta, x - 1, y, Direccion.ARRIBA);
@@ -160,7 +169,7 @@ public class Tablero implements Serializable {
 
             // ver si conecta al inicio
             Set<Posicion> visitado = new HashSet<>();
-            if (buscarPos(this.xInicio, this.yInicio, visitado, x, y)){
+            if (buscarPos(this.xInicio, this.yInicio, visitado, x, y)) {
                 CartaDestino destino = (CartaDestino) vecino;
                 destino.girar();
                 destino.setDorso(vecino.getImg());
@@ -180,7 +189,7 @@ public class Tablero implements Serializable {
 
     public boolean hayCaminoHastaOro() {
 
-        if(xOro == -1 && yOro == -1) return false;
+        if (xOro == -1 && yOro == -1) return false;
 
         // llevo una lista de las posiciones del tablero que ya visite
         Set<Posicion> visitado = new HashSet<>();
