@@ -45,7 +45,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
         int cantJugadores = getJugadores().length;
-        if (cantJugadores < 2 || cantJugadores > 10) {
+        if (cantJugadores < 3  || cantJugadores > 10) {
             throw new IllegalStateException(
                     "No se puede iniciar la partida con " + cantJugadores + " jugadores."
             );

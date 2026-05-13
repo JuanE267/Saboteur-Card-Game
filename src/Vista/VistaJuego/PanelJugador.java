@@ -62,8 +62,17 @@ public class PanelJugador extends JPanel {
 
             if (url != null) {
                 ImageIcon icono = new ImageIcon(url);
-                Image imagen = icono.getImage().getScaledInstance(TAM_CARTA, TAM_CARTA + 30, Image.SCALE_SMOOTH);
-                botonCarta.setIcon(new ImageIcon(imagen));
+                BufferedImage bi = new BufferedImage(TAM_CARTA, TAM_CARTA + 30, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2 = bi.createGraphics();
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+                if (cartaActual.isRotada()) {
+                    g2.rotate(Math.PI, TAM_CARTA / 2.0, (TAM_CARTA + 30) / 2.0);
+                }
+
+                g2.drawImage(icono.getImage(), 0, 0, TAM_CARTA, TAM_CARTA + 30, null);
+                g2.dispose();
+                botonCarta.setIcon(new ImageIcon(bi));
             } else {
                 System.err.println("Imagen no encontrada: " + cartaActual.getImg());
             }

@@ -100,10 +100,8 @@ public class Tablero implements Serializable {
         Carta vecinoDerecha = getCarta(x, y + 1);
         Carta vecinoIzquierda = getCarta(x, y - 1);
 
-        // ahora necesito ver si conecta con un vecino que no es destino
-        boolean puedeColocar = false;
-
-        // si tiene el vecino, no es destino y puede colocar
+        // si hay vecino, y no se puede conectar, retorno false
+        // tiene que conectar con todos
         if (vecinoArriba != null  && !puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
             return false;
         }
@@ -117,9 +115,11 @@ public class Tablero implements Serializable {
             return false;
         }
 
+        // aca compruebo que al menos tenga un vecino
         boolean tieneVecino = (vecinoArriba != null) || (vecinoAbajo != null) || (vecinoDerecha != null) || (vecinoIzquierda != null);
         if (!tieneVecino) return false;
 
+        // si se cumple toddo
         // coloco la carta
         setCarta(carta, x, y);
 

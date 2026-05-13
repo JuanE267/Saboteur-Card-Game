@@ -169,7 +169,7 @@ public class PantallaBienvenida extends JFrame {
         String ipServidor = JOptionPane.showInputDialog(
                 null,
                 "Ingrese la IP del servidor (PC donde se creó la partida)",
-                "192.168.1.33"  // valor por defecto como sugerencia
+                "127.0.0.1"
         );
 
         if(ipServidor == null || ipServidor.isBlank()) return;
