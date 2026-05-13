@@ -30,3 +30,4 @@ bin/
 
 ## Datos de partidas guardadas
 Data/*.dat
+/src/test/
