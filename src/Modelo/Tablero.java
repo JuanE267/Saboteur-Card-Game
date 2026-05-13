@@ -104,21 +104,21 @@ public class Tablero implements Serializable {
         boolean puedeColocar = false;
 
         // si tiene el vecino, no es destino y puede colocar
-        if (vecinoArriba != null  && puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
-            puedeColocar = true;
+        if (vecinoArriba != null  && !puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
+            return false;
         }
-        if (vecinoAbajo != null && puedeConectar(vecinoAbajo, carta, Direccion.ABAJO)) {
-            puedeColocar = true;
+        if (vecinoAbajo != null && !puedeConectar(vecinoAbajo, carta, Direccion.ABAJO)) {
+            return false;
         }
-        if (vecinoIzquierda != null &&  puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
-            puedeColocar = true;
+        if (vecinoIzquierda != null &&  !puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
+            return false;
         }
-        if (vecinoDerecha != null && puedeConectar(vecinoDerecha, carta, Direccion.DERECHA)) {
-            puedeColocar = true;
+        if (vecinoDerecha != null && !puedeConectar(vecinoDerecha, carta, Direccion.DERECHA)) {
+            return false;
         }
 
-        // si no puede colocar, rechazo
-        if (!puedeColocar) return false;
+        boolean tieneVecino = (vecinoArriba != null) || (vecinoAbajo != null) || (vecinoDerecha != null) || (vecinoIzquierda != null);
+        if (!tieneVecino) return false;
 
         // coloco la carta
         setCarta(carta, x, y);

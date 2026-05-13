@@ -45,7 +45,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
         int cantJugadores = getJugadores().length;
-        if (cantJugadores < 3 || cantJugadores > 10) {
+        if (cantJugadores < 2 || cantJugadores > 10) {
             throw new IllegalStateException(
                     "No se puede iniciar la partida con " + cantJugadores + " jugadores."
             );
@@ -294,8 +294,8 @@ public class Juego extends ObservableRemoto implements IJuego {
 
         if (ronda <= 2) {
             // reinicio el estado logico
-            reiniciarRonda(ronda);
             ronda++;
+            reiniciarRonda(ronda);
             //reinicio la vista dependiendo el ganador
             if (ganaronLosMineros) {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_MINEROS);
@@ -525,9 +525,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public boolean hayCaminoHastaOro() {
-        Boolean hayCamino = tablero.hayCaminoHastaOro();
-        if(hayCamino){ ganadorRonda = getJugadorActual(); }
-        return hayCamino;
+        return tablero.hayCaminoHastaOro();
     }
 
 
@@ -541,6 +539,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public boolean verificarSiTerminoLaRonda() throws RemoteException {
         if (hayCaminoHastaOro()) {
+            ganadorRonda = getJugadorActual();
             finalizarRonda(true);
             return true;
         } else if (noHayCartas() && todosLosJugadoresSinCartas()) {
