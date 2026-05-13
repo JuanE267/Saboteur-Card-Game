@@ -1,5 +1,6 @@
 package Modelo;
 
+import Modelo.Enums.Herramienta;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
 import java.rmi.RemoteException;
@@ -25,7 +26,7 @@ public interface IJuego extends IObservableRemoto {
 
     Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException;
 
-    boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException;
+    boolean jugarHerramienta(IJugador objetivo, int posCarta, Herramienta herramientaPresionada) throws RemoteException;
 
     Mazo getMazo() throws RemoteException;
 

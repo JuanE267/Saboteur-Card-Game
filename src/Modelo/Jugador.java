@@ -5,12 +5,10 @@ import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
-import Modelo.Enums.TipoAccion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Jugador implements Serializable, IJugador {
 
@@ -41,8 +39,8 @@ public class Jugador implements Serializable, IJugador {
 
 
     // jugar reparar o romper
-    public boolean jugarCarta(IJugador afectado, Carta carta) {
-        return ((CartaAccion) carta).jugarCarta(afectado);
+    public boolean jugarCarta(IJugador afectado, Carta carta, Herramienta herramientaPresionada) {
+        return ((CartaAccion) carta).jugarCarta(afectado, herramientaPresionada);
     }
 
     // jugar mapa o derrumbe

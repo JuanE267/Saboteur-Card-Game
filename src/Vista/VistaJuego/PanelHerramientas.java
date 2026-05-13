@@ -91,7 +91,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada();
+                            herramientaEsPresionada(Herramienta.PICO);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -112,7 +112,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada();
+                            herramientaEsPresionada(Herramienta.VAGONETA);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -133,7 +133,7 @@ public class PanelHerramientas extends JPanel {
                     if (controlador.esTurnoDe(jugadorCliente)) {
                         super.mouseClicked(e);
                         try {
-                            herramientaEsPresionada();
+                            herramientaEsPresionada(Herramienta.LINTERNA);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -157,11 +157,11 @@ public class PanelHerramientas extends JPanel {
     }
 
 
-    private void herramientaEsPresionada() throws RemoteException {
+    private void herramientaEsPresionada(Herramienta herramientaPresionada) throws RemoteException {
 
         int posCarta = panelJugador.getCartaSeleccionada();
         if (posCarta != -1) {
-            TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, jugadorCliente.getId());
+            TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, jugadorCliente.getId(), herramientaPresionada);
 
             if (tipoAccion != null) {
                 if (tipoAccion.toString().startsWith("ROMPER")) {

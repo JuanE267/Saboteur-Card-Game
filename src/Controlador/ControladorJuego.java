@@ -4,6 +4,7 @@ import Modelo.*;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Enums.Evento;
+import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Vista.*;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
@@ -105,7 +106,7 @@ public class ControladorJuego implements IControladorRemoto {
         return juego.getJugadorPorId(id);
     }
 
-    public TipoAccion jugarHerramienta(int posCarta, int idObjetivo) throws RemoteException {
+    public TipoAccion jugarHerramienta(int posCarta, int idObjetivo, Herramienta herramientaPresionada) throws RemoteException {
 
         // valido desde el controlador si puedo usar la carta, despues la uso desde el modelo Juego
         jugadorCliente = getJugadorActualizado();
@@ -118,7 +119,7 @@ public class ControladorJuego implements IControladorRemoto {
         // DEVUELVO SOLO UN TIPOACCION PORQUE SOLO ME INTERESA COMO INICIA
         if (carta instanceof CartaAccion) {
 
-            pudoSerJugada = juego.jugarHerramienta(objetivo, posCarta);
+            pudoSerJugada = juego.jugarHerramienta(objetivo, posCarta, herramientaPresionada);
 
             if (!pudoSerJugada) {
                 if (objetivo.getId() != jugadorCliente.getId()) {
@@ -272,9 +273,9 @@ public class ControladorJuego implements IControladorRemoto {
     public Boolean iniciarPartida() throws RemoteException {
         int cantJugadores = juego.getJugadores().length;
 
-        if (cantJugadores < 2 || cantJugadores > 10) {
+        if (cantJugadores < 3 || cantJugadores > 10) {
             JOptionPane.showMessageDialog(null,
-                    "Se necesitan entre 2 y 10 jugadores para iniciar.",
+                    "Se necesitan entre 3 y 10 jugadores para iniciar.",
                     "Error", JOptionPane.WARNING_MESSAGE);
             return false;
         }

@@ -8,6 +8,7 @@ import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Evento;
+import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
@@ -44,7 +45,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
         int cantJugadores = getJugadores().length;
-        if (cantJugadores < 2 || cantJugadores > 10) {
+        if (cantJugadores < 3 || cantJugadores > 10) {
             throw new IllegalStateException(
                     "No se puede iniciar la partida con " + cantJugadores + " jugadores."
             );
@@ -92,14 +93,14 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void asignoPrimerTurno(int ronda) {
         if (ronda == 1) {
-            // el jugador en empezar es el de mayor edad
-            IJugador mayorEdad = jugadores.values().iterator().next();
+            // el jugador en empezar es el de menor edad
+            IJugador menorEdad = jugadores.values().iterator().next();
             for (IJugador j : jugadores.values()) {
-                if (j.getEdad() > mayorEdad.getEdad()) {
-                    mayorEdad = j;
+                if (j.getEdad() < menorEdad.getEdad()) {
+                    menorEdad = j;
                 }
             }
-            turnoInicial = ordenTurnos.indexOf(mayorEdad.getId());
+            turnoInicial = ordenTurnos.indexOf(menorEdad.getId());
 
             this.turno = turnoInicial;
         }else{
@@ -342,12 +343,12 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     private int pepitasSaboteadores(){
-        int cantMineros = 0;
+        int cantSaboteadores = 0;
         for(IJugador j : jugadores.values()) {
-            if (j.getRol() == Rol.MINERO) cantMineros++;
+            if (j.getRol() == Rol.SABOTEADOR) cantSaboteadores++;;
         }
 
-        switch (cantMineros){
+        switch (cantSaboteadores){
             case 3 -> { return 4;}
             case 4 -> { return 3;}
             case 5 -> { return 3;}
@@ -400,12 +401,12 @@ public class Juego extends ObservableRemoto implements IJuego {
         return pudoSerJugado;
     }
 
-    public boolean jugarHerramienta(IJugador objetivo, int posCarta) throws RemoteException {
+    public boolean jugarHerramienta(IJugador objetivo, int posCarta, Herramienta herramienta) throws RemoteException {
 
         IJugador actual = getJugadorActual();
         Carta carta = actual.elegirCarta(posCarta);
         objetivo = getJugadorPorId(objetivo.getId());
-        boolean pudoSerJugada = actual.jugarCarta(objetivo, carta);
+        boolean pudoSerJugada = actual.jugarCarta(objetivo, carta, herramienta);
         if (pudoSerJugada) {
             // despues de jugar elimino la carta de la mano
             actual.getManoCartas().remove(carta);

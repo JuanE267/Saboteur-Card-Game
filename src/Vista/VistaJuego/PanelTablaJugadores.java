@@ -57,9 +57,9 @@ public class PanelTablaJugadores extends JPanel {
                 herramientas.setBackground(Color.decode("#4b3e2c"));
 
                 // label para cada herr
-                HerramientaTabla pico = new HerramientaTabla(j);
-                HerramientaTabla vagoneta = new HerramientaTabla(j);
-                HerramientaTabla linterna = new HerramientaTabla(j);
+                HerramientaTabla pico = new HerramientaTabla(j, Herramienta.PICO);
+                HerramientaTabla vagoneta = new HerramientaTabla(j, Herramienta.VAGONETA);
+                HerramientaTabla linterna = new HerramientaTabla(j, Herramienta.LINTERNA);
 
                 pico.setSize(new Dimension(100, 100));
                 vagoneta.setSize(new Dimension(100, 100));
@@ -180,7 +180,7 @@ public class PanelTablaJugadores extends JPanel {
             jugadorCliente = controlador.getJugadorActualizado();
             Carta carta = jugadorCliente.elegirCarta(posCarta);
             if (carta.getTipo() == TipoCarta.ACCION) {
-                TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, herr.getDueño().getId());
+                TipoAccion tipoAccion = controlador.jugarHerramienta(posCarta, herr.getDueño().getId(), herr.getHerramienta());
 
                 if (tipoAccion != null) {
                     if (tipoAccion.toString().startsWith("OBJETIVO_ROMPER")) {

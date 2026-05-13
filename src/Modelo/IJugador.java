@@ -1,8 +1,6 @@
 package Modelo;
 
 import Modelo.Cartas.Carta;
-import Modelo.Cartas.CartaAccion;
-import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 
@@ -13,7 +11,7 @@ public interface IJugador {
 
     boolean jugarCarta(Tablero tablero, int x, int y, Carta carta);
 
-    boolean jugarCarta(IJugador afectado, Carta carta);
+    boolean jugarCarta(IJugador afectado, Carta carta, Herramienta herramientaPresionada);
 
     Boolean jugarCartaMapaDerrumbe(Tablero tablero, int x, int y, Carta carta);
 

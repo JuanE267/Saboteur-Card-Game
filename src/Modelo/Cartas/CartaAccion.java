@@ -29,9 +29,10 @@ public class CartaAccion extends Carta {
     }
 
     // Acción para romper/reparar herramienta a un jugador
-    public Boolean jugarCarta(IJugador afectado) {
+    public Boolean jugarCarta(IJugador afectado, Herramienta herramientaPresionada) {
 
         boolean sePudoArreglar = false;
+
         for (TipoAccion tipoAccion : tipo) {
             switch (tipoAccion) {
                 case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
@@ -39,12 +40,25 @@ public class CartaAccion extends Carta {
                     else romperHerramienta(afectado, tipoAccion);
                 }
                 case REPARARLINTERNA, REPARARVAGONETA, REPARARPICO -> {
-                    if(!sePudoArreglar) sePudoArreglar = repararHerramienta(afectado, tipoAccion);
-                    else repararHerramienta(afectado, tipoAccion);
+                    //arreglar solamente si la herramienta coincide
+                    Herramienta herramientaTipoAccion = TipoAccionAHerramienta(tipoAccion);
+                    if(herramientaPresionada == null || herramientaPresionada == herramientaTipoAccion) {
+                        if (!sePudoArreglar) sePudoArreglar = repararHerramienta(afectado, tipoAccion);
+                    }
                 }
             }
         }
         return sePudoArreglar;
+    }
+
+    private Herramienta TipoAccionAHerramienta(TipoAccion tipoAccion) {
+        Herramienta herramienta = null;
+        switch (tipoAccion) {
+            case ROMPERPICO, REPARARPICO -> herramienta = Herramienta.PICO;
+            case ROMPERVAGONETA, REPARARVAGONETA -> herramienta = Herramienta.VAGONETA;
+            case ROMPERLINTERNA, REPARARLINTERNA -> herramienta = Herramienta.LINTERNA;
+        }
+        return herramienta;
     }
 
     // Acción para ver un destino del tablero o derrumbar

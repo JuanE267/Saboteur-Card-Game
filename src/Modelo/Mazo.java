@@ -205,7 +205,7 @@ public class Mazo implements Serializable {
         }
 
         // mapa
-        for (int j = 0; j < 6; j++) {
+        for (int j = 0; j < 3; j++) {
             cantCartas++;
             CartaAccion cartaAccion = new CartaAccion(cantCartas, TipoCarta.ACCION, "ACCION/MAPA.png");
             List<TipoAccion> tipos = new ArrayList<>();
