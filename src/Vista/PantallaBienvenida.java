@@ -1,12 +1,9 @@
 package Vista;
 
 import Controlador.ControladorJuego;
-import Modelo.IJuego;
-import Modelo.Juego;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
-import ar.edu.unlu.rmimvc.servidor.Servidor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,7 +66,15 @@ public class PantallaBienvenida extends JFrame {
         gbc.gridx = 1;
         panel.add(btnUnirse, gbc);
 
-        btnCrear.addActionListener(e -> crearPartida());
+        btnCrear.addActionListener(e -> {
+            try {
+                crearPartida();
+            } catch (RMIMVCException ex) {
+                throw new RuntimeException(ex);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btnUnirse.addActionListener(e -> {
             try {
                 unirsePartida();
@@ -84,7 +89,7 @@ public class PantallaBienvenida extends JFrame {
 
     }
 
-    private void crearPartida() {
+    private void crearPartida() throws RMIMVCException, RemoteException {
 
         // Seleccion de ipServidor servidor
 
@@ -112,7 +117,8 @@ public class PantallaBienvenida extends JFrame {
 
         // Creo el servidor
 
-        IJuego modelo = new Juego();
+        ControladorJuego controlador = new ControladorJuego();
+        controlador.crearServidor(ipServidor, PORTSERVIDOR);
 
         // Seleccion puerto cliente
         String port = (String) JOptionPane.showInputDialog(
@@ -124,24 +130,9 @@ public class PantallaBienvenida extends JFrame {
                 9999
         );
 
-        Servidor servidor = new Servidor(ipServidor, PORTSERVIDOR);
-
-
-        try {
-            servidor.iniciar(modelo);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (RMIMVCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
         System.out.println("Servidor corriendo en ipServidor: " + ipServidor + " port: " + port);
 
         // Creo el cliente y lo conecto al servidor
-
-        ControladorJuego controlador = new ControladorJuego();
         Cliente c = new Cliente(ipServidor, Integer.parseInt(port), ipServidor, PORTSERVIDOR);
 
         try {

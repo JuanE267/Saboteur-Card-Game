@@ -7,8 +7,10 @@ import Modelo.Enums.Evento;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Vista.*;
+import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
+import ar.edu.unlu.rmimvc.servidor.Servidor;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
@@ -313,6 +315,11 @@ public class ControladorJuego implements IControladorRemoto {
 
     public void setVistaServidor(VentanaServidor vistaServidor) {
         this.vistaServidor = vistaServidor;
+    }
+
+    public void crearServidor(String ip, int puerto) throws RemoteException, RMIMVCException {
+        Servidor servidor = new Servidor(ip, puerto);
+        servidor.iniciar(new Juego());
     }
 
     public void guardarPartida() throws RemoteException {
