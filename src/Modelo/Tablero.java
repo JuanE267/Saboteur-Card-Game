@@ -172,7 +172,6 @@ public class Tablero implements Serializable {
             if (buscarPos(this.xInicio, this.yInicio, visitado, x, y)) {
                 CartaDestino destino = (CartaDestino) vecino;
                 destino.girar();
-                destino.setDorso(vecino.getImg());
             }
 
         }

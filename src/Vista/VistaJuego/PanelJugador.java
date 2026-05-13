@@ -29,7 +29,7 @@ public class PanelJugador extends JPanel {
         this.jugadorCliente = controlador.getJugadorActualizado();
         setBackground(Color.decode("#4b3e2c"));
         setLayout(new FlowLayout());
-        dibujarManoDeCartas(jugadorCliente.getManoCartas());
+        dibujarManoDeCartas();
     }
 
     private void cartaEnMazoPresionada(BotonCarta boton) throws RemoteException {
@@ -46,12 +46,12 @@ public class PanelJugador extends JPanel {
         cartaRotada = false;
     }
 
-    public void dibujarManoDeCartas(List<Carta> mano) throws RemoteException {
+    public void dibujarManoDeCartas() throws RemoteException {
         // elimino lo existente
 
         removeAll();
         vistaManoActual.clear();
-        mano = jugadorCliente.getManoCartas();
+        List<Carta> mano = jugadorCliente.getManoCartas();
         // por cada carta creo un JButton
         for (int i = 0; i < mano.size(); i++) {
 
@@ -162,7 +162,7 @@ public class PanelJugador extends JPanel {
         this.jugadorCliente = jugador;
         removeAll();
         if (jugador.getManoCartas() != null) {
-            dibujarManoDeCartas(jugador.getManoCartas());
+            dibujarManoDeCartas();
         }
         revalidate();
         repaint();

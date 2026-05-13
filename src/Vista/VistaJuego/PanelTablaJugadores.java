@@ -32,13 +32,13 @@ public class PanelTablaJugadores extends JPanel {
         setBackground(Color.decode("#4b3e2c"));
         setLayout(new GridLayout(jugadores.length, 1));
         setBorder(new EmptyBorder(200, 0, 200, 0));
-        dibujarListaJugadores(jugadores, jugadorCliente);
+        dibujarListaJugadores(jugadorCliente);
     }
 
-    private void dibujarListaJugadores(IJugador[] jugadores, IJugador jugadorCliente) throws RemoteException {
+    private void dibujarListaJugadores(IJugador jugadorCliente) throws RemoteException {
 
         removeAll();
-        jugadores = controlador.getJugadores();
+        IJugador[] jugadores = controlador.getJugadores();
         for (IJugador j : jugadores) {
             if (j.getId() != jugadorCliente.getId()) {
                 JPanel jugadorTabla = new JPanel();
@@ -225,7 +225,7 @@ public class PanelTablaJugadores extends JPanel {
     public void actualizar(IJugador[] jugadores, IJugador jugadorCliente) throws RemoteException {
         this.jugadores = jugadores;
         this.jugadorCliente = jugadorCliente;
-        dibujarListaJugadores(jugadores, jugadorCliente);
+        dibujarListaJugadores(jugadorCliente);
         revalidate();
         repaint();
     }

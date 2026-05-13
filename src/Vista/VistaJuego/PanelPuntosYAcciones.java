@@ -69,7 +69,7 @@ public class PanelPuntosYAcciones extends JPanel {
                     panelJugador.resetCartaSeleccionada();
                     panelJugador.revalidate();
                     panelJugador.repaint();
-                    panelJugador.dibujarManoDeCartas(controlador.getJugadorActualizado().getManoCartas());
+                    panelJugador.dibujarManoDeCartas();
 
                     controlador.pasarTurno();
 

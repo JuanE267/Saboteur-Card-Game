@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 public class VistaGrafica implements IVistaGrafica {
     private VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
+    private JFrame ventanaEspera;
     private ControladorJuego controlador;
     private Lobby lobby;
 
@@ -70,11 +71,11 @@ public class VistaGrafica implements IVistaGrafica {
     }
 
     public void mostrarPantallaEspera() {
-        JFrame espera = new JFrame("Saboteur");
-        espera.setSize(400, 200);
-        espera.setLocationRelativeTo(null);
-        espera.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        espera.setLayout(new BorderLayout());
+        ventanaEspera = new JFrame("Saboteur");
+        ventanaEspera.setSize(400, 200);
+        ventanaEspera.setLocationRelativeTo(null);
+        ventanaEspera.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        ventanaEspera.setLayout(new BorderLayout());
 
         JLabel mensaje = new JLabel(
                 "Esperando que el host inicie la partida...",
@@ -85,15 +86,19 @@ public class VistaGrafica implements IVistaGrafica {
         JProgressBar barra = new JProgressBar();
         barra.setIndeterminate(true); // animación de carga
 
-        espera.add(mensaje, BorderLayout.CENTER);
-        espera.add(barra, BorderLayout.SOUTH);
-        espera.setVisible(true);
+        ventanaEspera.add(mensaje, BorderLayout.CENTER);
+        ventanaEspera.add(barra, BorderLayout.SOUTH);
+        ventanaEspera.setVisible(true);
     }
 
 
     @Override
     public void mostrarPartida() throws RemoteException {
         // mostrar todos los elementos de la partida
+        if(ventanaEspera != null){
+            ventanaEspera.dispose();
+            ventanaEspera = null;
+        }
         iniciarVentanaJuego();
     }
 

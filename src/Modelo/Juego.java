@@ -115,7 +115,6 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void asignarRoles() {
 
-
         // elimino los roles anteriores
         jugadores.forEach((id, j) -> {
             j.setRol(null);
@@ -124,7 +123,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         // genero los roles dependiendo la cantidad de jugadores
         // asigno los  roles a cada uno
         switch (jugadores.size()) {
-            case 1, 2, 3 -> {
+            case 3 -> {
                 roles = new ArrayList<>();
                 roles.add(Rol.MINERO);
                 roles.add(Rol.MINERO);
@@ -259,23 +258,6 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
-//        if (ganaronLosMineros) {
-//            jugadores.forEach((id, j) -> {
-//                if (j.getRol() == Rol.MINERO) {
-//                    j.sumarPuntos(4);
-//                } else {
-//                    j.sumarPuntos(3);
-//                }
-//            });
-//        } else {
-//            jugadores.forEach((id, j) -> {
-//                if (j.getRol() == Rol.SABOTEADOR) {
-//                    j.sumarPuntos(4);
-//                } else {
-//                    j.sumarPuntos(3);
-//                }
-//            });
-//        }
 
         if(ganaronLosMineros){
             // obtengo las pepitas de los mineors

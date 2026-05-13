@@ -165,14 +165,16 @@ public class PantallaBienvenida extends JFrame {
 
     private void unirsePartida() throws RMIMVCException, RemoteException {
 
-        // Seleccion de ipServidor servidor
+        // Seleccion de ipServidor
         String ipServidor = JOptionPane.showInputDialog(
                 null,
                 "Ingrese la IP del servidor (PC donde se creó la partida)",
                 "192.168.1.33"  // valor por defecto como sugerencia
         );
 
-        // IP del CLIENTE (la propia máquina Linux que se está conectando)
+        if(ipServidor == null || ipServidor.isBlank()) return;
+
+        // Seleccion ip cliente
         String ipCliente = (String) JOptionPane.showInputDialog(
                 null,
                 "Seleccione su propia IP (la de esta máquina)", "IP del cliente",
@@ -181,6 +183,8 @@ public class PantallaBienvenida extends JFrame {
                 ips.toArray(),   // muestra las IPs disponibles en esta máquina
                 null
         );
+
+        if(ipCliente == null || ipCliente.isBlank()) return;
 
         // Seleccion puerto cliente
         String port = (String) JOptionPane.showInputDialog(
@@ -191,6 +195,8 @@ public class PantallaBienvenida extends JFrame {
                 null,
                 9999
         );
+
+        if(port == null || port.isBlank()) return;
 
         ControladorJuego controlador = new ControladorJuego();
         Cliente c = new Cliente(ipCliente, Integer.parseInt(port), ipServidor, PORTSERVIDOR);
