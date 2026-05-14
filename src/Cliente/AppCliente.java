@@ -13,7 +13,10 @@ import java.util.ArrayList;
 
 public class AppCliente {
     public static void main(String[] args) throws RemoteException {
-    SwingUtilities.invokeLater(() -> new PantallaBienvenida());
+    SwingUtilities.invokeLater(() ->{
+            ControladorJuego controlador = new ControladorJuego();
+            new PantallaBienvenida(controlador);
+    });
     }
 
 }

@@ -8,6 +8,7 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Vista.*;
 import ar.edu.unlu.rmimvc.RMIMVCException;
+import ar.edu.unlu.rmimvc.cliente.Cliente;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import ar.edu.unlu.rmimvc.servidor.Servidor;
@@ -119,19 +120,19 @@ public class ControladorJuego implements IControladorRemoto {
         IJugador objetivo = getJugadorPorId(idObjetivo);
 
         // DEVUELVO SOLO UN TIPOACCION PORQUE SOLO ME INTERESA COMO INICIA
-        if (carta instanceof CartaAccion) {
+        if (carta instanceof CartaAccion cartaAccion) {
 
             pudoSerJugada = juego.jugarHerramienta(objetivo, posCarta, herramientaPresionada);
 
             if (!pudoSerJugada) {
                 if (objetivo.getId() != jugadorCliente.getId()) {
-                    if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
+                    if (cartaAccion.esReparar()) {
                         return TipoAccion.OBJETIVO_REPARAR;
                     } else {
                         return TipoAccion.OBJETIVO_ROMPER;
                     }
                 } else {
-                    if (((CartaAccion) carta).getTipoAccion().getFirst().toString().startsWith("REPARAR")) {
+                    if (cartaAccion.esReparar()) {
                         return TipoAccion.REPARARPICO;
                     } else {
                         return TipoAccion.ROMPERPICO;
@@ -183,7 +184,6 @@ public class ControladorJuego implements IControladorRemoto {
                     actualizarJugador();
                     SwingUtilities.invokeLater(() -> {
                         try {
-                            iniciarVistaGrafica();
                             vista.mostrarPartida();
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -195,7 +195,6 @@ public class ControladorJuego implements IControladorRemoto {
                     actualizarJugador();
                     SwingUtilities.invokeLater(() -> {
                         try {
-                            iniciarVistaGrafica();
                             vista.mostrarPartida();
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -208,7 +207,6 @@ public class ControladorJuego implements IControladorRemoto {
                     SwingUtilities.invokeLater(() -> {
                         try {
                             if (vista == null) {
-                                iniciarVistaGrafica();
                                 vista.mostrarPartida();
                             } else {
                                 vista.actualizar(getTablero(), juego.getJugadores());
@@ -317,9 +315,17 @@ public class ControladorJuego implements IControladorRemoto {
         this.vistaServidor = vistaServidor;
     }
 
-    public void crearServidor(String ip, int puerto) throws RemoteException, RMIMVCException {
-        Servidor servidor = new Servidor(ip, puerto);
+    public void crearPartida(String ipServidor, int puertoCliente) throws RMIMVCException, RemoteException {
+        Servidor servidor = new Servidor(ipServidor, 8888);
         servidor.iniciar(new Juego());
+        Cliente cliente =  new Cliente(ipServidor, puertoCliente, ipServidor, 8888);
+        cliente.iniciar(this);
+        this.setEsHost();
+    }
+
+    public void unirseAPartida(String ipServidor, String ipCliente, int puertoCliente) throws RMIMVCException, RemoteException {
+        Cliente cliente =  new Cliente(ipServidor, puertoCliente, ipCliente, 8888);
+        cliente.iniciar(this);
     }
 
     public void guardarPartida() throws RemoteException {
@@ -334,10 +340,6 @@ public class ControladorJuego implements IControladorRemoto {
 
     private int getRonda() throws RemoteException {
         return juego.getRonda();
-    }
-
-    private void iniciarVistaGrafica() throws RemoteException {
-        this.vista = new VistaGrafica(this);
     }
 
     @Override

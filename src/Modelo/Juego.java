@@ -371,12 +371,12 @@ public class Juego extends ObservableRemoto implements IJuego {
         Boolean pudoSerJugado = false;
 
         // dependiendo el tipo de la carta juego de cierta manera
-        if (carta instanceof CartaTunel) {
+        if (carta instanceof CartaTunel cartaTunel) {
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
             if (actual.getHerramientasRotas().isEmpty()) {
                 if(rotada){
-                    ((CartaTunel) carta).rotar();
+                    cartaTunel.rotar();
                     carta.setRotada(true);
                 }
                 if (actual.jugarCarta(tablero, x, y, carta)) {
@@ -386,8 +386,8 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             }
 
-        } else if (carta instanceof CartaAccion) {
-            if (((CartaAccion) carta).getTipoAccion().size() == 1) {
+        } else if (carta instanceof CartaAccion cartaAccion) {
+            if (cartaAccion.getTipoAccion().size() == 1) {
                 if (actual.jugarCartaMapaDerrumbe(tablero, x, y, carta)) {
                     // despues de jugar elimino la carta de la mano
                     actual.getManoCartas().remove(posCarta);

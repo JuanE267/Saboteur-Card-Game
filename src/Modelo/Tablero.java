@@ -1,14 +1,11 @@
 package Modelo;
 
 import Modelo.Cartas.Carta;
-import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
 import Modelo.Cartas.CartaTunel;
 import Modelo.Enums.Direccion;
-import Modelo.Enums.Rol;
 import Modelo.Enums.TipoCarta;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.util.*;
 
@@ -178,10 +175,10 @@ public class Tablero implements Serializable {
     }
 
     private Boolean puedeConectar(Carta vecino, CartaTunel carta, Direccion direccion) {
-        if (vecino instanceof CartaTunel) {
-            return carta.puedeConectar((CartaTunel) vecino, direccion);
-        } else if (vecino instanceof CartaDestino) {
-            return carta.puedeConectar((CartaDestino) vecino, direccion);
+        if (vecino instanceof CartaTunel cartaTunel) {
+            return carta.puedeConectar(cartaTunel, direccion);
+        } else if (vecino instanceof CartaDestino cartaDestino) {
+            return carta.puedeConectar(cartaDestino, direccion);
         }
         return false;
     }

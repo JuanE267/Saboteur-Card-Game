@@ -143,4 +143,7 @@ public class CartaAccion extends Carta {
         return false;
     }
 
+    public boolean esReparar(){
+        return getTipoAccion().getFirst().toString().startsWith("REPARAR");
+    }
 }

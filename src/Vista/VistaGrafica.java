@@ -20,7 +20,6 @@ public class VistaGrafica implements IVistaGrafica {
 
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
-        this.controlador.setVistaGrafica(this);
         this.ventanaInicioSesion = new VentanaInicioSesion();
         this.lobby = new Lobby(controlador);
 
@@ -64,10 +63,6 @@ public class VistaGrafica implements IVistaGrafica {
 
     private void ocultarInicioSesion() {
         this.ventanaInicioSesion.setVisible(false);
-    }
-
-    public VentanaJuego getVentanaJuego() {
-        return this.ventanaJuego;
     }
 
     public void mostrarPantallaEspera() {
@@ -122,7 +117,7 @@ public class VistaGrafica implements IVistaGrafica {
         }
     }
 
-    public VentanaJuego iniciarVentanaJuego() throws RemoteException {
+    private VentanaJuego iniciarVentanaJuego() throws RemoteException {
         return ventanaJuego = new VentanaJuego(controlador);
     }
 }

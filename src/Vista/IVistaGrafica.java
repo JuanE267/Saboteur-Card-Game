@@ -13,10 +13,6 @@ public interface IVistaGrafica {
 
     void iniciar();
 
-    VentanaJuego getVentanaJuego();
-
-    VentanaJuego iniciarVentanaJuego() throws RemoteException;
-
     void mostrarPartida() throws RemoteException;
 
     void ocultarPartida();

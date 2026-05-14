@@ -9,6 +9,7 @@ public class CartaDestino extends CartaTunel {
     private int oroY;
     private String dorso;
     private String cara;
+    private boolean fueGirada = false;
 
     public CartaDestino(int id, TipoCarta tipo, String img, String dorso, boolean esOro) {
         super(id, tipo, img, false);
@@ -20,8 +21,10 @@ public class CartaDestino extends CartaTunel {
     }
 
     public void girar(){
+        if(fueGirada) return;
         if(this.getImg().equals(dorso)) setImg(cara);
         else setImg(dorso);
+        fueGirada = true;
     }
 
     public boolean getEsOro() {
