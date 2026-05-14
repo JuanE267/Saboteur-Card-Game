@@ -13,7 +13,6 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 public class PantallaBienvenida extends JFrame {
-    private static final int PORTSERVIDOR = 8888;
     private ControladorJuego controlador;
     ArrayList<String> ips = Util.getIpDisponibles();
     private Image fondo;

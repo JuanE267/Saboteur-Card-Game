@@ -42,6 +42,7 @@ public class VentanaGanador extends JFrame {
         panelSuperior.setBackground(FONDO);
 
         labelMensaje = new JLabel("", SwingConstants.CENTER);
+        labelMensaje.setForeground(TEXTO);
         labelMensaje.setFont(new Font("Serif", Font.BOLD, 28));
         labelMensaje.setAlignmentX(Component.CENTER_ALIGNMENT);
 

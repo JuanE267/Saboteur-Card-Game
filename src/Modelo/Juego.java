@@ -12,6 +12,8 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
+import javax.swing.*;
+
 public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, IJugador> jugadores;
@@ -572,6 +574,11 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     @Override
     public boolean cargarPartida() throws RemoteException {
+
+        if(!validarCarga()){
+           return false;
+        }
+
         try {
             try (ObjectInputStream ois = new ObjectInputStream(
                     new FileInputStream("Data/jugadores.dat"))) {
@@ -627,6 +634,45 @@ public class Juego extends ObservableRemoto implements IJuego {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean validarCarga(){
+
+        // cargo los jugadoresCargados temporalmente para validar
+
+        HashMap<Integer, IJugador> jugadoresCargadosValidar;
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream("Data/jugadores.dat"))) {
+            jugadoresCargadosValidar = (HashMap<Integer, IJugador>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo cargar la partida guardada. Archivo de jugadores no encontrado o corrupto."
+                    , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // validar si la cantidad de jugadores es correcta antes de cargar la partida
+        if(jugadores.size() != jugadoresCargadosValidar.size()){
+            JOptionPane.showMessageDialog(null, "La partida guardada tiene una cantidad de jugadores diferente a la actual. No se puede cargar la partida."
+                                            , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // validar nombres y edades
+        for(IJugador cargado : jugadores.values()){
+            boolean coincide = false;
+            for(IJugador guardado : jugadoresCargadosValidar.values()){
+                if(guardado.getNombre().equals(cargado.getNombre()) && guardado.getEdad() == cargado.getEdad()){
+                    coincide = true;
+                    break;
+                }
+            }
+            if(!coincide){
+                JOptionPane.showMessageDialog(null, "La partida guardada tiene un jugador con nombre/edad diferente a la actual. No se puede cargar la partida."
+                        , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
+                return false;
+        }
+    }
+        return true;
     }
 
     @Override

@@ -208,7 +208,6 @@ public class ControladorJuego implements IControladorRemoto {
                         try {
                             if (vista != null) {
                                 vista.mostrarPartida();
-                            } else {
                                 vista.actualizar(getTablero(), juego.getJugadores());
                             }
                         } catch (RemoteException e) {
@@ -244,7 +243,9 @@ public class ControladorJuego implements IControladorRemoto {
                                 if (segundos[0] <= 0) {
                                     timer.stop();
                                     try {
-                                        juego.reiniciarRonda(juego.getRonda() + 1);
+                                        if(esHost()) {
+                                            juego.reiniciarRonda(juego.getRonda() + 1);
+                                        }
                                         ventanaGanador.setVisible(false);
                                         vista.mostrarPartida();
                                     } catch (RemoteException ex) {
