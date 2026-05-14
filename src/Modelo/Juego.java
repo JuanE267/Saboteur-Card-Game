@@ -576,6 +576,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             try (ObjectInputStream ois = new ObjectInputStream(
                     new FileInputStream("Data/jugadores.dat"))) {
                 this.jugadoresCargados = (HashMap<Integer, IJugador>) ois.readObject();
+                this.jugadores = new HashMap<>(this.jugadoresCargados);
             }
 
             try (ObjectInputStream ois = new ObjectInputStream(
@@ -586,11 +587,6 @@ public class Juego extends ObservableRemoto implements IJuego {
             try (ObjectInputStream ois = new ObjectInputStream(
                     new FileInputStream("Data/tablero.dat"))) {
                 this.tablero = (Tablero) ois.readObject();
-            }
-
-            try (ObjectInputStream ois = new ObjectInputStream(
-                    new FileInputStream("Data/roles.dat"))) {
-                this.roles = (List<Rol>) ois.readObject();
             }
 
             try (DataInputStream dis = new DataInputStream(
@@ -618,6 +614,12 @@ public class Juego extends ObservableRemoto implements IJuego {
                 this.ganador = (IJugador) ois.readObject();
             }
 
+
+            try (ObjectInputStream ois = new ObjectInputStream(
+                    new FileInputStream("Data/ganadorRonda.dat"))) {
+                this.ganadorRonda = (IJugador) ois.readObject();
+            }
+
             this.notificarObservadores(Evento.CARGAR_PARTIDA);
             return true;
 
@@ -629,6 +631,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     @Override
     public boolean guardarPartida() throws RemoteException {
+        new File("Data").mkdirs();
         try {
             try (ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream("Data/jugadores.dat"))) {
@@ -641,18 +644,13 @@ public class Juego extends ObservableRemoto implements IJuego {
             }
 
             try (ObjectOutputStream oos = new ObjectOutputStream(
-                    new FileOutputStream("Data/roles.dat"))) {
-                oos.writeObject(this.roles);
-            }
-
-            try (ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream("Data/mazo.dat"))) {
                 oos.writeObject(this.mazo);
             }
 
             try (DataOutputStream dos = new DataOutputStream(
                     new FileOutputStream("Data/turnoInicial.dat"))) {
-                this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
+              //  this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
                 dos.writeInt(this.turnoInicial);
             }
 
@@ -674,6 +672,11 @@ public class Juego extends ObservableRemoto implements IJuego {
             try (ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream("Data/ordenTurnos.dat"))) {
                 oos.writeObject(this.ordenTurnos);
+            }
+
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Data/ganadorRonda.dat"))) {
+                oos.writeObject(this.ganadorRonda);
             }
 
             return true;

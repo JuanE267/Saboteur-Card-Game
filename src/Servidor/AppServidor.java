@@ -12,6 +12,11 @@ import javax.swing.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+//Esta clase se puede utilizar para iniciar el servidor
+//de manera independiente, pero no es necesario,
+//ya que el servidor se inicia automaticamente al iniciar la aplicacion cliente
+
+
 public class AppServidor {
     public static void main(String[] args) {
         ArrayList<String> ips = Util.getIpDisponibles();

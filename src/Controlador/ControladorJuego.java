@@ -206,7 +206,7 @@ public class ControladorJuego implements IControladorRemoto {
                     actualizarJugador();
                     SwingUtilities.invokeLater(() -> {
                         try {
-                            if (vista == null) {
+                            if (vista != null) {
                                 vista.mostrarPartida();
                             } else {
                                 vista.actualizar(getTablero(), juego.getJugadores());
