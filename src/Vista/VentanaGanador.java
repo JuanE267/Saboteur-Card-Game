@@ -12,6 +12,11 @@ import java.rmi.RemoteException;
 
 public class VentanaGanador extends JFrame {
 
+    private static final Color FONDO   = new Color(30, 20, 10);
+    private static final Color ORO     = new Color(212, 160, 50);
+    private static final Color TEXTO   = new Color(240, 220, 180);
+    private static final Color TARJETA = new Color(50, 35, 15);
+
     private JLabel labelMensaje;
     private JLabel labelTitulo;
     private JLabel labelCuenta;
@@ -27,19 +32,23 @@ public class VentanaGanador extends JFrame {
         setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        getContentPane().setBackground(FONDO);
+
 
         setLayout(new BorderLayout());
 
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+        panelSuperior.setBackground(FONDO);
 
         labelMensaje = new JLabel("", SwingConstants.CENTER);
-        labelMensaje.setFont(new Font("Arial", Font.BOLD, 18));
+        labelMensaje.setFont(new Font("Serif", Font.BOLD, 28));
         labelMensaje.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         labelTitulo = new JLabel("Revelación de roles:", SwingConstants.CENTER);
-        labelTitulo.setFont(new Font("Arial", Font.BOLD, 16));
+        labelTitulo.setFont(new Font("Serif", Font.ITALIC | Font.BOLD, 24));
         labelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelTitulo.setForeground(TEXTO);
 
         panelSuperior.add(Box.createVerticalStrut(20));
         panelSuperior.add(labelMensaje);
@@ -49,13 +58,16 @@ public class VentanaGanador extends JFrame {
         add(panelSuperior, BorderLayout.NORTH);
 
         panelJugadores = new JPanel();
+        panelJugadores.setBackground(FONDO);
         panelJugadores.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
         add(panelJugadores, BorderLayout.CENTER);
 
         JPanel panelInferior = new JPanel();
+        panelInferior.setBackground(FONDO);
 
         labelCuenta = new JLabel("La siguiente ronda empezará en 10 segundos");
-        labelCuenta.setFont(new Font("Arial", Font.BOLD, 14));
+        labelCuenta.setForeground(TEXTO);
+        labelCuenta.setFont(new Font("Serif", Font.BOLD, 18));
 
         panelInferior.add(labelCuenta);
 
@@ -71,7 +83,7 @@ public class VentanaGanador extends JFrame {
             case NUEVA_RONDA_GANADOR_MINEROS -> {
                 String nombre = ganadorRonda != null ? ganadorRonda.getNombre() : "Alguien";
                 labelMensaje.setText(
-                        "<html>" + nombre + " encontró el oro!!<br>GANARON LOS MINEROS!</html>"
+                        "<html>" + nombre + " encontro el oro!!<br>GANARON LOS MINEROS!</html>"
                 );
                 labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
             }
@@ -83,7 +95,7 @@ public class VentanaGanador extends JFrame {
                     );
                 } else {
                     labelMensaje.setText(
-                            "<html>¡No hay más cartas!<br>GANARON LOS SABOTEADORES!</html>"
+                            "<html>¡No hay mas cartas!<br>GANARON LOS SABOTEADORES!</html>"
                     );
                 }
                 labelCuenta.setText("Partida terminada");
@@ -111,7 +123,12 @@ public class VentanaGanador extends JFrame {
 
         for (IJugador j : jugadores) {
             JPanel jugadorPanel = new JPanel();
-            jugadorPanel.setLayout(new BorderLayout());
+            jugadorPanel.setLayout(new BorderLayout(0,8));
+            jugadorPanel.setBackground(TARJETA);
+            jugadorPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(ORO, 1),
+                    BorderFactory.createEmptyBorder(2, 10, 2, 10)
+            ));
 
             JLabel imagen = new JLabel();
             imagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -126,11 +143,13 @@ public class VentanaGanador extends JFrame {
             URL url = getClass().getClassLoader().getResource(ruta);
             if (url != null) {
                 ImageIcon icon = new ImageIcon(url);
-                Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                Image img = icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);;
                 imagen.setIcon(new ImageIcon(img));
             }
 
             JLabel nombre = new JLabel(j.getNombre(), SwingConstants.CENTER);
+            nombre.setForeground(TEXTO);
+            nombre.setFont(new Font("Serif", Font.BOLD, 32));
 
             jugadorPanel.add(imagen, BorderLayout.CENTER);
             jugadorPanel.add(nombre, BorderLayout.SOUTH);
@@ -140,5 +159,13 @@ public class VentanaGanador extends JFrame {
 
         panelJugadores.revalidate();
         panelJugadores.repaint();
+    }
+
+    public void actualizarCuentaRegresiva(int segundos) {
+        if(segundos > 0) {
+            labelCuenta.setText("La siguiente ronda empezará en " + segundos + " segundos");
+        } else {
+            labelCuenta.setText("¡Empezando nueva ronda!");
+        }
     }
 }

@@ -233,19 +233,31 @@ public class ControladorJuego implements IControladorRemoto {
                             vista.ocultarPartida();
                             avisarGanadores(evento, juego.getGanadorRonda());
                             vista.actualizar(getTablero(), juego.getJugadores());
-                            new Timer(10000, e -> {
-                                ((Timer) e.getSource()).stop();
-                                try {
-                                    ventanaGanador.setVisible(false);
-                                    vista.mostrarPartida();
-                                } catch (RemoteException ex) {
-                                    throw new RuntimeException(ex);
+
+                            // timer para que empiece la siguiente ronda
+
+                            final int[] segundos = {10};
+                            Timer timer = new Timer(1000, null);
+                            timer.addActionListener(e -> {
+                                segundos[0]--;
+                                ventanaGanador.actualizarCuentaRegresiva(segundos[0]);
+                                if (segundos[0] <= 0) {
+                                    timer.stop();
+                                    try {
+                                        juego.reiniciarRonda(juego.getRonda() + 1);
+                                        ventanaGanador.setVisible(false);
+                                        vista.mostrarPartida();
+                                    } catch (RemoteException ex) {
+                                        ex.printStackTrace();
+                                    }
                                 }
-                            }).start();
+                            });
+                            timer.start();
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
                     });
+
                 }
                 case FINALIZAR_PARTIDA_SABOTEADORES, FINALIZAR_PARTIDA_MINEROS -> {
                     actualizarJugador();

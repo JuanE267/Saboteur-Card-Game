@@ -293,9 +293,6 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
         if (ronda <= 2) {
-            // reinicio el estado logico
-            ronda++;
-            reiniciarRonda(ronda);
             //reinicio la vista dependiendo el ganador
             if (ganaronLosMineros) {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_MINEROS);
@@ -304,7 +301,6 @@ public class Juego extends ObservableRemoto implements IJuego {
                 notificarObservadores(Evento.NUEVA_RONDA_GANADOR_SABOTEADORES);
             }
         } else {
-
             // finalizar partida
             if(jugadores.isEmpty()) return;
 
@@ -445,6 +441,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
 
     public void reiniciarRonda(int ronda) {
+        this.ronda = ronda;
 
         // reinicio el mazo
         mazo = new Mazo();
