@@ -52,6 +52,9 @@ public class PanelPuntosYAcciones extends JPanel {
         descartar.setText("DESCARTAR");
         pasarTurno.setText("PASAR TURNO");
 
+        boolean manoVacia = jugadorCliente != null && jugadorCliente.getManoCartas().isEmpty();
+        descartar.setEnabled(manoVacia);
+        pasarTurno.setEnabled(!manoVacia);
 
         add(puntaje);
         contenedorBotones.add(descartar);
