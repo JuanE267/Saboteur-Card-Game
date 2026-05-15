@@ -522,7 +522,7 @@ ControladorJuego o-- IVistaGrafica   : vista
 ControladorJuego o-- IVistaServidor  : vistaServidor
 ControladorJuego o-- VentanaGanador  : ventanaGanador
 
-' Vista -> Controlador  ⚠ (violación: debería ser IControlador)
+' Vista -> Controlador  ⚠ (violacion: deberia ser IControlador)
 VistaGrafica       ..>  ControladorJuego
 VentanaServidor    ..>  ControladorJuego
 VentanaGanador     ..>  ControladorJuego

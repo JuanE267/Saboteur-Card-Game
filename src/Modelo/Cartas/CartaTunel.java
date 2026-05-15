@@ -6,7 +6,7 @@ import Modelo.Enums.TipoCarta;
 import java.util.HashMap;
 import java.util.Map;
 
-// Clase que representa una carta de túnel en el juego
+// Clase que representa una carta de tunel en el juego
 // cada una tiene 4 o menos conexiones y pueden rotarse
 public class CartaTunel extends Carta {
 

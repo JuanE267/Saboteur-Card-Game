@@ -77,7 +77,7 @@ public class VistaGrafica implements IVistaGrafica {
         mensaje.setFont(new Font("Arial", Font.BOLD, 16));
 
         JProgressBar barra = new JProgressBar();
-        barra.setIndeterminate(true); // animación de carga
+        barra.setIndeterminate(true); // animacion de carga
 
         ventanaEspera.add(mensaje, BorderLayout.CENTER);
         ventanaEspera.add(barra, BorderLayout.SOUTH);

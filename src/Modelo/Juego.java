@@ -563,7 +563,7 @@ public class Juego extends ObservableRemoto implements IJuego {
                 return mano;
             }
             default -> throw new IllegalStateException(
-                    "Cantidad de jugadores inválida: " + cantJugadores +
+                    "Cantidad de jugadores invalida: " + cantJugadores +
                             ". Debe ser entre 2 y 10."
             );
         }
@@ -698,7 +698,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             jugadoresCargadosValidar = (HashMap<Integer, IJugador>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException(
-                    "No se pudo cargar la partida. Asegúrese de que el archivo de la partida guardada exista y sea válido."
+                    "No se pudo cargar la partida. Asegurese de que el archivo de la partida guardada exista y sea valido."
             );
         }
 
@@ -720,7 +720,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             }
             if (!coincide) {
                 throw new IllegalStateException(
-                        "No se pudo cargar la partida. Asegúrese de que los jugadores de la partida guardada coincidan con los jugadores actuales."
+                        "No se pudo cargar la partida. Asegurese de que los jugadores de la partida guardada coincidan con los jugadores actuales."
                 );
             }
         }

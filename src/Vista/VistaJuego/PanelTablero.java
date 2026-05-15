@@ -38,7 +38,7 @@ public class PanelTablero extends JPanel {
     private int lastMouseX;
     private int lastMouseY;
 
-    // Offset para desplazamiento (en píxeles de pantalla)
+    // Offset para desplazamiento (en pixeles de pantalla)
     private double offsetX = 0;
     private double offsetY = 0;
 
@@ -202,7 +202,7 @@ public class PanelTablero extends JPanel {
                     g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-                    // Si la carta está rotada, aplicar rotación 180° al dibujarla
+                    // Si la carta esta rotada, aplicar rotacion 180° al dibujarla
                     if (carta.isRotada()) {
                         g2d.rotate(Math.PI, anchoEscalado / 2.0, altoEscalado / 2.0);
                     }
@@ -225,12 +225,12 @@ public class PanelTablero extends JPanel {
 
         int spacing = (int) (ANCHO_CASILLERO * zoom);
 
-        // Líneas verticales
+        // Lineas verticales
         for (int x = (int) offsetX % spacing; x < getWidth(); x += spacing) {
             g2.drawLine(x, 0, x, getHeight());
         }
 
-        // Líneas horizontales
+        // Lineas horizontales
         spacing = (int) (ALTO_CASILLERO * zoom);
         for (int y = (int) offsetY % spacing; y < getHeight(); y += spacing) {
             g2.drawLine(0, y, getWidth(), y);
@@ -240,7 +240,7 @@ public class PanelTablero extends JPanel {
     private void centrarTablero() {
         if (tablero.getCartas().isEmpty()) return;
 
-        // Calcular bounds en coordenadas del MUNDO (no píxeles)
+        // Calcular bounds en coordenadas del MUNDO (no pixeles)
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
@@ -257,7 +257,7 @@ public class PanelTablero extends JPanel {
         double centroMundoX = (minX + maxX) / 2.0;
         double centroMundoY = (minY + maxY) / 2.0;
 
-        // Convertir a píxeles y centrar en la pantalla
+        // Convertir a pixeles y centrar en la pantalla
         offsetX = getWidth() / 2.0 - centroMundoY * ANCHO_CASILLERO * zoom;
         offsetY = getHeight() / 2.0 - centroMundoX * ALTO_CASILLERO * zoom;
     }
@@ -287,7 +287,7 @@ public class PanelTablero extends JPanel {
                 List<Herramienta> tieneHerramientasRotas = jugadorCliente.getHerramientasRotas();
 
                 if (tablero.getCarta(x, y) instanceof CartaTunel) {
-                    JOptionPane.showMessageDialog(this, "No se puede jugar ahí");
+                    JOptionPane.showMessageDialog(this, "No se puede jugar ahi");
                 } else if (!tieneHerramientasRotas.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "No se puede construir con herramientas rotas");
                 }

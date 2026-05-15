@@ -27,7 +27,7 @@ public class CartaAccion extends Carta {
         super(id, tipo, img);
     }
 
-    // Acción para romper/reparar herramienta a un jugador
+    // Accion para romper/reparar herramienta a un jugador
     // herramientaPresionada es la herramienta que se selecciona en la vista
     // utilizo polimorfismo para sobreescribir el metodo jugarCarta dependiendo de la accion
     public Boolean jugarCarta(IJugador afectado, Herramienta herramientaPresionada) {
@@ -64,7 +64,7 @@ public class CartaAccion extends Carta {
         return herramienta;
     }
 
-    // Acción para ver un destino del tablero o derrumbar
+    // Accion para ver un destino del tablero o derrumbar
     public Boolean jugarCarta(int x, int y, Tablero tablero) {
         Boolean pudoSerJugada = false;
 

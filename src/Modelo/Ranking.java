@@ -11,7 +11,7 @@ public class Ranking {
 
     public static List<String> obtenerRanking(){
 
-        // si el archivo no existe, retorno una lista vacía
+        // si el archivo no existe, retorno una lista vacia
         if(!new File(ARCHIVO_RANKING).exists()) {
             return new ArrayList<>();
         }

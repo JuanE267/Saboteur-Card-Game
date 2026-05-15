@@ -46,7 +46,7 @@ public class VentanaGanador extends JFrame {
         labelMensaje.setFont(new Font("Serif", Font.BOLD, 28));
         labelMensaje.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        labelTitulo = new JLabel("Revelación de roles:", SwingConstants.CENTER);
+        labelTitulo = new JLabel("Revelacion de roles:", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("Serif", Font.ITALIC | Font.BOLD, 24));
         labelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         labelTitulo.setForeground(TEXTO);
@@ -66,7 +66,7 @@ public class VentanaGanador extends JFrame {
         JPanel panelInferior = new JPanel();
         panelInferior.setBackground(FONDO);
 
-        labelCuenta = new JLabel("La siguiente ronda empezará en 10 segundos");
+        labelCuenta = new JLabel("La siguiente ronda empezara en 10 segundos");
         labelCuenta.setForeground(TEXTO);
         labelCuenta.setFont(new Font("Serif", Font.BOLD, 18));
 
@@ -79,19 +79,19 @@ public class VentanaGanador extends JFrame {
         switch (evento) {
             case NUEVA_RONDA_GANADOR_SABOTEADORES -> {
                 labelMensaje.setText("<html>No hay mas cartas para jugar!<br>GANARON LOS SABOTEADORES!</html>");
-                labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
+                labelCuenta.setText("La siguiente ronda empezara en 10 segundos");
             }
             case NUEVA_RONDA_GANADOR_MINEROS -> {
                 String nombre = ganadorRonda != null ? ganadorRonda.getNombre() : "Alguien";
                 labelMensaje.setText(
                         "<html><div style='text-align:center'>" + nombre + " encontro el oro!!<br>GANARON LOS MINEROS!</html>"
                 );
-                labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
+                labelCuenta.setText("La siguiente ronda empezara en 10 segundos");
             }
             case FINALIZAR_PARTIDA_SABOTEADORES -> {
                 if (ganadorRonda != null) {
                     labelMensaje.setText(
-                            "<html>" + ganadorRonda.getNombre() + " encontró el oro...<br>" +
+                            "<html>" + ganadorRonda.getNombre() + " encontro el oro...<br>" +
                                     "¡Pero era una trampa! GANARON LOS SABOTEADORES!</html>"
                     );
                 } else {
@@ -164,7 +164,7 @@ public class VentanaGanador extends JFrame {
 
     public void actualizarCuentaRegresiva(int segundos) {
         if (segundos > 0) {
-            labelCuenta.setText("La siguiente ronda empezará en " + segundos + " segundos");
+            labelCuenta.setText("La siguiente ronda empezara en " + segundos + " segundos");
         } else {
             labelCuenta.setText("¡Empezando nueva ronda!");
         }

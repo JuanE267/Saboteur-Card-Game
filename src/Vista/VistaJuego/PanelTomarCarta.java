@@ -29,7 +29,7 @@ public class PanelTomarCarta extends JPanel {
         try {
             Carta primera = controlador.getMazo().getPrimerCarta();
             if (primera == null) {
-                // mazo vacío — mostrar texto discreto
+                // mazo vacio — mostrar texto discreto
                 JLabel vacio = new JLabel("Sin cartas");
                 vacio.setForeground(Color.WHITE);
                 add(vacio);
