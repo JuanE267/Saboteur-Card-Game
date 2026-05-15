@@ -1,6 +1,6 @@
-<img width="1574" height="687" alt="image" src="https://github.com/user-attachments/assets/1fd03471-4d6e-4c0f-acfc-a73d890ef58a" />
+<img width="1274" height="687" alt="image" src="https://github.com/user-attachments/assets/1fd03471-4d6e-4c0f-acfc-a73d890ef58a" />
 
-# 🪨 Saboteur Card Game
+# 🪨 Saboteur
 
 Implementación digital del juego de cartas **Saboteur** con multijugador en red, interfaz gráfica y arquitectura MVC distribuida.
 
