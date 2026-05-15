@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.rmi.RemoteException;
 import java.util.List;
 
+// Clase que actua como intermediario entre el modelo y la vista
 public class Controlador implements IControladorRemoto {
     private IJuego juego;
     private boolean esPartidaCargada = false;
@@ -28,6 +29,8 @@ public class Controlador implements IControladorRemoto {
     private IVistaServidor vistaServidor;
     private IVistaGrafica vista;
     private IJugador jugadorCliente;
+
+    // indica si es el creador de la partida
     private boolean esHost = false;
 
     public <T extends IObservableRemoto> Controlador(T juego) {
@@ -48,7 +51,7 @@ public class Controlador implements IControladorRemoto {
         return (juego.getJugadores().length != 0);
     }
 
-
+    // conecta usuario con nombre y edad
     public IJugador conectarUsuario(String nombre, int edad) {
         try {
             return this.juego.agregarJugador(nombre, edad);
@@ -59,6 +62,7 @@ public class Controlador implements IControladorRemoto {
         return null;
     }
 
+    // obtiene el jugador por su id
     public IJugador getJugadorActualizado() throws RemoteException {
         for (IJugador j : juego.getJugadores()) {
             if (j.getId() == jugadorCliente.getId()) {
@@ -68,6 +72,7 @@ public class Controlador implements IControladorRemoto {
         return null;
     }
 
+    // actualiza el jugador cliente con los datos obtenidos del modelo remoto
     public void actualizarJugador() throws RemoteException {
         if (jugadorCliente == null) return;
         for (IJugador j : juego.getJugadores()) {
@@ -76,10 +81,6 @@ public class Controlador implements IControladorRemoto {
                 return;
             }
         }
-    }
-
-    public IJugador getJugadorCliente() throws RemoteException {
-        return jugadorCliente;
     }
 
 
@@ -96,6 +97,8 @@ public class Controlador implements IControladorRemoto {
         return juego.verificarSiTerminoLaRonda();
     }
 
+    // juega una carta
+    // creo que el objetivo es innecesario, se podria armar mas simple
     public Boolean jugarUnaCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException {
 
         // tomo el jugador objetivo actualizado
@@ -113,6 +116,7 @@ public class Controlador implements IControladorRemoto {
         return juego.getJugadorPorId(id);
     }
 
+    // juega la herramienta, y le avisa a la vista para modificar los iconos
     public TipoAccion jugarHerramienta(int posCarta, int idObjetivo, Herramienta herramientaPresionada) throws RemoteException {
 
         // valido desde el controlador si puedo usar la carta, despues la uso desde el modelo Juego
@@ -152,10 +156,6 @@ public class Controlador implements IControladorRemoto {
 
     public IJugador getJugadorActual() throws RemoteException {
         return juego.getJugadorActual();
-    }
-
-    public int getTurnoActual() throws RemoteException {
-        return juego.getTurnoActual();
     }
 
     public void descartarCarta(int posCarta) throws RemoteException {
@@ -358,9 +358,6 @@ public class Controlador implements IControladorRemoto {
     }
 
 
-    private int getRonda() throws RemoteException {
-        return juego.getRonda();
-    }
 
     @Override
     public <T extends IObservableRemoto> void setModeloRemoto(T modelo) throws RemoteException {
@@ -370,10 +367,6 @@ public class Controlador implements IControladorRemoto {
 
     public Mazo getMazo() throws RemoteException {
         return juego.getMazo();
-    }
-
-    public IJugador getGanador() throws RemoteException {
-        return juego.getGanador();
     }
 
     public void setJugadorCliente(IJugador jugador) {
