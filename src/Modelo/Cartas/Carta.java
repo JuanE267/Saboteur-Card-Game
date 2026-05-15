@@ -4,6 +4,8 @@ import Modelo.Enums.TipoCarta;
 
 import java.io.Serializable;
 
+
+// Clase abstracta que representa una carta en el juego
 public abstract class Carta implements Serializable {
 
     private static final long serialVersionUID = 1L;

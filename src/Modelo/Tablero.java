@@ -9,6 +9,8 @@ import Modelo.Enums.TipoCarta;
 import java.io.Serializable;
 import java.util.*;
 
+
+// Clase que representa el tablero en el juego
 public class Tablero implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +27,9 @@ public class Tablero implements Serializable {
         inicializarTablero();
     }
 
+
+    // Metodo para inicializar el tablero al comienzo de la partida
+    // reparte los destinos y  coloca el inicio
     public void inicializarTablero() {
 
         // Creo las cartas iniciales
@@ -80,6 +85,7 @@ public class Tablero implements Serializable {
 
     }
 
+    // metodo para colocar una carta tunel en el tablero
     public boolean colocarCarta(CartaTunel carta, int x, int y) {
 
         // si ya hay una carta en la posicion
@@ -137,6 +143,7 @@ public class Tablero implements Serializable {
         return true;
     }
 
+    //
     private void girarDestino(Carta vecino, CartaTunel carta, int x, int y, Direccion direccion) {
         // si no es destino, salgo
         if (!(vecino instanceof CartaDestino destino)) return;
@@ -155,6 +162,7 @@ public class Tablero implements Serializable {
         // me fijo si no conecta solo al vecino
         boolean existeVecino = false;
 
+        // por cada vecino, si no es nulo y no es destino, tiene vecino
         for (Carta c : vecinos) {
             if (c != null && !c.esDestino()) {
                 existeVecino = true;
@@ -173,6 +181,9 @@ public class Tablero implements Serializable {
         }
     }
 
+    // metodo para comprobar si es posible la conexion
+    // tambien se deberia poder achicar creo sacando el if
+    // porque destino es hijo de tunel
     private Boolean puedeConectar(Carta vecino, CartaTunel carta, Direccion direccion) {
         if (vecino instanceof CartaTunel cartaTunel) {
             return carta.puedeConectar(cartaTunel, direccion);
@@ -182,6 +193,7 @@ public class Tablero implements Serializable {
         return false;
     }
 
+    // verifica si existe un camino continuo hasta el oro
     public boolean hayCaminoHastaOro() {
 
         if (xOro == -1 && yOro == -1) return false;
@@ -194,6 +206,8 @@ public class Tablero implements Serializable {
 
     }
 
+    // comprueba si hay camino desde [x,y] hasta [finx, finy]
+    // con un set de posiciones visitadas, para no recorrer de nuevo
     private boolean buscarPos(int x, int y, Set<Posicion> visitado, int finx, int finy) {
 
         // posicion actual
@@ -204,6 +218,8 @@ public class Tablero implements Serializable {
 
         //si la posicion no es una carta, salgo de la busqueda
         Carta cartaActual = getCarta(x, y);
+
+        // esto tambien se puede achicar por herencia creo
         if (!((cartaActual instanceof CartaTunel) || (cartaActual instanceof CartaDestino))) return false;
 
         // marco la posicion como visitada
@@ -228,12 +244,17 @@ public class Tablero implements Serializable {
 
             // compruebo si la carta vecina en cierta direccion esta conectada con la actual
             Carta cartaVecina = getCarta(nuevoX, nuevoY);
+
+            // Creo que se puede achicar tambien por herencia, el codigo hace lo mismo
+            // independientemente del tipo de la carta
             if (cartaVecina instanceof CartaDestino vecinoDestino) {
+                // si la carta actual puede conectar con el vecino destino
                 if (((CartaTunel) cartaActual).puedeConectar(vecinoDestino, direccion)) {
                     // paso a recorrer la vecina
                     if (buscarPos(nuevoX, nuevoY, visitado, finx, finy)) return true;
                 }
-            } else if (cartaVecina instanceof CartaTunel vecinoTunel) {
+            }
+            else if (cartaVecina instanceof CartaTunel vecinoTunel) {
                 if (((CartaTunel) cartaActual).puedeConectar(vecinoTunel, direccion)) {
                     // paso a recorrer la vecina
                     if (buscarPos(nuevoX, nuevoY, visitado, finx, finy)) return true;

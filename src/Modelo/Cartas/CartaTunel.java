@@ -6,6 +6,8 @@ import Modelo.Enums.TipoCarta;
 import java.util.HashMap;
 import java.util.Map;
 
+// Clase que representa una carta de túnel en el juego
+// cada una tiene 4 o menos conexiones y pueden rotarse
 public class CartaTunel extends Carta {
 
     private final Map<Direccion, Boolean> caminos = new HashMap<>();
@@ -23,6 +25,8 @@ public class CartaTunel extends Carta {
     }
 
     // controla si es posible conectar la carta con los demas tuneles
+    // puedeConectar se llama en el tablero cada vez que se intenta colocar una carta
+    // pasandole la carta vecina y la direccion
     public Boolean puedeConectar(CartaTunel vecino, Direccion dir) {
 
         // si no hay carta en la posicion vecina retorno true
@@ -67,6 +71,7 @@ public class CartaTunel extends Carta {
         rotacion = 0;
     }
 
+    // rota la carta 180 grados
     public void rotar() {
         boolean arriba = caminos.get(Direccion.ARRIBA);
         boolean abajo = caminos.get(Direccion.ABAJO);
@@ -76,10 +81,6 @@ public class CartaTunel extends Carta {
         setCaminos(abajo, arriba, derecha, izquierda);
 
         rotacion = (rotacion + 180) % 360;
-    }
-
-    public int getRotacion() {
-        return rotacion;
     }
 
     public boolean getEsInicio() {

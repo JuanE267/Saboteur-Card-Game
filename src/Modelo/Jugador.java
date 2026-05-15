@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+// Clase que representa a un jugador en el juego
 public class Jugador implements Serializable, IJugador {
 
     private static final long serialVersionUID = 1L;
@@ -26,9 +27,13 @@ public class Jugador implements Serializable, IJugador {
     public Jugador(String nombre, int edad) {
         this.nombre = nombre;
         this.edad = edad;
+        // este id se comparte entre todos los jugadores
+        // cada vez que se crea un jugador, el id se incrementa en 1
         this.id = ++Jugador.ID;
     }
 
+
+    // Voy sobreescribiendo la firma de jugarCarta dependiendo del tipo de la carta
     // jugar tunel
     public boolean jugarCarta(Tablero tablero, int x, int y, Carta carta) {
         if (puedeConstruir()) {
@@ -48,6 +53,7 @@ public class Jugador implements Serializable, IJugador {
         return ((CartaAccion) carta).jugarCarta(x, y, tablero);
     }
 
+    // metodo para seleccionar una carta de la mano
     public Carta elegirCarta(int posCarta) {
         return manoCartas.get(posCarta);
     }

@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+// Clase que gestiona la logica del juego
 public class Juego extends ObservableRemoto implements IJuego {
 
     private HashMap<Integer, IJugador> jugadores;
@@ -38,8 +39,10 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     }
 
+    // metodo que inicializa la nueva partida
     public void iniciarPartida() throws RemoteException {
 
+        // reseteo los ID de los jugadores
         Jugador.resetID();
 
         // pongo todos los puntajes en 0
@@ -47,6 +50,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             j.setPuntaje(0);
         }
 
+        // compruebo la cantidad de jugadores
         int cantJugadores = getJugadores().length;
         if (cantJugadores < 3 || cantJugadores > 10) {
             throw new IllegalStateException(
@@ -54,9 +58,12 @@ public class Juego extends ObservableRemoto implements IJuego {
             );
         }
 
+        // reparto las cartas a los jugadores
         for (IJugador j : getJugadores()) {
             j.setManoCartas(repartirCartas());
         }
+
+        // limpio el orden de los turnos, y los gestiono
         ordenTurnos.clear();
         ordenTurnos.addAll(jugadores.keySet());
         Collections.sort(ordenTurnos);
@@ -71,6 +78,8 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     public void iniciarPartidaCargadaDesdeCliente(String nombreCliente) throws RemoteException {
+
+        // reparto los datos guardados entre los jugadores
         for (IJugador jc : getJugadoresCargados()) {
             if (jc.getNombre().equals(nombreCliente)) {
                 for (IJugador j : getJugadores()) {
@@ -87,6 +96,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
     }
 
+    // meotodo para agregar un nuevo jugador
     public IJugador agregarJugador(String nombre, int edad) throws RemoteException {
         IJugador jugador = new Jugador(nombre, edad);
         this.jugadores.put(jugador.getId(), jugador);
@@ -94,6 +104,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return jugador;
     }
 
+    // metodo calcular quien es el primer turno
     public void asignoPrimerTurno(int ronda) {
         if (ronda == 1) {
             // el jugador en empezar es el de menor edad
@@ -117,6 +128,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return tablero;
     }
 
+    // metodo para repartir roles
     public void asignarRoles() {
 
         // elimino los roles anteriores
@@ -259,7 +271,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         notificarObservadores(Evento.PASAR_TURNO);
     }
 
-
+    // metodo que finaliza la ronda, reparte las pepitas y finaliza la partida
     public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
 
@@ -331,6 +343,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
     }
 
+    // metodo que devuelve la cantidad de pepitas a repartir entre los mineros
     private List<Integer> pepitasMineros() {
         int cantMineros = 0;
         for (IJugador j : jugadores.values()) {
@@ -392,7 +405,8 @@ public class Juego extends ObservableRemoto implements IJuego {
         return ronda;
     }
 
-
+    // metodo que gestiona las cartas jugadas (sin contar herramientas)
+    // funciona como intermediario entre el controlador y el modelo
     public Boolean jugarCarta(int x, int y, int posCarta, IJugador objetivo, boolean rotada) throws RemoteException {
 
         IJugador actual = getJugadorActual();
@@ -430,6 +444,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return pudoSerJugado;
     }
 
+    // metodo para jugar una herramienta
     public boolean jugarHerramienta(IJugador objetivo, int posCarta, Herramienta herramienta) throws RemoteException {
 
         IJugador actual = getJugadorActual();
@@ -572,16 +587,18 @@ public class Juego extends ObservableRemoto implements IJuego {
             ganadorRonda = getJugadorActual();
             finalizarRonda(true);
             return true;
-        } else if (noHayCartas() && todosLosJugadoresSinCartas()) {
+        } else if (noHayCartas() && todosLosJugadoresSinCartasTunel()) {
             finalizarRonda(false);
             return true;
         }
         return false;
     }
 
-    private boolean todosLosJugadoresSinCartas() {
+    private boolean todosLosJugadoresSinCartasTunel() {
         for (IJugador j : jugadores.values()) {
-            if (!j.getManoCartas().isEmpty()) return false;
+           for(Carta carta : j.getManoCartas()){
+               if (carta instanceof CartaTunel) return false;
+           }
         }
         return true;
     }
