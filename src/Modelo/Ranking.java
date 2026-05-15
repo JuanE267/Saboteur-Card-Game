@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Clase que gestiona el ranking
 public class Ranking {
     private static final String  ARCHIVO_RANKING = "Data/ranking.dat";
     private static final int MAX_RANKING = 5;
