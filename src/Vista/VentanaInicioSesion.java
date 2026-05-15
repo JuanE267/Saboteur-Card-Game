@@ -18,7 +18,7 @@ public class VentanaInicioSesion extends JFrame {
      */
     public VentanaInicioSesion() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 247, 150);
+        setBounds(100, 100, 187, 150);
         setLocationRelativeTo(null);
         setResizable(false);
         contentPane = new JPanel();
@@ -41,7 +41,7 @@ public class VentanaInicioSesion extends JFrame {
         textEdad.setColumns(10);
 
         btnEntrar = new JButton("Entrar");
-        contentPane.add(btnEntrar, "cell 0 2,alignx center");
+        contentPane.add(btnEntrar, "cell 1 2,alignx center");
 
         //SwingUtilities.getRootPane(btnEntrar).setDefaultButton(btnEntrar);
 

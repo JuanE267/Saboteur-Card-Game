@@ -267,9 +267,6 @@ public class PanelTablero extends JPanel {
         int y = (int) Math.floor((mouseX - offsetX) / (ANCHO_CASILLERO * zoom));
         int x = (int) Math.floor((mouseY - offsetY) / (ALTO_CASILLERO * zoom));
 
-        System.out.println("Click en pantalla: (" + mouseX + ", " + mouseY + ")");
-        System.out.println("Click en mundo: (" + x + ", " + y + ")");
-
         jugarEnPosicion(x, y);
     }
 
