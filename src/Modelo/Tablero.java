@@ -64,6 +64,8 @@ public class Tablero implements Serializable {
         destinos.add(segundoCarbon);
 
         List<Posicion> posicionesDestino = new ArrayList<>();
+
+        //para probar fin de rond acambiar x a 0, -2 y 2
         posicionesDestino.add(new Posicion(0, 8));
         posicionesDestino.add(new Posicion(-4, 8));
         posicionesDestino.add(new Posicion(4, 8));
