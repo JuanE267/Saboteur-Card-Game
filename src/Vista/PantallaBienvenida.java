@@ -1,9 +1,8 @@
 package Vista;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
-import ar.edu.unlu.rmimvc.cliente.Cliente;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,17 +11,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 public class PantallaBienvenida extends JFrame {
-    private ControladorJuego controlador;
+    private final Controlador controlador;
     ArrayList<String> ips = Util.getIpDisponibles();
-    private Image fondo;
+    private final Image fondo;
 
 
-    public PantallaBienvenida(ControladorJuego controlador) {
+    public PantallaBienvenida(Controlador controlador) {
 
         this.controlador = controlador;
 
@@ -104,7 +101,7 @@ public class PantallaBienvenida extends JFrame {
                 } catch (IOException | URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(this, "No se pudo encontrar el archivo de reglas.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -127,7 +124,7 @@ public class PantallaBienvenida extends JFrame {
                 null
         );
 
-        if(ipServidor == null || ipServidor.isBlank()) return;
+        if (ipServidor == null || ipServidor.isBlank()) return;
 
 
         String puertoCliente = (String) JOptionPane.showInputDialog(
@@ -139,21 +136,8 @@ public class PantallaBienvenida extends JFrame {
                 9999
         );
 
-        if(puertoCliente == null || puertoCliente.isBlank()) return;
+        if (puertoCliente == null || puertoCliente.isBlank()) return;
 
-
-//        try {
-//            Registry registry = LocateRegistry.getRegistry(ipServidor, PORTSERVIDOR);
-//            String[] servicios = registry.list(); // lanza excepción si no hay nada
-//            if (servicios != null && servicios.length > 0) {
-//                JOptionPane.showMessageDialog(this,
-//                        "Ya existe una partida en esa IP. Usá 'Unirse a partida'.",
-//                        "Partida existente", JOptionPane.WARNING_MESSAGE);
-//                return;
-//            }
-//        } catch (Exception e) {
-//            // No hay registro RMI en esa IP/puerto → no existe servidor → continuar
-//        }
 
         try {
             setVisible(false);
@@ -162,7 +146,7 @@ public class PantallaBienvenida extends JFrame {
             VistaGrafica vista = new VistaGrafica(controlador);
             controlador.setVistaGrafica(vista);
             vista.iniciar();
-        }catch (RemoteException | RMIMVCException ex) {
+        } catch (RemoteException | RMIMVCException ex) {
             setVisible(true);
             JOptionPane.showMessageDialog(this,
                     "Error al crear la partida:\n" + ex.getMessage(),
@@ -180,7 +164,7 @@ public class PantallaBienvenida extends JFrame {
                 "127.0.0.1"
         );
 
-        if(ipServidor == null || ipServidor.isBlank()) return;
+        if (ipServidor == null || ipServidor.isBlank()) return;
 
         // Seleccion ip cliente
         String ipCliente = (String) JOptionPane.showInputDialog(
@@ -192,7 +176,7 @@ public class PantallaBienvenida extends JFrame {
                 null
         );
 
-        if(ipCliente == null || ipCliente.isBlank()) return;
+        if (ipCliente == null || ipCliente.isBlank()) return;
 
         // Seleccion puerto cliente
         String port = (String) JOptionPane.showInputDialog(
@@ -204,7 +188,7 @@ public class PantallaBienvenida extends JFrame {
                 9999
         );
 
-        if(port == null || port.isBlank()) return;
+        if (port == null || port.isBlank()) return;
 
         try {
             setVisible(false);

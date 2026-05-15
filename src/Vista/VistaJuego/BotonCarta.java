@@ -5,9 +5,9 @@ import Modelo.Cartas.Carta;
 import javax.swing.*;
 
 public class BotonCarta extends JButton {
-    private Carta cartaAsociada;
+    private final Carta cartaAsociada;
 
-    public BotonCarta(Carta carta){
+    public BotonCarta(Carta carta) {
         super();
         cartaAsociada = carta;
     }

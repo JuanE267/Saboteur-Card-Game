@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Cartas.Carta;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
@@ -20,10 +20,10 @@ public class PanelTablaJugadores extends JPanel {
 
     private IJugador jugadorCliente;
     private IJugador[] jugadores;
-    private ControladorJuego controlador;
-    private PanelJugador panelJugador;
+    private final Controlador controlador;
+    private final PanelJugador panelJugador;
 
-    public PanelTablaJugadores(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
+    public PanelTablaJugadores(PanelJugador panelJugador, Controlador controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = panelJugador;
         this.jugadores = controlador.getJugadores();
@@ -194,11 +194,11 @@ public class PanelTablaJugadores extends JPanel {
                         panelJugador.repaint();
 
                         boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
-                        if(!terminoLaRonda){
+                        if (!terminoLaRonda) {
                             controlador.pasarTurno();
                         }
                     }
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
                 }
             }

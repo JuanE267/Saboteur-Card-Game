@@ -2,14 +2,13 @@ package Vista;
 
 import Modelo.IJugador;
 
-public interface IVistaServidor{
+public interface IVistaServidor {
 
-void actualizarListaJugadores(IJugador[] jugadores);
+    void actualizarListaJugadores(IJugador[] jugadores);
 
-void iniciar();
+    void iniciar();
 
-void actualizar();
-
+    void actualizar();
 
 
 }

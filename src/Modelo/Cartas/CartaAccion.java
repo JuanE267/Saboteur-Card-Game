@@ -33,13 +33,13 @@ public class CartaAccion extends Carta {
         for (TipoAccion tipoAccion : tipo) {
             switch (tipoAccion) {
                 case ROMPERLINTERNA, ROMPERPICO, ROMPERVAGONETA -> {
-                    if(!sePudoArreglar) sePudoArreglar = romperHerramienta(afectado, tipoAccion);
+                    if (!sePudoArreglar) sePudoArreglar = romperHerramienta(afectado, tipoAccion);
                     else romperHerramienta(afectado, tipoAccion);
                 }
                 case REPARARLINTERNA, REPARARVAGONETA, REPARARPICO -> {
                     //arreglar solamente si la herramienta coincide
                     Herramienta herramientaTipoAccion = TipoAccionAHerramienta(tipoAccion);
-                    if(herramientaPresionada == null || herramientaPresionada == herramientaTipoAccion) {
+                    if (herramientaPresionada == null || herramientaPresionada == herramientaTipoAccion) {
                         if (!sePudoArreglar) sePudoArreglar = repararHerramienta(afectado, tipoAccion);
                     }
                 }
@@ -83,24 +83,27 @@ public class CartaAccion extends Carta {
     // romper herramienta
     private Boolean romperHerramienta(IJugador afectado, TipoAccion tipoAccion) {
 
-            Herramienta herramienta = null;
-            switch (tipoAccion) {
-                case ROMPERPICO -> herramienta = Herramienta.PICO;
-                case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
-                case ROMPERLINTERNA -> herramienta = Herramienta.LINTERNA;
-            }
+        Herramienta herramienta = null;
+        switch (tipoAccion) {
+            case ROMPERPICO -> herramienta = Herramienta.PICO;
+            case ROMPERVAGONETA -> herramienta = Herramienta.VAGONETA;
+            case ROMPERLINTERNA -> herramienta = Herramienta.LINTERNA;
+        }
 
-            boolean yaEstaRota = false;
-            List<Herramienta> herramientasRotas = afectado.getHerramientasRotas();
-            for (Herramienta h : herramientasRotas) {
-                if (h == herramienta) yaEstaRota = true;
+        boolean yaEstaRota = false;
+        List<Herramienta> herramientasRotas = afectado.getHerramientasRotas();
+        for (Herramienta h : herramientasRotas) {
+            if (h == herramienta) {
+                yaEstaRota = true;
+                break;
             }
-            if (!yaEstaRota) {
-                herramientasRotas.add(herramienta);
-                return true;
-            } else {
-                return false;
-            }
+        }
+        if (!yaEstaRota) {
+            herramientasRotas.add(herramienta);
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -118,7 +121,10 @@ public class CartaAccion extends Carta {
         boolean yaEstaSana = true;
         List<Herramienta> herramientasRotas = afectado.getHerramientasRotas();
         for (Herramienta h : herramientasRotas) {
-            if (h == herramienta) yaEstaSana = false;
+            if (h == herramienta) {
+                yaEstaSana = false;
+                break;
+            }
         }
         if (!yaEstaSana) {
             herramientasRotas.remove(herramienta);
@@ -131,16 +137,14 @@ public class CartaAccion extends Carta {
         Carta destino = tablero.getCarta(x, y);
 
         if (destino != null) {
-            if ((this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO) {
-                //((CartaDestino) destino).girar();
-                return true;
-            }
+            //((CartaDestino) destino).girar();
+            return (this.getTipoAccion().getFirst() == TipoAccion.MAPA) && destino.getTipo() == TipoCarta.DESTINO;
         }
 
         return false;
     }
 
-    public boolean esReparar(){
+    public boolean esReparar() {
         return getTipoAccion().getFirst().toString().startsWith("REPARAR");
     }
 }

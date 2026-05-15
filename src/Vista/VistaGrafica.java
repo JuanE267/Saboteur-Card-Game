@@ -1,6 +1,6 @@
 package Vista;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.IJugador;
 import Modelo.Tablero;
 import Vista.VistaJuego.VentanaJuego;
@@ -11,13 +11,13 @@ import java.rmi.RemoteException;
 
 
 public class VistaGrafica implements IVistaGrafica {
-    private VentanaInicioSesion ventanaInicioSesion;
+    private final VentanaInicioSesion ventanaInicioSesion;
     private VentanaJuego ventanaJuego;
     private JFrame ventanaEspera;
-    private ControladorJuego controlador;
+    private final Controlador controlador;
 
 
-    public VistaGrafica(ControladorJuego controlador) throws RemoteException {
+    public VistaGrafica(Controlador controlador) throws RemoteException {
         this.controlador = controlador;
         this.ventanaInicioSesion = new VentanaInicioSesion();
 
@@ -25,14 +25,14 @@ public class VistaGrafica implements IVistaGrafica {
         this.ventanaInicioSesion.onClickEntrar(e -> {
             String nombre = ventanaInicioSesion.getNombreJugador();
             int edad = ventanaInicioSesion.getEdadJugador();
-            if(nombre == null || nombre.isEmpty() || edad <= 0){
-                JOptionPane.showMessageDialog(null,"Por favor, ingrese un nombre/edad valido", "Error", JOptionPane.WARNING_MESSAGE);
+            if (nombre == null || nombre.isEmpty() || edad <= 0) {
+                JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre/edad valido", "Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             IJugador jugador = controlador.conectarUsuario(nombre, edad);
             controlador.setJugadorCliente(jugador);
             ocultarInicioSesion();
-            if(controlador.esHost()){
+            if (controlador.esHost()) {
                 VentanaServidor ventanaServidor = new VentanaServidor(controlador);
                 controlador.setVistaServidor(ventanaServidor);
                 ventanaServidor.iniciar();
@@ -41,7 +41,7 @@ public class VistaGrafica implements IVistaGrafica {
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
-            }else{
+            } else {
                 mostrarPantallaEspera();
             }
 
@@ -88,7 +88,7 @@ public class VistaGrafica implements IVistaGrafica {
     @Override
     public void mostrarPartida() throws RemoteException {
         // mostrar todos los elementos de la partida
-        if(ventanaEspera != null){
+        if (ventanaEspera != null) {
             ventanaEspera.dispose();
             ventanaEspera = null;
         }

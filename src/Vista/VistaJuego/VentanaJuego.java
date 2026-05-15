@@ -1,16 +1,14 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
-import Modelo.Enums.Evento;
+import Controlador.Controlador;
 import Modelo.IJugador;
-import Vista.VentanaGanador;
 
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 
 public class VentanaJuego extends JFrame {
-    private ControladorJuego controlador;
+    private final Controlador controlador;
     private PanelTablero panelTablero;
     private PanelJugador panelJugador;
 
@@ -19,9 +17,9 @@ public class VentanaJuego extends JFrame {
     private PanelPuntosYAcciones panelPuntosYAcciones;
     private PanelHerramientas panelHerramientas;
     private JPanel contenedorJugador;
-    private JLabel turnoActual;
+    private final JLabel turnoActual;
 
-    public VentanaJuego(ControladorJuego controlador) throws RemoteException {
+    public VentanaJuego(Controlador controlador) throws RemoteException {
 
         this.controlador = controlador;
 

@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.IJugador;
 
 import javax.swing.*;
@@ -10,11 +10,11 @@ import java.rmi.RemoteException;
 
 public class PanelPuntosYAcciones extends JPanel {
 
-    private PanelJugador panelJugador;
-    private ControladorJuego controlador;
+    private final PanelJugador panelJugador;
+    private final Controlador controlador;
     private IJugador jugadorCliente;
 
-    public PanelPuntosYAcciones(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
+    public PanelPuntosYAcciones(PanelJugador panelJugador, Controlador controlador) throws RemoteException {
         this.panelJugador = panelJugador;
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
@@ -97,7 +97,7 @@ public class PanelPuntosYAcciones extends JPanel {
                         controlador.descartarCarta(panelJugador.getCartaSeleccionada());
                         panelJugador.resetCartaSeleccionada();
                         boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
-                        if(!terminoLaRonda){
+                        if (!terminoLaRonda) {
                             controlador.pasarTurno();
                         }
                         // reseteo  despues de descartar la carta

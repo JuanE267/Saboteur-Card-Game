@@ -1,12 +1,15 @@
 package Controlador;
 
-import Modelo.*;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Enums.Evento;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
-import Vista.*;
+import Modelo.*;
+import Vista.IVistaGrafica;
+import Vista.IVistaServidor;
+import Vista.VentanaGanador;
+import Vista.VentanaServidor;
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
@@ -16,7 +19,7 @@ import ar.edu.unlu.rmimvc.servidor.Servidor;
 import javax.swing.*;
 import java.rmi.RemoteException;
 
-public class ControladorJuego implements IControladorRemoto {
+public class Controlador implements IControladorRemoto {
     private IJuego juego;
     private boolean esPartidaCargada = false;
     private VentanaGanador ventanaGanador;
@@ -26,7 +29,7 @@ public class ControladorJuego implements IControladorRemoto {
     private IJugador jugadorCliente;
     private boolean esHost = false;
 
-    public <T extends IObservableRemoto> ControladorJuego(T juego) {
+    public <T extends IObservableRemoto> Controlador(T juego) {
         try {
             this.setModeloRemoto(juego);
         } catch (RemoteException e) {
@@ -35,7 +38,7 @@ public class ControladorJuego implements IControladorRemoto {
         }
     }
 
-    public ControladorJuego() {
+    public Controlador() {
 
     }
 
@@ -65,7 +68,7 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
     public void actualizarJugador() throws RemoteException {
-        if(jugadorCliente == null) return;
+        if (jugadorCliente == null) return;
         for (IJugador j : juego.getJugadores()) {
             if (j.getId() == jugadorCliente.getId()) {
                 jugadorCliente = j;
@@ -243,7 +246,7 @@ public class ControladorJuego implements IControladorRemoto {
                                 if (segundos[0] <= 0) {
                                     timer.stop();
                                     try {
-                                        if(esHost()) {
+                                        if (esHost()) {
                                             juego.reiniciarRonda(juego.getRonda() + 1);
                                         }
                                         ventanaGanador.setVisible(false);
@@ -287,10 +290,7 @@ public class ControladorJuego implements IControladorRemoto {
         int cantJugadores = juego.getJugadores().length;
 
         if (cantJugadores < 3 || cantJugadores > 10) {
-            JOptionPane.showMessageDialog(null,
-                    "Se necesitan entre 3 y 10 jugadores para iniciar.",
-                    "Error", JOptionPane.WARNING_MESSAGE);
-            return false;
+            throw new IllegalStateException("La partida debe tener entre 3 y 10 jugadores para iniciar.");
         }
 
         if (esPartidaCargada) {
@@ -331,13 +331,13 @@ public class ControladorJuego implements IControladorRemoto {
     public void crearPartida(String ipServidor, int puertoCliente) throws RMIMVCException, RemoteException {
         Servidor servidor = new Servidor(ipServidor, 8888);
         servidor.iniciar(new Juego());
-        Cliente cliente =  new Cliente(ipServidor, puertoCliente, ipServidor, 8888);
+        Cliente cliente = new Cliente(ipServidor, puertoCliente, ipServidor, 8888);
         cliente.iniciar(this);
         this.setEsHost();
     }
 
     public void unirseAPartida(String ipServidor, String ipCliente, int puertoCliente) throws RMIMVCException, RemoteException {
-        Cliente cliente =  new Cliente(ipServidor, puertoCliente, ipCliente, 8888);
+        Cliente cliente = new Cliente(ipServidor, puertoCliente, ipCliente, 8888);
         cliente.iniciar(this);
     }
 
@@ -351,8 +351,8 @@ public class ControladorJuego implements IControladorRemoto {
         try {
             this.juego.cargarPartida();
         } catch (RemoteException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.esPartidaCargada = false;
+            throw e;
         }
     }
 

@@ -1,5 +1,5 @@
 package Modelo.Enums;
 
 public enum Herramienta {
-    PICO,LINTERNA,VAGONETA
+    PICO, LINTERNA, VAGONETA
 }

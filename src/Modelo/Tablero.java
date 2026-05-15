@@ -13,7 +13,7 @@ public class Tablero implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<Posicion, Carta> tablero;
+    private final Map<Posicion, Carta> tablero;
 
     private int xInicio;
     private int yInicio;
@@ -66,10 +66,10 @@ public class Tablero implements Serializable {
             int indiceDestinos = (int) (Math.random() * destinos.size());
 
             CartaDestino destino = destinos.get(indiceDestinos);
-            setCarta(destino, posicionesDestino.get(indicePos).getX(), posicionesDestino.get(indicePos).getY());
+            setCarta(destino, posicionesDestino.get(indicePos).x(), posicionesDestino.get(indicePos).y());
             if (destino.getEsOro()) {
-                destino.setOroX(posicionesDestino.get(indicePos).getX());
-                destino.setOroY(posicionesDestino.get(indicePos).getY());
+                destino.setOroX(posicionesDestino.get(indicePos).x());
+                destino.setOroY(posicionesDestino.get(indicePos).y());
                 System.out.println(destino.getOroX());
                 this.xOro = destino.getOroX();
                 this.yOro = destino.getOroY();
@@ -99,13 +99,13 @@ public class Tablero implements Serializable {
 
         // si hay vecino, y no se puede conectar, retorno false
         // tiene que conectar con todos
-        if (vecinoArriba != null  && !puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
+        if (vecinoArriba != null && !puedeConectar(vecinoArriba, carta, Direccion.ARRIBA)) {
             return false;
         }
         if (vecinoAbajo != null && !puedeConectar(vecinoAbajo, carta, Direccion.ABAJO)) {
             return false;
         }
-        if (vecinoIzquierda != null &&  !puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
+        if (vecinoIzquierda != null && !puedeConectar(vecinoIzquierda, carta, Direccion.IZQUIERDA)) {
             return false;
         }
         if (vecinoDerecha != null && !puedeConectar(vecinoDerecha, carta, Direccion.DERECHA)) {
@@ -123,7 +123,7 @@ public class Tablero implements Serializable {
         Set<Posicion> visitado = new HashSet<>();
         boolean conectaInicio = buscarPos(this.xInicio, this.yInicio, visitado, x, y);
 
-        if (!conectaInicio){
+        if (!conectaInicio) {
             tablero.remove(new Posicion(x, y));
             return false;
         }
@@ -139,7 +139,7 @@ public class Tablero implements Serializable {
 
     private void girarDestino(Carta vecino, CartaTunel carta, int x, int y, Direccion direccion) {
         // si no es destino, salgo
-        if (!(vecino instanceof CartaDestino)) return;
+        if (!(vecino instanceof CartaDestino destino)) return;
 
         // si no se puede conectar, salgo
         if (!puedeConectar(vecino, carta, direccion)) return;
@@ -167,7 +167,6 @@ public class Tablero implements Serializable {
             // ver si conecta al inicio
             Set<Posicion> visitado = new HashSet<>();
             if (buscarPos(this.xInicio, this.yInicio, visitado, x, y)) {
-                CartaDestino destino = (CartaDestino) vecino;
                 destino.girar();
             }
 

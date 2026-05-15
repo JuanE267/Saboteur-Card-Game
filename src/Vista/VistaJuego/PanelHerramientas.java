@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 import Modelo.Enums.TipoAccion;
@@ -10,17 +10,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.net.URL;
 
 public class PanelHerramientas extends JPanel {
 
-    private PanelJugador panelJugador;
-    private ControladorJuego controlador;
+    private final PanelJugador panelJugador;
+    private final Controlador controlador;
     private IJugador jugadorCliente;
 
-    public PanelHerramientas(PanelJugador panelJugador, ControladorJuego controlador) throws RemoteException {
+    public PanelHerramientas(PanelJugador panelJugador, Controlador controlador) throws RemoteException {
         this.panelJugador = panelJugador;
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
@@ -39,7 +39,7 @@ public class PanelHerramientas extends JPanel {
         JLabel rol = new JLabel();
 
 
-        rol.setSize(new Dimension(70,70));
+        rol.setSize(new Dimension(70, 70));
         pico.setSize(new Dimension(70, 70));
         vagoneta.setSize(new Dimension(70, 70));
         linterna.setSize(new Dimension(70, 70));
@@ -168,13 +168,13 @@ public class PanelHerramientas extends JPanel {
                     JOptionPane.showMessageDialog(this, "No podes romper tu propia herramienta!");
                 } else if (tipoAccion.toString().startsWith("REPARAR")) {
                     JOptionPane.showMessageDialog(this, "La herramienta ya esta sana!");
-                }else{
+                } else {
                     panelJugador.resetCartaSeleccionada();
                     panelJugador.revalidate();
                     panelJugador.repaint();
                     controlador.pasarTurno();
                 }
-            } else{
+            } else {
                 JOptionPane.showMessageDialog(this, "No podes arreglar esta herramienta con tu carta");
             }
         }

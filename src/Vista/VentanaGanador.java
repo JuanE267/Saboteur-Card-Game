@@ -1,6 +1,6 @@
 package Vista;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Enums.Evento;
 import Modelo.Enums.Rol;
 import Modelo.IJugador;
@@ -12,19 +12,19 @@ import java.rmi.RemoteException;
 
 public class VentanaGanador extends JFrame {
 
-    private static final Color FONDO   = new Color(30, 20, 10);
-    private static final Color ORO     = new Color(212, 160, 50);
-    private static final Color TEXTO   = new Color(240, 220, 180);
+    private static final Color FONDO = new Color(30, 20, 10);
+    private static final Color ORO = new Color(212, 160, 50);
+    private static final Color TEXTO = new Color(240, 220, 180);
     private static final Color TARJETA = new Color(50, 35, 15);
 
-    private JLabel labelMensaje;
-    private JLabel labelTitulo;
-    private JLabel labelCuenta;
-    private JPanel panelJugadores;
+    private final JLabel labelMensaje;
+    private final JLabel labelTitulo;
+    private final JLabel labelCuenta;
+    private final JPanel panelJugadores;
 
-    private ControladorJuego controladorJuego;
+    private final Controlador controladorJuego;
 
-    public VentanaGanador(ControladorJuego controladorJuego) throws RemoteException {
+    public VentanaGanador(Controlador controladorJuego) throws RemoteException {
 
         this.controladorJuego = controladorJuego;
 
@@ -124,7 +124,7 @@ public class VentanaGanador extends JFrame {
 
         for (IJugador j : jugadores) {
             JPanel jugadorPanel = new JPanel();
-            jugadorPanel.setLayout(new BorderLayout(0,8));
+            jugadorPanel.setLayout(new BorderLayout(0, 8));
             jugadorPanel.setBackground(TARJETA);
             jugadorPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(ORO, 1),
@@ -144,7 +144,7 @@ public class VentanaGanador extends JFrame {
             URL url = getClass().getClassLoader().getResource(ruta);
             if (url != null) {
                 ImageIcon icon = new ImageIcon(url);
-                Image img = icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);;
+                Image img = icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
                 imagen.setIcon(new ImageIcon(img));
             }
 
@@ -163,7 +163,7 @@ public class VentanaGanador extends JFrame {
     }
 
     public void actualizarCuentaRegresiva(int segundos) {
-        if(segundos > 0) {
+        if (segundos > 0) {
             labelCuenta.setText("La siguiente ronda empezará en " + segundos + " segundos");
         } else {
             labelCuenta.setText("¡Empezando nueva ronda!");

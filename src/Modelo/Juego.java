@@ -1,9 +1,5 @@
 package Modelo;
 
-import java.io.*;
-import java.rmi.RemoteException;
-import java.util.*;
-
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaTunel;
@@ -12,7 +8,12 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.Rol;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
-import javax.swing.*;
+import java.io.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class Juego extends ObservableRemoto implements IJuego {
 
@@ -42,12 +43,12 @@ public class Juego extends ObservableRemoto implements IJuego {
         Jugador.resetID();
 
         // pongo todos los puntajes en 0
-        for(IJugador j : jugadores.values()){
+        for (IJugador j : jugadores.values()) {
             j.setPuntaje(0);
         }
 
         int cantJugadores = getJugadores().length;
-        if (cantJugadores < 3  || cantJugadores > 10) {
+        if (cantJugadores < 3 || cantJugadores > 10) {
             throw new IllegalStateException(
                     "No se puede iniciar la partida con " + cantJugadores + " jugadores."
             );
@@ -105,7 +106,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             turnoInicial = ordenTurnos.indexOf(menorEdad.getId());
 
             this.turno = turnoInicial;
-        }else{
+        } else {
             // si no es la ronda 1, inicia el jugador a la izquierda
             turnoInicial = (turnoInicial + 1) % ordenTurnos.size();
         }
@@ -262,33 +263,33 @@ public class Juego extends ObservableRemoto implements IJuego {
     public void finalizarRonda(boolean ganaronLosMineros) throws RemoteException {
 
 
-        if(ganaronLosMineros){
+        if (ganaronLosMineros) {
             // obtengo las pepitas de los mineors
             List<Integer> pepitas = pepitasMineros();
 
             // le doy la primera pepita al que encontro el oro
-            if(ganadorRonda != null && ganadorRonda.getRol() == Rol.MINERO){
+            if (ganadorRonda != null && ganadorRonda.getRol() == Rol.MINERO) {
                 ganadorRonda.sumarPuntos(pepitas.removeFirst());
             }
 
             // el resto recibe las pepitas en orden x turno
-            for(int idTurno : ordenTurnos){
+            for (int idTurno : ordenTurnos) {
                 IJugador j = jugadores.get(idTurno);
-                if(j != null && j.getRol() == Rol.MINERO
-                    && (ganadorRonda == null || j.getId() != ganadorRonda.getId())){
-                    if(!pepitas.isEmpty()){
+                if (j != null && j.getRol() == Rol.MINERO
+                        && (ganadorRonda == null || j.getId() != ganadorRonda.getId())) {
+                    if (!pepitas.isEmpty()) {
                         j.sumarPuntos(pepitas.removeFirst());
                     }
                 }
             }
-        }else{
+        } else {
             // si ganan los saboteadores
             // obtengo las pepitas
             int pepitas = pepitasSaboteadores();
 
             // y se las reparto a cada saboteador
-            for(IJugador j : jugadores.values()){
-                if(j != null && j.getRol() == Rol.SABOTEADOR){
+            for (IJugador j : jugadores.values()) {
+                if (j != null && j.getRol() == Rol.SABOTEADOR) {
                     j.sumarPuntos(pepitas);
                 }
             }
@@ -304,7 +305,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             }
         } else {
             // finalizar partida
-            if(jugadores.isEmpty()) return;
+            if (jugadores.isEmpty()) return;
 
             IJugador mayorPuntaje = jugadores.values().iterator().next();
             for (IJugador j : jugadores.values()) {
@@ -322,35 +323,59 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
     }
 
-    private List<Integer> pepitasMineros(){
+    private List<Integer> pepitasMineros() {
         int cantMineros = 0;
-        for(IJugador j : jugadores.values()) {
+        for (IJugador j : jugadores.values()) {
             if (j.getRol() == Rol.MINERO) cantMineros++;
         }
 
-        switch (cantMineros){
-            case 1 -> { return new ArrayList<>(List.of(4));}
-            case 2 -> { return new ArrayList<>(List.of(4, 3));}
-            case 3 -> { return new ArrayList<>(List.of(4, 3, 2));}
-            case 4 -> { return new ArrayList<>(List.of(4, 3, 2, 1));}
-            case 5 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1));}
-            case 6 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1));}
-            case 7 -> { return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1, 1));}
-            default -> { return new ArrayList<>(List.of(4)); }
+        switch (cantMineros) {
+            case 1 -> {
+                return new ArrayList<>(List.of(4));
+            }
+            case 2 -> {
+                return new ArrayList<>(List.of(4, 3));
+            }
+            case 3 -> {
+                return new ArrayList<>(List.of(4, 3, 2));
+            }
+            case 4 -> {
+                return new ArrayList<>(List.of(4, 3, 2, 1));
+            }
+            case 5 -> {
+                return new ArrayList<>(List.of(4, 3, 2, 1, 1));
+            }
+            case 6 -> {
+                return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1));
+            }
+            case 7 -> {
+                return new ArrayList<>(List.of(4, 3, 2, 1, 1, 1, 1));
+            }
+            default -> {
+                return new ArrayList<>(List.of(4));
+            }
         }
     }
 
-    private int pepitasSaboteadores(){
+    private int pepitasSaboteadores() {
         int cantSaboteadores = 0;
-        for(IJugador j : jugadores.values()) {
-            if (j.getRol() == Rol.SABOTEADOR) cantSaboteadores++;;
+        for (IJugador j : jugadores.values()) {
+            if (j.getRol() == Rol.SABOTEADOR) cantSaboteadores++;
         }
 
-        switch (cantSaboteadores){
-            case 1 -> { return 4;}
-            case 2, 3 -> { return 3;}
-            case 4 -> { return 2;}
-            default -> { return 4;}
+        switch (cantSaboteadores) {
+            case 1 -> {
+                return 4;
+            }
+            case 2, 3 -> {
+                return 3;
+            }
+            case 4 -> {
+                return 2;
+            }
+            default -> {
+                return 4;
+            }
         }
     }
 
@@ -371,7 +396,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
             // despues de jugar elimino la carta de la mano, si es que pudo ser jugada
             if (actual.getHerramientasRotas().isEmpty()) {
-                if(rotada){
+                if (rotada) {
                     cartaTunel.rotar();
                     carta.setRotada(true);
                 }
@@ -493,7 +518,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             case 2, 3, 4, 5 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 6; i++) {
-                    if(mazo.noHayCartas()) break;
+                    if (mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
@@ -501,7 +526,7 @@ public class Juego extends ObservableRemoto implements IJuego {
             case 6, 7 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 5; i++) {
-                    if(mazo.noHayCartas()) break;
+                    if (mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
@@ -509,12 +534,12 @@ public class Juego extends ObservableRemoto implements IJuego {
             case 8, 9, 10 -> {
                 List<Carta> mano = new ArrayList<>();
                 for (int i = 0; i < 4; i++) {
-                    if(mazo.noHayCartas()) break;
+                    if (mazo.noHayCartas()) break;
                     mano.add(mazo.tomarCarta());
                 }
                 return mano;
             }
-            default ->  throw new IllegalStateException(
+            default -> throw new IllegalStateException(
                     "Cantidad de jugadores inválida: " + cantJugadores +
                             ". Debe ser entre 2 y 10."
             );
@@ -526,7 +551,7 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
 
-    public IJugador getGanadorRonda(){
+    public IJugador getGanadorRonda() {
         return ganadorRonda;
     }
 
@@ -546,9 +571,9 @@ public class Juego extends ObservableRemoto implements IJuego {
         return false;
     }
 
-    private boolean todosLosJugadoresSinCartas(){
-        for(IJugador j : jugadores.values()){
-            if(!j.getManoCartas().isEmpty()) return false;
+    private boolean todosLosJugadoresSinCartas() {
+        for (IJugador j : jugadores.values()) {
+            if (!j.getManoCartas().isEmpty()) return false;
         }
         return true;
     }
@@ -560,8 +585,8 @@ public class Juego extends ObservableRemoto implements IJuego {
     }
 
     // metodo para automatizar el robo de carta
-    private void robarCartaAuto(IJugador jugador){
-        if(!mazo.noHayCartas()){
+    private void robarCartaAuto(IJugador jugador) {
+        if (!mazo.noHayCartas()) {
             jugador.getManoCartas().add(mazo.tomarCarta());
         }
     }
@@ -575,9 +600,9 @@ public class Juego extends ObservableRemoto implements IJuego {
     @Override
     public boolean cargarPartida() throws RemoteException {
 
-        try{
+        try {
             validarCarga();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             throw new RemoteException(e.getMessage());
         }
 
@@ -638,7 +663,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
     }
 
-    public boolean validarCarga(){
+    public boolean validarCarga() {
 
         // cargo los jugadoresCargados temporalmente para validar
 
@@ -653,27 +678,27 @@ public class Juego extends ObservableRemoto implements IJuego {
         }
 
         // validar si la cantidad de jugadores es correcta antes de cargar la partida
-        if(jugadores.size() != jugadoresCargadosValidar.size()){
+        if (jugadores.size() != jugadoresCargadosValidar.size()) {
             throw new IllegalStateException(
                     "La partida guardada tiene una cantidad de jugadores diferente a la actual. No se puede cargar la partida."
             );
         }
 
         // validar nombres y edades
-        for(IJugador cargado : jugadores.values()){
+        for (IJugador cargado : jugadores.values()) {
             boolean coincide = false;
-            for(IJugador guardado : jugadoresCargadosValidar.values()){
-                if(guardado.getNombre().equals(cargado.getNombre()) && guardado.getEdad() == cargado.getEdad()){
+            for (IJugador guardado : jugadoresCargadosValidar.values()) {
+                if (guardado.getNombre().equals(cargado.getNombre()) && guardado.getEdad() == cargado.getEdad()) {
                     coincide = true;
                     break;
                 }
             }
-            if(!coincide){
+            if (!coincide) {
                 throw new IllegalStateException(
                         "No se pudo cargar la partida. Asegúrese de que los jugadores de la partida guardada coincidan con los jugadores actuales."
                 );
+            }
         }
-    }
         return true;
     }
 
@@ -698,7 +723,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
             try (DataOutputStream dos = new DataOutputStream(
                     new FileOutputStream("Data/turnoInicial.dat"))) {
-              //  this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
+                //  this.turnoInicial = ordenTurnos.indexOf(getJugadorActual().getId());
                 dos.writeInt(this.turnoInicial);
             }
 

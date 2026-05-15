@@ -1,7 +1,6 @@
 package Modelo.Cartas;
 
 import Modelo.Enums.TipoCarta;
-import Modelo.Jugador;
 
 import java.io.Serializable;
 
@@ -9,8 +8,8 @@ public abstract class Carta implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int id;
-    private TipoCarta tipo;
+    private final int id;
+    private final TipoCarta tipo;
     private String img;
     private boolean esDestino = false;
     private boolean rotada = false;
@@ -41,8 +40,8 @@ public abstract class Carta implements Serializable {
         return tipo;
     }
 
-    public String getImg(){
-      return img;
+    public String getImg() {
+        return img;
     }
 
     public void setImg(String img) {

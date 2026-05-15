@@ -4,8 +4,8 @@ import javax.swing.*;
 
 public class Casillero extends JLabel {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Casillero(int x, int i) {
         super();
@@ -13,10 +13,11 @@ public class Casillero extends JLabel {
         this.y = i;
     }
 
-    public int posX(){
+    public int posX() {
         return x;
     }
-    public int posY(){
+
+    public int posY() {
         return y;
     }
 }

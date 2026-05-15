@@ -3,14 +3,13 @@ package Modelo.Cartas;
 import Modelo.Enums.Direccion;
 import Modelo.Enums.TipoCarta;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CartaTunel extends Carta {
 
-    private Map<Direccion, Boolean> caminos = new HashMap<>();
-    private boolean esInicio;
+    private final Map<Direccion, Boolean> caminos = new HashMap<>();
+    private final boolean esInicio;
     private int rotacion;
 
 
@@ -69,10 +68,10 @@ public class CartaTunel extends Carta {
     }
 
     public void rotar() {
-        boolean arriba    = caminos.get(Direccion.ARRIBA);
-        boolean abajo     = caminos.get(Direccion.ABAJO);
+        boolean arriba = caminos.get(Direccion.ARRIBA);
+        boolean abajo = caminos.get(Direccion.ABAJO);
         boolean izquierda = caminos.get(Direccion.IZQUIERDA);
-        boolean derecha   = caminos.get(Direccion.DERECHA);
+        boolean derecha = caminos.get(Direccion.DERECHA);
 
         setCaminos(abajo, arriba, derecha, izquierda);
 
@@ -83,7 +82,7 @@ public class CartaTunel extends Carta {
         return rotacion;
     }
 
-    public boolean getEsInicio(){
+    public boolean getEsInicio() {
         return esInicio;
     }
 

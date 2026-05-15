@@ -4,11 +4,11 @@ import Modelo.Enums.TipoCarta;
 
 public class CartaDestino extends CartaTunel {
 
-    private boolean esOro;
+    private final boolean esOro;
     private int oroX;
     private int oroY;
     private String dorso;
-    private String cara;
+    private final String cara;
     private boolean fueGirada = false;
 
     public CartaDestino(int id, TipoCarta tipo, String img, String dorso, boolean esOro) {
@@ -20,9 +20,9 @@ public class CartaDestino extends CartaTunel {
         this.setImg(dorso);
     }
 
-    public void girar(){
-        if(fueGirada) return;
-        if(this.getImg().equals(dorso)) setImg(cara);
+    public void girar() {
+        if (fueGirada) return;
+        if (this.getImg().equals(dorso)) setImg(cara);
         else setImg(dorso);
         fueGirada = true;
     }
@@ -55,8 +55,8 @@ public class CartaDestino extends CartaTunel {
         return cara;
     }
 
-    public void setearCaminos(){
-        setCaminos(true,true,true,true);
+    public void setearCaminos() {
+        setCaminos(true, true, true, true);
     }
 
     public void setDorso(String img) {

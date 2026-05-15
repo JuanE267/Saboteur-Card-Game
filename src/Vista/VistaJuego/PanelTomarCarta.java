@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaTunel;
 
@@ -9,14 +9,12 @@ import java.awt.*;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import static javax.swing.text.StyleConstants.setBackground;
-
 public class PanelTomarCarta extends JPanel {
 
-    private ControladorJuego controlador;
+    private final Controlador controlador;
     private final int TAM_CARTA = 75;
 
-    public PanelTomarCarta(ControladorJuego controlador) {
+    public PanelTomarCarta(Controlador controlador) {
         this.controlador = controlador;
         setBackground(Color.decode("#4b3e2c"));
         dibujarPanel();

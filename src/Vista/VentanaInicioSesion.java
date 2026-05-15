@@ -4,16 +4,14 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class VentanaInicioSesion extends JFrame {
 
-    private JPanel contentPane;
-    private JTextField textUsuario;
-    private JButton btnEntrar;
-    private JTextField textEdad;
+    private final JPanel contentPane;
+    private final JTextField textUsuario;
+    private final JButton btnEntrar;
+    private final JTextField textEdad;
 
     /**
      * Create the frame.
@@ -68,7 +66,7 @@ public class VentanaInicioSesion extends JFrame {
         try {
             edad = Integer.parseInt(this.textEdad.getText());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return edad;

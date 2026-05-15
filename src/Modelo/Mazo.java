@@ -15,7 +15,7 @@ public class Mazo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Carta> cartas = new ArrayList<>();
+    private final List<Carta> cartas = new ArrayList<>();
 
     public Mazo() {
         inicializarCartas();
@@ -221,7 +221,6 @@ public class Mazo implements Serializable {
     }
 
 
-
     public void agregarCartaAlMazo(Carta carta) {
         this.cartas.add(carta);
     }
@@ -230,8 +229,8 @@ public class Mazo implements Serializable {
         return cartas.removeFirst();
     }
 
-    public Carta getPrimerCarta(){
-        if(cartas.isEmpty()) return null;
+    public Carta getPrimerCarta() {
+        if (cartas.isEmpty()) return null;
         return cartas.getFirst();
     }
 

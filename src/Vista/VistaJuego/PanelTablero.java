@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaAccion;
 import Modelo.Cartas.CartaDestino;
@@ -20,21 +20,20 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PanelTablero extends JPanel {
 
-    private ControladorJuego controlador;
-    private PanelJugador panelJugador;
+    private final Controlador controlador;
+    private final PanelJugador panelJugador;
     private Tablero tablero;
     private final int ANCHO_CASILLERO = 65;
     private final int ALTO_CASILLERO = 100;
     private IJugador jugadorCliente;
 
-    private Map<String, BufferedImage> cacheImagenes = new HashMap<>();
+    private final Map<String, BufferedImage> cacheImagenes = new HashMap<>();
 
     private int lastMouseX;
     private int lastMouseY;
@@ -51,7 +50,7 @@ public class PanelTablero extends JPanel {
     // Flag para saber si es la primera vez que se dibuja
     private boolean primerDibujado = true;
 
-    public PanelTablero(PanelJugador jugador, ControladorJuego controlador) throws RemoteException {
+    public PanelTablero(PanelJugador jugador, Controlador controlador) throws RemoteException {
         this.controlador = controlador;
         this.panelJugador = jugador;
         this.jugadorCliente = controlador.getJugadorActualizado();
@@ -72,7 +71,7 @@ public class PanelTablero extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(SwingUtilities.isLeftMouseButton(e)) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
                     try {
                         manejarClick(e.getX(), e.getY());
                     } catch (RemoteException ex) {
@@ -164,8 +163,8 @@ public class PanelTablero extends JPanel {
             Posicion p = entry.getKey();
             Carta carta = entry.getValue();
 
-            int xPantalla = (int) (p.getY() * ANCHO_CASILLERO * zoom + offsetX);
-            int yPantalla = (int) (p.getX() * ALTO_CASILLERO * zoom + offsetY);
+            int xPantalla = (int) (p.y() * ANCHO_CASILLERO * zoom + offsetX);
+            int yPantalla = (int) (p.x() * ALTO_CASILLERO * zoom + offsetY);
 
             try {
                 BufferedImage imgOriginal = null;
@@ -234,10 +233,10 @@ public class PanelTablero extends JPanel {
         int maxY = Integer.MIN_VALUE;
 
         for (Posicion p : tablero.getCartas().keySet()) {
-            minX = Math.min(minX, p.getX());
-            minY = Math.min(minY, p.getY());
-            maxX = Math.max(maxX, p.getX());
-            maxY = Math.max(maxY, p.getY());
+            minX = Math.min(minX, p.x());
+            minY = Math.min(minY, p.y());
+            maxX = Math.max(maxX, p.x());
+            maxY = Math.max(maxY, p.y());
         }
 
         // Calcular el centro del tablero en coordenadas del mundo
@@ -281,11 +280,9 @@ public class PanelTablero extends JPanel {
             } else {
                 // Manejar cartas especiales
                 Carta cartaJugada = tablero.getCarta(x, y);
-                if (carta instanceof CartaAccion) {
-                    CartaAccion accion = (CartaAccion) carta;
+                if (carta instanceof CartaAccion accion) {
                     if (accion.getTipoAccion().getFirst() == TipoAccion.MAPA) {
-                        if (cartaJugada instanceof CartaDestino) {
-                            CartaDestino destino = (CartaDestino) cartaJugada;
+                        if (cartaJugada instanceof CartaDestino destino) {
                             ImageIcon icono = new ImageIcon(
                                     destino.getClass().getResource("/" + destino.getCara())
                             );
@@ -303,7 +300,7 @@ public class PanelTablero extends JPanel {
 
         if (pudoSerJugado) {
             boolean terminoLaRonda = controlador.verificarSiTerminoLaRonda();
-            if(!terminoLaRonda){
+            if (!terminoLaRonda) {
                 controlador.pasarTurno();
             }
         }

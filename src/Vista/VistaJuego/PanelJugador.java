@@ -1,6 +1,6 @@
 package Vista.VistaJuego;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.Cartas.Carta;
 import Modelo.Cartas.CartaTunel;
 import Modelo.IJugador;
@@ -17,14 +17,14 @@ import java.util.List;
 
 public class PanelJugador extends JPanel {
     private IJugador jugadorCliente;
-    private ControladorJuego controlador;
+    private final Controlador controlador;
     private boolean cartaRotada = false;
 
     List<BotonCarta> vistaManoActual = new ArrayList<>();
     private final int TAM_CARTA = 75;
     private int cartaSeleccionada = -1; // ninguna carta es seleccionada (si selcciono cambio el valor a la pos en la mano)
 
-    public PanelJugador(ControladorJuego controlador) throws RemoteException {
+    public PanelJugador(Controlador controlador) throws RemoteException {
         this.controlador = controlador;
         this.jugadorCliente = controlador.getJugadorActualizado();
         setBackground(Color.decode("#4b3e2c"));
@@ -117,14 +117,14 @@ public class PanelJugador extends JPanel {
     }
 
     private void rotarCartaSeleccionada(BotonCarta boton) throws RemoteException {
-        if(!controlador.esTurnoDe(jugadorCliente)){
+        if (!controlador.esTurnoDe(jugadorCliente)) {
             mensajeNoEsTuTurno();
             return;
         }
 
         Carta carta = boton.getCartaAsociada();
 
-        if(carta instanceof CartaTunel tunel){
+        if (carta instanceof CartaTunel tunel) {
             tunel.rotar();
             carta.setRotada(!carta.isRotada());
             actualizarIconoBoton(boton, carta);

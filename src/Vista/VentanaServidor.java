@@ -1,6 +1,6 @@
 package Vista;
 
-import Controlador.ControladorJuego;
+import Controlador.Controlador;
 import Modelo.IJugador;
 import net.miginfocom.swing.MigLayout;
 
@@ -9,14 +9,14 @@ import java.awt.*;
 import java.rmi.RemoteException;
 
 public class VentanaServidor extends JFrame implements IVistaServidor {
-    private ControladorJuego controlador;
+    private final Controlador controlador;
     private JPanel contentPane;
     private JButton btnIniciarPartida;
     private JButton btnCargarPartida;
     private JButton btnGuardarPartida;
     private JList listaJugadores;
 
-    public VentanaServidor(ControladorJuego controlador) {
+    public VentanaServidor(Controlador controlador) {
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
         setTitle("Saboteur");
@@ -58,7 +58,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
             try {
                 controlador.iniciarPartida();
             } catch (RemoteException ex) {
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al iniciar la partida: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -67,7 +67,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
             try {
                 controlador.guardarPartida();
             } catch (RemoteException ex) {
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al guardar la partida: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -77,7 +77,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
             try {
                 controlador.cargarPartida();
             } catch (RemoteException ex) {
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al cargar la partida: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -87,15 +87,13 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
 
 
     public void actualizarListaJugadores(IJugador[] jugadores) {
-        if(listaJugadores == null) return;
+        if (listaJugadores == null) return;
         DefaultListModel<String> modelo = new DefaultListModel<>();
         for (IJugador j : jugadores) {
             modelo.addElement(j.getNombre());
         }
         this.listaJugadores.setModel(modelo);
     }
-
-
 
 
     public void iniciar() {
