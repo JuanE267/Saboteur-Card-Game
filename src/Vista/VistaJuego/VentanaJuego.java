@@ -26,7 +26,7 @@ public class VentanaJuego extends JFrame {
         this.controlador = controlador;
 
         if (controlador.getJugadorActualizado() != null) {
-            setTitle("Saboteur - Juan Espinosa (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
+            setTitle("Saboteur (cliente " + controlador.getJugadorActualizado().getNombre() + ")");
         }
         setSize(1220, 960);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -4,12 +4,9 @@ import Modelo.Enums.Herramienta;
 import Modelo.Enums.TipoAccion;
 import Modelo.Enums.TipoCarta;
 import Modelo.IJugador;
-import Modelo.Jugador;
 import Modelo.Tablero;
 
-import java.sql.SQLOutput;
 import java.util.List;
-import java.util.Scanner;
 
 public class CartaAccion extends Carta {
 

@@ -7,6 +7,10 @@ import ar.edu.unlu.rmimvc.cliente.Cliente;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -58,15 +62,20 @@ public class PantallaBienvenida extends JFrame {
 
         JButton btnCrear = new JButton("Crear partida");
         btnCrear.setPreferredSize(new Dimension(160, 50));
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridy = 0;
         gbc.gridx = 0;
+        gbc.gridwidth = 1;
         panel.add(btnCrear, gbc);
 
         JButton btnUnirse = new JButton("Unirse a partida");
         btnUnirse.setPreferredSize(new Dimension(160, 50));
-        gbc.gridx = 1;
+        gbc.gridy = 1;
         panel.add(btnUnirse, gbc);
+
+        JButton btnReglas = new JButton("Reglas");
+        btnReglas.setPreferredSize(new Dimension(160, 50));
+        gbc.gridy = 2;
+        panel.add(btnReglas, gbc);
 
         btnCrear.addActionListener(e -> {
             try {
@@ -77,12 +86,26 @@ public class PantallaBienvenida extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+
         btnUnirse.addActionListener(e -> {
             try {
                 pedirDatosParaUnirse();
             } catch (RMIMVCException | RemoteException ex) {
                 JOptionPane.showMessageDialog(this, "Error al unirse a la partida"
                         + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnReglas.addActionListener(e -> {
+            URL url = getClass().getResource("/Reglas/reglas-saboteur.pdf");
+            if (url != null) {
+                try {
+                    Desktop.getDesktop().open(new File(url.toURI()));
+                } catch (IOException | URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }else {
+                JOptionPane.showMessageDialog(this, "No se pudo encontrar el archivo de reglas.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

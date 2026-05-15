@@ -84,7 +84,7 @@ public class VentanaGanador extends JFrame {
             case NUEVA_RONDA_GANADOR_MINEROS -> {
                 String nombre = ganadorRonda != null ? ganadorRonda.getNombre() : "Alguien";
                 labelMensaje.setText(
-                        "<html>" + nombre + " encontro el oro!!<br>GANARON LOS MINEROS!</html>"
+                        "<html><div style='text-align:center'>" + nombre + " encontro el oro!!<br>GANARON LOS MINEROS!</html>"
                 );
                 labelCuenta.setText("La siguiente ronda empezará en 10 segundos");
             }

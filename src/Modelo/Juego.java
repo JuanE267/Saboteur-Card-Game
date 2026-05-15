@@ -575,8 +575,10 @@ public class Juego extends ObservableRemoto implements IJuego {
     @Override
     public boolean cargarPartida() throws RemoteException {
 
-        if(!validarCarga()){
-           return false;
+        try{
+            validarCarga();
+        }catch (IllegalStateException e){
+            throw new RemoteException(e.getMessage());
         }
 
         try {
@@ -645,16 +647,16 @@ public class Juego extends ObservableRemoto implements IJuego {
                 new FileInputStream("Data/jugadores.dat"))) {
             jugadoresCargadosValidar = (HashMap<Integer, IJugador>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "No se pudo cargar la partida guardada. Archivo de jugadores no encontrado o corrupto."
-                    , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
-            return false;
+            throw new IllegalStateException(
+                    "No se pudo cargar la partida. Asegúrese de que el archivo de la partida guardada exista y sea válido."
+            );
         }
 
         // validar si la cantidad de jugadores es correcta antes de cargar la partida
         if(jugadores.size() != jugadoresCargadosValidar.size()){
-            JOptionPane.showMessageDialog(null, "La partida guardada tiene una cantidad de jugadores diferente a la actual. No se puede cargar la partida."
-                                            , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
-            return false;
+            throw new IllegalStateException(
+                    "La partida guardada tiene una cantidad de jugadores diferente a la actual. No se puede cargar la partida."
+            );
         }
 
         // validar nombres y edades
@@ -667,9 +669,9 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             }
             if(!coincide){
-                JOptionPane.showMessageDialog(null, "La partida guardada tiene un jugador con nombre/edad diferente a la actual. No se puede cargar la partida."
-                        , "Error al cargar partida", JOptionPane.ERROR_MESSAGE);
-                return false;
+                throw new IllegalStateException(
+                        "No se pudo cargar la partida. Asegúrese de que los jugadores de la partida guardada coincidan con los jugadores actuales."
+                );
         }
     }
         return true;

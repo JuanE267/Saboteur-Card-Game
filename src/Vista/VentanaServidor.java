@@ -19,7 +19,7 @@ public class VentanaServidor extends JFrame implements IVistaServidor {
     public VentanaServidor(ControladorJuego controlador) {
         this.controlador = controlador;
         this.controlador.setVistaServidor(this);
-        setTitle("Saboteur - Juan Espinosa");
+        setTitle("Saboteur");
         setSize(230, 320);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocation(500, 500);

@@ -347,7 +347,13 @@ public class ControladorJuego implements IControladorRemoto {
 
     public void cargarPartida() throws RemoteException {
         this.esPartidaCargada = true;
-        this.juego.cargarPartida();
+
+        try {
+            this.juego.cargarPartida();
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.esPartidaCargada = false;
+        }
     }
 
 

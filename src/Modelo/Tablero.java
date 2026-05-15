@@ -40,12 +40,12 @@ public class Tablero implements Serializable {
         segundoCarbon.setEsDestino(true);
 
         // coloco inicio en el centro del tablero
-//        xInicio = (int) Math.floor((double) alto / 2);
-//        yInicio = 0;
+        xInicio = 0;
+        yInicio = 0;
 
         //prueba para ver si gana la partida
-        xInicio = 0;
-        yInicio = 5;
+        //xInicio = 0;
+        //yInicio = 5;
 
         colocarCarta(inicio, xInicio, yInicio);
 
@@ -56,9 +56,9 @@ public class Tablero implements Serializable {
         destinos.add(segundoCarbon);
 
         List<Posicion> posicionesDestino = new ArrayList<>();
-        posicionesDestino.add(new Posicion(0, 7));
-        posicionesDestino.add(new Posicion(-2, 7));
-        posicionesDestino.add(new Posicion(2, 7));
+        posicionesDestino.add(new Posicion(0, 8));
+        posicionesDestino.add(new Posicion(-4, 8));
+        posicionesDestino.add(new Posicion(4, 8));
 
         // mientras que haya cartas destino y posiciones las coloco aleatoriamente
         while (!(destinos.isEmpty()) && !(posicionesDestino.isEmpty())) {
