@@ -80,8 +80,8 @@ src/
 🚀 Cómo ejecutar
 Requisitos: JDK 16+. Las dependencias (LibreriaRMIMVC.jar y miglayout15-swing.jar) están incluidas en la raíz del proyecto.
 
-Compilar el proyecto incluyendo ambos JARs en el classpath
-Ejecutar la clase principal Saboteur
+- Compilar el proyecto incluyendo ambos JARs en el classpath
+- Ejecutar la clase principal Saboteur
 
 Crear partida (host): elegir IP local y puerto → ingresar nombre y edad → esperar jugadores → Iniciar Partida.
 Unirse: ingresar IP del servidor, IP propia y puerto → ingresar nombre y edad.
