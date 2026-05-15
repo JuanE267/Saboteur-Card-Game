@@ -314,6 +314,14 @@ public class Juego extends ObservableRemoto implements IJuego {
                 }
             }
             ganador = mayorPuntaje;
+
+            // para el ranking
+            try {
+                Ranking.guardarRanking(ganador.getNombre(), ganador.getPuntaje());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             if ((ganaronLosMineros)) {
                 notificarObservadores(Evento.FINALIZAR_PARTIDA_MINEROS);
             } else {

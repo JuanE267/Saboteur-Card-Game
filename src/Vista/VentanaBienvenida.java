@@ -13,13 +13,13 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class PantallaBienvenida extends JFrame {
+public class VentanaBienvenida extends JFrame {
     private final Controlador controlador;
     ArrayList<String> ips = Util.getIpDisponibles();
     private final Image fondo;
 
 
-    public PantallaBienvenida(Controlador controlador) {
+    public VentanaBienvenida(Controlador controlador) {
 
         this.controlador = controlador;
 
@@ -73,6 +73,15 @@ public class PantallaBienvenida extends JFrame {
         btnReglas.setPreferredSize(new Dimension(160, 50));
         gbc.gridy = 2;
         panel.add(btnReglas, gbc);
+
+        JButton btnRanking = new JButton("Top 5 jugadores");
+        btnRanking.setPreferredSize(new Dimension(160, 50));
+        gbc.gridy = 3;
+        panel.add(btnRanking, gbc);
+
+        btnRanking.addActionListener(e -> {
+            new VentanaRanking(this, Modelo.Ranking.obtenerRanking());
+        });
 
         btnCrear.addActionListener(e -> {
             try {

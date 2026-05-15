@@ -236,6 +236,14 @@ package "Modelo" #EEEDFE {
         + hashCode() : int
     }
 
+    ' ══ NUEVO ══
+    class Ranking {
+        - {static} ARCHIVO_RANKING : String
+        - {static} MAX_RANKING : int
+        + {static} obtenerRanking() : List<String>
+        + {static} guardarRanking(String, int)
+    }
+
     IJugador <|.. Jugador
     IJuego <|.. Juego
 
@@ -254,6 +262,9 @@ package "Modelo" #EEEDFE {
     CartaAccion ..> TipoAccion  : usa
     Carta       ..> TipoCarta   : usa
     Jugador     ..> Rol         : tiene
+
+    ' ══ NUEVO ══
+    Juego ..> Ranking : guardarRanking()
 }
 
 ' ══════════════════════════════════════
@@ -293,6 +304,7 @@ package "Controlador" #FAECE7 {
         + setVistaGrafica(IVistaGrafica)
         + setVistaServidor(VentanaServidor)
         + setJugadorCliente(IJugador)
+        + obtenerRanking() : List<String>
     }
 }
 
@@ -358,11 +370,19 @@ package "Vista" #FAEEDA {
         - pedirDatosParaUnirse()
     }
 
+    ' ══ NUEVO ══
+    class VentanaRanking {
+        + VentanaRanking(JFrame, List<String>)
+    }
+
     IVistaGrafica  <|..  VistaGrafica
     IVistaServidor <|..  VentanaServidor
 
     VistaGrafica   o--   VentanaInicioSesion
     VistaGrafica   o--   VentanaGanador
+
+    ' ══ NUEVO ══
+    PantallaBienvenida ..> VentanaRanking : abre
 }
 
 ' ══════════════════════════════════════
@@ -521,5 +541,8 @@ VistaGrafica o-- VentanaJuego
 ' Cliente -> Controlador y Vista
 AppCliente ..> ControladorJuego
 AppCliente ..> PantallaBienvenida
+
+' ══ NUEVO ══
+ControladorJuego ..> Ranking : obtenerRanking()
 
 @enduml

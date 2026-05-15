@@ -18,6 +18,7 @@ import ar.edu.unlu.rmimvc.servidor.Servidor;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class Controlador implements IControladorRemoto {
     private IJuego juego;
@@ -319,8 +320,8 @@ public class Controlador implements IControladorRemoto {
         ventanaGanador.mostrarVentana(evento, ganadorActualizado, ganadorRonda);
     }
 
-    public IJugador getGanadorRonda() throws RemoteException {
-        return juego.getGanadorRonda();
+   public List<String> obtenerRanking() {
+        return Ranking.obtenerRanking();
     }
 
 
