@@ -15,13 +15,11 @@ public class VistaGrafica implements IVistaGrafica {
     private VentanaJuego ventanaJuego;
     private JFrame ventanaEspera;
     private ControladorJuego controlador;
-    private Lobby lobby;
 
 
     public VistaGrafica(ControladorJuego controlador) throws RemoteException {
         this.controlador = controlador;
         this.ventanaInicioSesion = new VentanaInicioSesion();
-        this.lobby = new Lobby(controlador);
 
         // agrego jugadores
         this.ventanaInicioSesion.onClickEntrar(e -> {
