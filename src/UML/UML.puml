@@ -1,0 +1,525 @@
+@startuml Saboteur
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam packageFontSize 13
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 60
+skinparam ArrowColor #555555
+
+hide empty members
+
+' ══════════════════════════════════════
+'  ENUMS
+' ══════════════════════════════════════
+
+package "Modelo.Enums" #EAF3DE {
+
+    enum Direccion {
+        ARRIBA
+        ABAJO
+        IZQUIERDA
+        DERECHA
+    }
+
+    enum Evento {
+        INICIAR_PARTIDA
+        NUEVO_USUARIO
+        PASAR_TURNO
+        JUGAR_CARTA_TABLERO
+        TOMAR_CARTA
+        DESCARTAR_CARTA
+        ACTUALIZAR_HERRAMIENTAS
+        NUEVA_RONDA_GANADOR_MINEROS
+        NUEVA_RONDA_GANADOR_SABOTEADORES
+        FINALIZAR_PARTIDA_MINEROS
+        FINALIZAR_PARTIDA_SABOTEADORES
+        CARGAR_PARTIDA
+        SERVIDOR_NOTIFICA_CLIENTE
+    }
+
+    enum Herramienta {
+        PICO
+        LINTERNA
+        VAGONETA
+    }
+
+    enum Rol {
+        MINERO
+        SABOTEADOR
+    }
+
+    enum TipoAccion {
+        ROMPERPICO
+        ROMPERLINTERNA
+        ROMPERVAGONETA
+        REPARARPICO
+        REPARARLINTERNA
+        REPARARVAGONETA
+        DERRUMBAR
+        MAPA
+        JUGADA
+        OBJETIVO_ROMPER
+        OBJETIVO_REPARAR
+    }
+
+    enum TipoCarta {
+        TUNEL
+        ACCION
+        DESTINO
+    }
+}
+
+' ══════════════════════════════════════
+'  MODELO — CARTAS
+' ══════════════════════════════════════
+
+package "Modelo.Cartas" #E6F1FB {
+
+    abstract class Carta {
+        - id : int
+        - tipo : TipoCarta
+        - img : String
+        - esDestino : boolean
+        - rotada : boolean
+        + getTipo() : TipoCarta
+        + getImg() : String
+        + isRotada() : boolean
+        + setRotada(boolean)
+        + esDestino() : boolean
+    }
+
+    class CartaTunel {
+        - caminos : Map<Direccion, Boolean>
+        - esInicio : boolean
+        - rotacion : int
+        + setCaminos(boolean, boolean, boolean, boolean)
+        + rotar()
+        + puedeConectar(CartaTunel, Direccion) : Boolean
+        + getCaminos() : Map<Direccion, Boolean>
+        + getEsInicio() : boolean
+    }
+
+    class CartaAccion {
+        - tipo : List<TipoAccion>
+        + getTipoAccion() : List<TipoAccion>
+        + jugarCarta(IJugador, Herramienta) : Boolean
+        + jugarCarta(int, int, Tablero) : Boolean
+        + esReparar() : boolean
+    }
+
+    class CartaDestino {
+        - esOro : boolean
+        - oroX : int
+        - oroY : int
+        - dorso : String
+        - cara : String
+        - fueGirada : boolean
+        + girar()
+        + getEsOro() : boolean
+        + getCara() : String
+        + getDorso() : String
+    }
+
+    Carta <|-- CartaTunel
+    Carta <|-- CartaAccion
+    CartaTunel <|-- CartaDestino
+}
+
+' ══════════════════════════════════════
+'  MODELO
+' ══════════════════════════════════════
+
+package "Modelo" #EEEDFE {
+
+    interface IJugador {
+        + getNombre() : String
+        + getId() : int
+        + getRol() : Rol
+        + getPuntaje() : int
+        + getManoCartas() : List<Carta>
+        + getHerramientasRotas() : List<Herramienta>
+        + elegirCarta(int) : Carta
+        + descartarCarta(int) : Boolean
+        + jugarCarta(Tablero, int, int, Carta) : boolean
+        + jugarCarta(IJugador, Carta, Herramienta) : boolean
+        + jugarCartaMapaDerrumbe(Tablero, int, int, Carta) : Boolean
+        + puedeConstruir() : Boolean
+        + reiniciarEstado()
+        + sumarPuntos(int)
+    }
+
+    interface IJuego {
+        + iniciarPartida()
+        + agregarJugador(String, int) : IJugador
+        + getJugadores() : IJugador[]
+        + getJugadorActual() : IJugador
+        + getJugadorPorId(int) : IJugador
+        + getTablero() : Tablero
+        + getMazo() : Mazo
+        + pasarTurno()
+        + jugarCarta(int, int, int, IJugador, boolean) : Boolean
+        + jugarHerramienta(IJugador, int, Herramienta) : boolean
+        + verificarSiTerminoLaRonda() : boolean
+        + finalizarRonda(boolean)
+        + reiniciarRonda(int)
+        + descartarCarta(int)
+        + guardarPartida() : boolean
+        + cargarPartida() : boolean
+        + getRonda() : int
+        + getGanador() : IJugador
+        + getGanadorRonda() : IJugador
+    }
+
+    class Jugador {
+        - nombre : String
+        - {static} ID : int
+        - id : int
+        - edad : int
+        - rol : Rol
+        - manoCartas : List<Carta>
+        - herramientasRotas : List<Herramienta>
+        - puntaje : int
+        + {static} resetID()
+    }
+
+    class Juego {
+        - jugadores : HashMap<Integer, IJugador>
+        - jugadoresCargados : HashMap<Integer, IJugador>
+        - mazo : Mazo
+        - tablero : Tablero
+        - roles : List<Rol>
+        - ronda : int
+        - turno : int
+        - turnoInicial : int
+        - ordenTurnos : List<Integer>
+        - ganador : IJugador
+        - ganadorRonda : IJugador
+        + asignarRoles()
+        + asignoPrimerTurno(int)
+        + repartirCartas() : List<Carta>
+        + hayCaminoHastaOro() : boolean
+        + noHayCartas() : boolean
+        + validarCarga() : boolean
+    }
+
+    class Mazo {
+        - cartas : List<Carta>
+        + tomarCarta() : Carta
+        + getPrimerCarta() : Carta
+        + barajarMazo()
+        + noHayCartas() : boolean
+        + agregarCartaAlMazo(Carta)
+    }
+
+    class Tablero {
+        - tablero : Map<Posicion, Carta>
+        - xInicio : int
+        - yInicio : int
+        - xOro : int
+        - yOro : int
+        + colocarCarta(CartaTunel, int, int) : boolean
+        + getCarta(int, int) : Carta
+        + setCarta(Carta, int, int)
+        + getCartas() : Map<Posicion, Carta>
+        + hayCaminoHastaOro() : boolean
+    }
+
+    class Posicion {
+        - x : int
+        - y : int
+        + getX() : int
+        + getY() : int
+        + equals(Object) : boolean
+        + hashCode() : int
+    }
+
+    IJugador <|.. Jugador
+    IJuego <|.. Juego
+
+    Juego "1" o-- "0..*" IJugador      : jugadores
+    Juego "1" *-- "1"    Mazo          : mazo
+    Juego "1" *-- "1"    Tablero       : tablero
+
+    Jugador "1" o-- "0..*" Carta        : manoCartas
+    Jugador "1" o-- "0..*" Herramienta  : herramientasRotas
+
+    Tablero "1" o-- "0..*" Posicion
+    Tablero "1" o-- "0..*" Carta
+    Mazo    "1" o-- "0..*" Carta
+
+    CartaTunel  ..> Direccion   : usa
+    CartaAccion ..> TipoAccion  : usa
+    Carta       ..> TipoCarta   : usa
+    Jugador     ..> Rol         : tiene
+}
+
+' ══════════════════════════════════════
+'  CONTROLADOR
+' ══════════════════════════════════════
+
+package "Controlador" #FAECE7 {
+
+    class ControladorJuego {
+        - juego : IJuego
+        - vista : IVistaGrafica
+        - vistaServidor : IVistaServidor
+        - jugadorCliente : IJugador
+        - ventanaGanador : VentanaGanador
+        - esHost : boolean
+        - esPartidaCargada : boolean
+        + conectarUsuario(String, int) : IJugador
+        + getJugadorActualizado() : IJugador
+        + getJugadorActual() : IJugador
+        + getJugadores() : IJugador[]
+        + getTablero() : Tablero
+        + getMazo() : Mazo
+        + iniciarPartida() : Boolean
+        + pasarTurno()
+        + jugarUnaCarta(int, int, int, IJugador, boolean) : Boolean
+        + jugarHerramienta(int, int, Herramienta) : TipoAccion
+        + descartarCarta(int)
+        + verificarSiTerminoLaRonda() : boolean
+        + avisarGanadores(Evento, IJugador)
+        + crearPartida(String, int)
+        + unirseAPartida(String, String, int)
+        + guardarPartida()
+        + cargarPartida()
+        + actualizar(IObservableRemoto, Object)
+        + esHost() : boolean
+        + setEsHost()
+        + setVistaGrafica(IVistaGrafica)
+        + setVistaServidor(VentanaServidor)
+        + setJugadorCliente(IJugador)
+    }
+}
+
+' ══════════════════════════════════════
+'  VISTA
+' ══════════════════════════════════════
+
+package "Vista" #FAEEDA {
+
+    interface IVistaGrafica {
+        + iniciar()
+        + mostrarPartida()
+        + ocultarPartida()
+        + actualizar(Tablero, IJugador[])
+    }
+
+    interface IVistaServidor {
+        + iniciar()
+        + actualizar()
+        + actualizarListaJugadores(IJugador[])
+    }
+
+    class VistaGrafica {
+        - ventanaInicioSesion : VentanaInicioSesion
+        - ventanaJuego : VentanaJuego
+        - ventanaEspera : JFrame
+        - controlador : ControladorJuego
+        + mostrarPantallaEspera()
+    }
+
+    class VentanaServidor {
+        - controlador : ControladorJuego
+        - btnIniciarPartida : JButton
+        - btnCargarPartida : JButton
+        - btnGuardarPartida : JButton
+        - listaJugadores : JList
+        + actualizarListaJugadores(IJugador[])
+    }
+
+    class VentanaGanador {
+        - labelMensaje : JLabel
+        - labelTitulo : JLabel
+        - labelCuenta : JLabel
+        - panelJugadores : JPanel
+        - controladorJuego : ControladorJuego
+        + mostrarVentana(Evento, IJugador, IJugador)
+        + actualizarCuentaRegresiva(int)
+    }
+
+    class VentanaInicioSesion {
+        - textUsuario : JTextField
+        - textEdad : JTextField
+        - btnEntrar : JButton
+        + getNombreJugador() : String
+        + getEdadJugador() : int
+        + onClickEntrar(ActionListener)
+    }
+
+    class PantallaBienvenida {
+        - controlador : ControladorJuego
+        - fondo : Image
+        - pedirDatosParaCrear()
+        - pedirDatosParaUnirse()
+    }
+
+    IVistaGrafica  <|..  VistaGrafica
+    IVistaServidor <|..  VentanaServidor
+
+    VistaGrafica   o--   VentanaInicioSesion
+    VistaGrafica   o--   VentanaGanador
+}
+
+' ══════════════════════════════════════
+'  VISTA — JUEGO
+' ══════════════════════════════════════
+
+package "Vista.VistaJuego" #FEF9E7 {
+
+    class VentanaJuego {
+        - controlador : ControladorJuego
+        - panelTablero : PanelTablero
+        - panelJugador : PanelJugador
+        - panelTablaJugadores : PanelTablaJugadores
+        - panelTomarCarta : PanelTomarCarta
+        - panelPuntosYAcciones : PanelPuntosYAcciones
+        - panelHerramientas : PanelHerramientas
+        - turnoActual : JLabel
+        + inicializarVentana()
+        + actualizarVentana()
+    }
+
+    class PanelTablero {
+        - controlador : ControladorJuego
+        - tablero : Tablero
+        - jugadorCliente : IJugador
+        - cacheImagenes : Map<String, BufferedImage>
+        - zoom : double
+        - offsetX : double
+        - offsetY : double
+        # paintComponent(Graphics)
+        - manejarClick(int, int)
+        - jugarEnPosicion(int, int)
+        + actualizar(Tablero, IJugador)
+    }
+
+    class PanelJugador {
+        - controlador : ControladorJuego
+        - jugadorCliente : IJugador
+        - vistaManoActual : List<BotonCarta>
+        - cartaSeleccionada : int
+        - cartaRotada : boolean
+        + dibujarManoDeCartas()
+        + getCartaSeleccionada() : int
+        + isCartaRotada() : boolean
+        + resetCartaSeleccionada()
+        + actualizar(IJugador)
+    }
+
+    class PanelHerramientas {
+        - controlador : ControladorJuego
+        - panelJugador : PanelJugador
+        - jugadorCliente : IJugador
+        + dibujarHerramientas(IJugador)
+        - herramientaEsPresionada(Herramienta)
+        + actualizar(IJugador)
+    }
+
+    class PanelPuntosYAcciones {
+        - controlador : ControladorJuego
+        - panelJugador : PanelJugador
+        - jugadorCliente : IJugador
+        - comportamientoDescarte(JButton)
+        - comportamientoPasarTurno(JButton)
+        + actualizar(IJugador)
+    }
+
+    class PanelTablaJugadores {
+        - controlador : ControladorJuego
+        - panelJugador : PanelJugador
+        - jugadores : IJugador[]
+        - jugadorCliente : IJugador
+        - dibujarListaJugadores(IJugador)
+        - herramientaEsPresionada(HerramientaTabla)
+        + actualizar(IJugador[], IJugador)
+    }
+
+    class PanelTomarCarta {
+        - controlador : ControladorJuego
+        + dibujarPanel()
+        + actualizar()
+    }
+
+    class BotonCarta {
+        - cartaAsociada : Carta
+        + getCartaAsociada() : Carta
+    }
+
+    class Casillero {
+        - x : int
+        - y : int
+        + posX() : int
+        + posY() : int
+    }
+
+    class HerramientaTabla {
+        - dueño : IJugador
+        - herramienta : Herramienta
+        + getDueño() : IJugador
+        + getHerramienta() : Herramienta
+    }
+
+    VentanaJuego *-- PanelTablero
+    VentanaJuego *-- PanelJugador
+    VentanaJuego *-- PanelHerramientas
+    VentanaJuego *-- PanelPuntosYAcciones
+    VentanaJuego *-- PanelTablaJugadores
+    VentanaJuego *-- PanelTomarCarta
+
+    PanelHerramientas     o-- PanelJugador
+    PanelPuntosYAcciones  o-- PanelJugador
+    PanelTablaJugadores   o-- PanelJugador
+    PanelTablero          o-- PanelJugador
+
+    PanelJugador o-- BotonCarta
+}
+
+' ══════════════════════════════════════
+'  CLIENTE
+' ══════════════════════════════════════
+
+package "Cliente" #F2F2F2 {
+    class AppCliente {
+        + {static} main(String[])
+    }
+}
+
+' ══════════════════════════════════════
+'  RELACIONES ENTRE PAQUETES
+' ══════════════════════════════════════
+
+' Controlador <-> Modelo
+ControladorJuego o-- IJuego          : juego
+ControladorJuego o-- IJugador        : jugadorCliente
+
+' Controlador <-> Vista
+ControladorJuego o-- IVistaGrafica   : vista
+ControladorJuego o-- IVistaServidor  : vistaServidor
+ControladorJuego o-- VentanaGanador  : ventanaGanador
+
+' Vista -> Controlador  ⚠ (violación: debería ser IControlador)
+VistaGrafica       ..>  ControladorJuego
+VentanaServidor    ..>  ControladorJuego
+VentanaGanador     ..>  ControladorJuego
+PantallaBienvenida ..>  ControladorJuego
+VentanaJuego       ..>  ControladorJuego
+PanelTablero       ..>  ControladorJuego
+PanelJugador       ..>  ControladorJuego
+PanelHerramientas  ..>  ControladorJuego
+PanelPuntosYAcciones ..> ControladorJuego
+PanelTablaJugadores  ..> ControladorJuego
+PanelTomarCarta      ..> ControladorJuego
+
+' VistaGrafica -> VentanaJuego
+VistaGrafica o-- VentanaJuego
+
+' Cliente -> Controlador y Vista
+AppCliente ..> ControladorJuego
+AppCliente ..> PantallaBienvenida
+
+@enduml
