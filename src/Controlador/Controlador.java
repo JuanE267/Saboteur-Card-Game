@@ -83,6 +83,18 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
+    // actualizo el jugador por nombre para cuando cargo la partida
+    public void actualizarJugadorPorNombre() throws RemoteException{
+        if(jugadorCliente == null) return;
+        for(IJugador j : juego.getJugadores()){
+            if(j.getNombre().equals(jugadorCliente.getNombre())){
+                jugadorCliente = j;
+                return;
+            }
+        }
+    }
+
+
 
     public void setVistaGrafica(IVistaGrafica vista) {
         this.vista = vista;
@@ -196,7 +208,7 @@ public class Controlador implements IControladorRemoto {
                 }
                 case SERVIDOR_NOTIFICA_CLIENTE -> {
                     juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
-                    actualizarJugador();
+                    actualizarJugadorPorNombre();
                     SwingUtilities.invokeLater(() -> {
                         try {
                             vista.mostrarPartida();
@@ -207,7 +219,7 @@ public class Controlador implements IControladorRemoto {
                 }
                 case CARGAR_PARTIDA -> {
                     juego.iniciarPartidaCargadaDesdeCliente(getJugadorActualizado().getNombre());
-                    actualizarJugador();
+                    actualizarJugadorPorNombre();
                     SwingUtilities.invokeLater(() -> {
                         try {
                             if (vista != null) {
@@ -319,11 +331,6 @@ public class Controlador implements IControladorRemoto {
         }
         ventanaGanador.mostrarVentana(evento, ganadorActualizado, ganadorRonda);
     }
-
-   public List<String> obtenerRanking() {
-        return Ranking.obtenerRanking();
-    }
-
 
     public void setVistaServidor(VentanaServidor vistaServidor) {
         this.vistaServidor = vistaServidor;
