@@ -15,6 +15,9 @@ public class Tablero implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // utilizo un map con key posicion
+    // posicion es una clase que tiene el x y el y donde posicionare la carta
+    // y con un value que es la carta que estara en ese lugar
     private final Map<Posicion, Carta> tablero;
 
     private int xInicio;
