@@ -42,7 +42,7 @@ public class PanelTablero extends JPanel {
     private double offsetX = 0;
     private double offsetY = 0;
 
-    // Zoom (escala)
+    // Zoom
     private double zoom = 1.0;
     private final double MIN_ZOOM = 0.3;
     private final double MAX_ZOOM = 3.0;
@@ -139,8 +139,11 @@ public class PanelTablero extends JPanel {
     }
 
 
+    // Dibuja ttodo el tablero
     @Override
     protected void paintComponent(Graphics g) {
+
+        // limpia el panel, para borrar las imagenes viejas
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
@@ -159,13 +162,18 @@ public class PanelTablero extends JPanel {
         dibujarGrilla(g2);
 
         // dibujar la cartas
+        // var entry es el par  de valores obtenidos
+        // seria enty.key = posicion, entry.value = carta
         for (var entry : tablero.getCartas().entrySet()) {
+            // separo los valores
             Posicion p = entry.getKey();
             Carta carta = entry.getValue();
 
+            // convierto las cordenadas de Posicion a posiciones en la pantalla
             int xPantalla = (int) (p.y() * ANCHO_CASILLERO * zoom + offsetX);
             int yPantalla = (int) (p.x() * ALTO_CASILLERO * zoom + offsetY);
 
+            // obtengo la imagen de la carta
             try {
                 BufferedImage imgOriginal = null;
                 try {
@@ -176,7 +184,10 @@ public class PanelTablero extends JPanel {
                     e.printStackTrace();
                 }
 
+                // si se cargo la imagen
                 if (imgOriginal != null) {
+
+                    // calculo las dimensiones dependiendo el zoom que tenga
                     int anchoEscalado = (int) (ANCHO_CASILLERO * zoom);
                     int altoEscalado = (int) (ALTO_CASILLERO * zoom);
 
@@ -185,6 +196,8 @@ public class PanelTablero extends JPanel {
                             anchoEscalado, altoEscalado, BufferedImage.TYPE_INT_ARGB
                     );
 
+                    // le mejoro la calidad a la carta porque no hereda
+                    // lo que hice con g2
                     Graphics2D g2d = imgEscalada.createGraphics();
                     g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -194,6 +207,7 @@ public class PanelTablero extends JPanel {
                         g2d.rotate(Math.PI, anchoEscalado / 2.0, altoEscalado / 2.0);
                     }
 
+                    // dibujo la imagen
                     g2d.drawImage(imgOriginal, 0, 0, anchoEscalado, altoEscalado, null);
                     g2d.dispose();
 
@@ -306,10 +320,6 @@ public class PanelTablero extends JPanel {
         }
 
         repaint();
-    }
-
-    public void mensajeNoEsTuTurno() {
-        JOptionPane.showMessageDialog(getRootPane(), "No es tu turno!");
     }
 
     public void actualizar(Tablero tablero, IJugador jugadorCliente) {
