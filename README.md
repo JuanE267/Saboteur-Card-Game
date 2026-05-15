@@ -71,7 +71,7 @@ src/
 - Multijugador en red local (3–10 jugadores)
 - Roles secretos asignados aleatoriamente segun cantidad de jugadores
 - Colocacion de cartas de tunel con validacion de conexiones direccionales
-- Algoritmo BFS para detectar si hay camino hasta el oro
+- Algoritmo DFS para detectar si hay camino hasta el oro
 - Cartas de accion: romper/reparar herramientas, mapa, derrumbe
 - Rotacion de cartas 180° antes de colocarlas
 - Guardar y cargar partidas (serializacion Java)
