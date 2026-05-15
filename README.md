@@ -89,6 +89,9 @@ Unirse: ingresar IP del servidor, IP propia y puerto → ingresar nombre y edad.
 > Para jugar varios clientes en la misma PC, usar 127.0.0.1 con puertos distintos por instancia.
 ---
 
+📐 Diagrama UML
+![UML](src/UML/Saboteur.png)
+
 ## 👤 Autor
 
 | | |
