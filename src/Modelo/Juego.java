@@ -450,15 +450,50 @@ public class Juego extends ObservableRemoto implements IJuego {
         IJugador actual = getJugadorActual();
         Carta carta = actual.elegirCarta(posCarta);
         objetivo = getJugadorPorId(objetivo.getId());
+
+        // Herramientas rotas ANTES de jugar la carta
+        List<Herramienta> rotasAntes = new ArrayList<>(objetivo.getHerramientasRotas());
+
         boolean pudoSerJugada = actual.jugarCarta(objetivo, carta, herramienta);
+
         if (pudoSerJugada) {
-            // despues de jugar elimino la carta de la mano
             actual.getManoCartas().remove(carta);
             robarCartaAuto(actual);
+
+            // Herramientas rotas DESPUÉS de jugar la carta
+            List<Herramienta> rotasDespues = new ArrayList<>(objetivo.getHerramientasRotas());
+
+            // Determinar qué herramienta cambió y en qué dirección
+            Herramienta herramientaCambiada = detectarHerramientaCambiada(rotasAntes, rotasDespues);
+
+            if (herramientaCambiada != null) {
+                boolean seRompio = rotasDespues.size() > rotasAntes.size();
+                Evento tipoEvento = seRompio ? Evento.HERRAMIENTA_ROTA : Evento.HERRAMIENTA_REPARADA;
+
+                EventoHerramienta eh = new EventoHerramienta(
+                        tipoEvento,
+                        actual.getNombre(),
+                        objetivo.getNombre(),
+                        herramientaCambiada
+                );
+                notificarObservadores(eh); // notificás con el objeto, no solo el enum
+            }
         }
 
         notificarObservadores(Evento.ACTUALIZAR_HERRAMIENTAS);
         return pudoSerJugada;
+    }
+
+    private Herramienta detectarHerramientaCambiada(List<Herramienta> antes, List<Herramienta> despues) {
+        // Si creció la lista → se rompió algo nuevo
+        for (Herramienta h : despues) {
+            if (!antes.contains(h)) return h;
+        }
+        // Si achicó la lista → se reparó algo
+        for (Herramienta h : antes) {
+            if (!despues.contains(h)) return h;
+        }
+        return null;
     }
 
     public Mazo getMazo() {

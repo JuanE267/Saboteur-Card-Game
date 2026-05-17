@@ -84,10 +84,10 @@ public class Controlador implements IControladorRemoto {
     }
 
     // actualizo el jugador por nombre para cuando cargo la partida
-    public void actualizarJugadorPorNombre() throws RemoteException{
-        if(jugadorCliente == null) return;
-        for(IJugador j : juego.getJugadores()){
-            if(j.getNombre().equals(jugadorCliente.getNombre())){
+    public void actualizarJugadorPorNombre() throws RemoteException {
+        if (jugadorCliente == null) return;
+        for (IJugador j : juego.getJugadores()) {
+            if (j.getNombre().equals(jugadorCliente.getNombre())) {
                 jugadorCliente = j;
                 return;
             }
@@ -192,6 +192,41 @@ public class Controlador implements IControladorRemoto {
 
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
+
+        // --- NUEVO: manejar EventoHerramienta ---
+        if (o instanceof EventoHerramienta eh) {
+            actualizarJugador();
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    // Primero actualizá la vista normalmente
+                    vista.actualizar(getTablero(), juego.getJugadores());
+
+                    // Luego mostrá el mensaje
+                    String herr = eh.getHerramienta().toString(); // PICO, LINTERNA, VAGONETA
+                    if (eh.getTipo() == Evento.HERRAMIENTA_ROTA) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                eh.getNombreActor() + " le rompió el/la " + herr
+                                        + " a " + eh.getNombreAfectado() + "!",
+                                "Herramienta rota 🔨",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                eh.getNombreActor() + " le reparó el/la " + herr
+                                        + " a " + eh.getNombreAfectado() + "!",
+                                "Herramienta reparada ✅",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
+            return; // importante: no caer al bloque de Evento
+        }
+
         if (o instanceof Evento evento) {
             switch (evento) {
                 case INICIAR_PARTIDA -> {
@@ -361,7 +396,6 @@ public class Controlador implements IControladorRemoto {
             throw e;
         }
     }
-
 
 
     @Override
