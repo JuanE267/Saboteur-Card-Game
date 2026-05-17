@@ -140,6 +140,7 @@ public class PanelTablero extends JPanel {
 
 
     // Dibuja ttodo el tablero
+    // no tocar FUNCIONA
     @Override
     protected void paintComponent(Graphics g) {
 
@@ -165,6 +166,7 @@ public class PanelTablero extends JPanel {
         // var entry es el par  de valores obtenidos
         // seria enty.key = posicion, entry.value = carta
         for (var entry : tablero.getCartas().entrySet()) {
+
             // separo los valores
             Posicion p = entry.getKey();
             Carta carta = entry.getValue();
@@ -271,6 +273,8 @@ public class PanelTablero extends JPanel {
     }
 
     private void jugarEnPosicion(int x, int y) throws RemoteException {
+
+        // posicion de la carta en la mano
         int cartaSeleccionada = panelJugador.getCartaSeleccionada();
         boolean rotada = panelJugador.isCartaRotada();
         boolean pudoSerJugado = false;

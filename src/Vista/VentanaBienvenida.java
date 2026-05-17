@@ -80,7 +80,7 @@ public class VentanaBienvenida extends JFrame {
         panel.add(btnRanking, gbc);
 
         btnRanking.addActionListener(e -> {
-            new VentanaRanking(this, Modelo.Ranking.obtenerRanking());
+            new VentanaRanking(this, controlador.obtenerRanking());
         });
 
         btnCrear.addActionListener(e -> {

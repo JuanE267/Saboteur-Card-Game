@@ -94,8 +94,6 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
-
-
     public void setVistaGrafica(IVistaGrafica vista) {
         this.vista = vista;
     }
@@ -386,5 +384,9 @@ public class Controlador implements IControladorRemoto {
 
     public boolean esHost() {
         return esHost;
+    }
+
+    public List<String> obtenerRanking() {
+        return Ranking.obtenerRanking();
     }
 }

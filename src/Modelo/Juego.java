@@ -473,6 +473,7 @@ public class Juego extends ObservableRemoto implements IJuego {
         return this.jugadoresCargados.values().toArray(new IJugador[0]);
     }
 
+    // devuelve el jugador del turno
     public IJugador getJugadorActual() {
         if (ordenTurnos.isEmpty()) return null;
         // tomo el id que corresponde al jugador de este turno
@@ -625,6 +626,8 @@ public class Juego extends ObservableRemoto implements IJuego {
     @Override
     public boolean cargarPartida() throws RemoteException {
 
+
+        // si la carga no es valida lanzo error
         try {
             validarCarga();
         } catch (IllegalStateException e) {
@@ -690,8 +693,7 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     public boolean validarCarga() {
 
-        // cargo los jugadoresCargados temporalmente para validar
-
+        // cargo los jugadoresCargados temporalmente para validar si el archivo existe
         HashMap<Integer, IJugador> jugadoresCargadosValidar;
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream("Data/jugadores.dat"))) {
