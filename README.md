@@ -92,7 +92,7 @@ Unirse: ingresar IP del servidor, IP propia y puerto → ingresar nombre y edad.
 ---
 
 ## 📐 Diagrama UML
-
+![UML](src/UML/Saboteur.png)
 
 ## 👤 Autor
 
